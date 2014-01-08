@@ -30,23 +30,23 @@ How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
 
-1. Start Apache&trade; OODT
-   `cd /usr/local/xdata-code-audit/deploy`
-   `cd filemgr/bin && ./filemgr start`
-   `cd ../../workflowbin/ && ./wmgr start`
+1. Start Apache&trade; OODT  
+   `cd /usr/local/xdata-code-audit/deploy`  
+   `cd filemgr/bin && ./filemgr start`  
+   `cd ../../workflowbin/ && ./wmgr start`  
 
-2. Crawl the repository of interest, e.g., `$HOME/your-repo`:
-    `cd /usr/local/xdata-code-audit/deploy/crawler/bin`
+2. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
+    `cd /usr/local/xdata-code-audit/deploy/crawler/bin`  
    `./crawler_launcher --operation --metPC --productPath $HOME/your-repo --metExtractorConfig /usr/local/xdata-code-audit/deploy/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory`
 
-3. Index the crawled repo in Apache&trade; SOLR:
-   `cd /usr/local/xdata-code-audit/deploy/filemgr/bin`
-   `java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/xdatagitsolr/xdatagit`
+3. Index the crawled repo in Apache&trade; SOLR:  
+   `cd /usr/local/xdata-code-audit/deploy/filemgr/bin`  
+   `java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/xdatagitsolr/xdatagit`  
 
-4. Fire off the partitioner and mappers
-   `cd /usr/local/xdata-code-audit/deploy/workflow/bin`
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:MimePartitioner`
+4. Fire off the partitioner and mappers  
+   `cd /usr/local/xdata-code-audit/deploy/workflow/bin`  
+   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:MimePartitioner`  
 
-5. Fire off the reducer
-   `cd /usr/local/xdata-code-audit/deploy/workflow/bin`
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:RatAggregator`
+5. Fire off the reducer  
+   `cd /usr/local/xdata-code-audit/deploy/workflow/bin`  
+   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:RatAggregator`  
