@@ -29,6 +29,6 @@
     If 'null' (or absent), cores will not be manageable via request handler
   -->
   <cores adminPath="/admin/cores">
-    <core name="xdatagit" instanceDir="xdatagit" />
+    <core name="drat" instanceDir="drat" />
   </cores>
 </solr>
