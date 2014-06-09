@@ -4,7 +4,7 @@
 
   <!-- How to run the PGE -->
   <exe dir="[JobDir]" shell="/bin/bash">
-     <cmd>export PATH=/Users/mattmann/bin/:${PATH}</cmd>
+     <cmd>export PATH=$HOME/bin/:${PATH}</cmd>
      <cmd>shopt -s expand_aliases</cmd>
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
