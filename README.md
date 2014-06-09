@@ -45,8 +45,8 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 
 4. Fire off the partitioner and mappers  
    `cd /usr/local/drat/deploy/workflow/bin`  
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:MimePartitioner`  
+   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:MimePartitioner`  
 
 5. Fire off the reducer  
    `cd /usr/local/drat/deploy/workflow/bin`  
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:xdata:RatAggregator`  
+   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator`  

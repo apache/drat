@@ -16,12 +16,12 @@
 -->
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
-  <task id="urn:xdata:RatCodeAudit" name="RadCodeAudit" 
-    class="gov.nasa.jpl.xdata.pge.XDataPGETaskInstance">
+  <task id="urn:drat:RatCodeAudit" name="RadCodeAudit" 
+    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="RatCodeAudit"/>
-          <property name="PGETask_ConfigFilePath" value="/usr/local/xdata-code-audit/deploy/pge/config/PgeConfig_Rat.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_Rat.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
@@ -29,42 +29,42 @@
           <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
           <requiredMetFields>
             <metfield name="InputFiles"/>
-	    <metfield name="MimeType"/>
+	        <metfield name="MimeType"/>
           </requiredMetFields>        
     </configuration>
   </task>
 
-  <task id="urn:xdata:MimePartitioner" name="MimePartitioner" 
-    class="gov.nasa.jpl.xdata.pge.XDataPGETaskInstance">
+  <task id="urn:drat:MimePartitioner" name="MimePartitioner" 
+    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>
-          <property name="PGETask_ConfigFilePath" value="/usr/local/xdata-code-audit/deploy/pge/config/PgeConfig_MimePartitioner.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_MimePartitioner.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
           <property name="PCS_MetFileExtension" value="met"/>
           <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
-	  <property name="SolrUrl" value="http://localhost:8080/xdatagitsolr/xdatagit"/>
-          <property name="RatTaskId" value="urn:xdata:RatCodeAudit"/>
+	      <property name="SolrUrl" value="http://localhost:8080/dratsolr/drat"/>
+          <property name="RatTaskId" value="urn:drat:RatCodeAudit"/>
           <property name="NumFilesPerJob" value="100"/>
-          <property name="MimePartitionerPyScript" value="/usr/local/xdata-code-audit/deploy/pge/bin/mime_partitioner/mime_rat_partitioner.py"/>
+          <property name="MimePartitionerPyScript" value="[DRAT_HOME]/deploy/pge/bin/mime_partitioner/mime_rat_partitioner.py"/>
           <requiredMetFields/>
     </configuration>
   </task>
 
-  <task id="urn:xdata:RatAggregator" name="RatAggregator" 
-    class="gov.nasa.jpl.xdata.pge.XDataPGETaskInstance">
+  <task id="urn:drat:RatAggregator" name="RatAggregator" 
+    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>
-          <property name="PGETask_ConfigFilePath" value="/usr/local/xdata-code-audit/deploy/pge/config/PgeConfig_RatAggregator.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_RatAggregator.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
           <property name="PCS_MetFileExtension" value="met"/>
           <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
-          <property name="RatAggregatorScript" value="/usr/local/xdata-code-audit/deploy/pge/bin/rat_aggregator/rat_aggregator.py"/>
+          <property name="RatAggregatorScript" value="[DRAT_HOME]/deploy/pge/bin/rat_aggregator/rat_aggregator.py"/>
           <requiredMetFields/>
     </configuration>
   </task>
