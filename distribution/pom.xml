@@ -42,6 +42,13 @@
     </dependency>
     <dependency>
       <groupId>org.apache.drat</groupId>
+      <artifactId>dms-pge</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-pcs</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>

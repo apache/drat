@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gov.nasa.jpl.xdata</groupId>
+  <groupId>org.apache.drat</groupId>
   <artifactId>dms</artifactId>
   <name>Data Management System</name>
   <packaging>pom</packaging>
@@ -107,6 +107,7 @@
     <module>filemgr</module>
     <module>workflow</module>
     <module>crawler</module>
+    <module>pge</module>
     <module>distribution</module>
     <module>webapps</module>
   </modules>
