@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.xdata</groupId>
+    <groupId>org.apache.drat</groupId>
     <artifactId>dms</artifactId>
     <version>0.1</version>
     <relativePath>../pom.xml</relativePath> 
@@ -20,61 +20,61 @@
 
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-filemgr</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-crawler</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-workflow</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-pcs</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-resmgr</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-extensions</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
       <classifier>bin</classifier>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-opsui</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-pcs-services</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-fmprod</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
@@ -105,21 +105,21 @@
                   <outputDirectory>${project.build.directory}/</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>gov.nasa.jpl.xdata</groupId>
+                  <groupId>org.apache.drat</groupId>
                   <artifactId>${parent.artifactId}-opsui</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/opsui</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>gov.nasa.jpl.xdata</groupId>
+                  <groupId>org.apache.drat</groupId>
                   <artifactId>${parent.artifactId}-pcs-services</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/pcs</outputDirectory>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>gov.nasa.jpl.xdata</groupId>
+                  <groupId>org.apache.drat</groupId>
                   <artifactId>${parent.artifactId}-fmprod</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>

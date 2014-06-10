@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>gov.nasa.jpl.xdata</groupId>
+    <groupId>org.apache.drat</groupId>
     <artifactId>dms</artifactId>
     <version>0.1</version>
     <relativePath>../pom.xml</relativePath>
