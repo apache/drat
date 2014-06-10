@@ -17,8 +17,8 @@
       <fileMode>775</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/src/main/resources/extractor/bin</directory>
-      <outputDirectory>extensions/extractor/bin</outputDirectory>
+      <directory>${basedir}/src/main/resources/extractors</directory>
+      <outputDirectory>extractors</outputDirectory>
       <includes/>
       <fileMode>775</fileMode>
     </fileSet>
@@ -29,13 +29,6 @@
         <include>REMOVE.log</include>
       </includes>
       <fileMode>775</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/resources/extractor/etc</directory>
-      <outputDirectory>extensions/extractor/etc</outputDirectory>
-      <includes/>
-      <fileMode>664</fileMode>
-      <directoryMode>775</directoryMode>
     </fileSet>
     <fileSet>
       <directory>target/site/apidocs</directory>
