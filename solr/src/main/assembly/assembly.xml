@@ -1,0 +1,18 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <baseDirectory>solr</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>solr</outputDirectory>
+      <includes/>
+      <fileMode>664</fileMode>
+      <directoryMode>775</directoryMode>
+    </fileSet>
+  </fileSets>
+</assembly>

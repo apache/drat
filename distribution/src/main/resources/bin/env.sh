@@ -176,6 +176,10 @@ if [ -z "$CRAWLER_URL" ]; then
   export CRAWLER_URL
 fi
 
+if [ -z "$SOLR_HOME" ]; then
+SOLR_HOME="$OODT_HOME"/solr
+export SOLR_HOME
+fi
 
 # When no TTY is available, don't output to console
 have_tty=0

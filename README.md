@@ -24,7 +24,6 @@ You can build DRAT in a few steps:
 8. `cd deploy`
 9. `tar xvzf dms-distribution-0.1-bin.tar.gz`
 10. `rm -rf *.tar.gz`
-11. `cp -R ../src/pge ./pge && cp -R ../src/solr/ ./solr && cp -R ../src/extractors/ ./extractors`
 
 How to Run
 ===

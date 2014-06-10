@@ -49,6 +49,13 @@
     </dependency>
     <dependency>
       <groupId>org.apache.drat</groupId>
+      <artifactId>dms-solr</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency>    
+    <dependency>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-pcs</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>
@@ -83,6 +90,12 @@
     <dependency>
       <groupId>org.apache.drat</groupId>
       <artifactId>dms-fmprod</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.drat</groupId>
+      <artifactId>dms-solr-webapp</artifactId>
       <version>${project.parent.version}</version>
       <type>war</type>
     </dependency>
@@ -132,6 +145,13 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/fmprod</outputDirectory>
                 </artifactItem>
+				<artifactItem>
+				<groupId>org.apache.drat</groupId>
+				<artifactId>${parent.artifactId}-solr-webapp</artifactId>
+				<type>war</type>
+				<overWrite>true</overWrite>
+				<outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/solr</outputDirectory>
+				</artifactItem>                
               </artifactItems>
             </configuration>
           </execution>

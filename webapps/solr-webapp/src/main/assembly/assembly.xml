@@ -1,0 +1,21 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <baseDirectory>solr</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>README.txt</include>
+        <include>solr.xml</include>
+        <include>zoo.cfg</include>
+      </includes>
+      <fileMode>775</fileMode>
+    </fileSet>
+  </fileSets>
+</assembly>
