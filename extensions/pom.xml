@@ -56,6 +56,11 @@
       <version>${oodt.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.oodt</groupId>
+      <artifactId>cas-pge</artifactId>
+      <version>0.3</version>
+    </dependency>      
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.2</version>
