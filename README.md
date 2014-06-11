@@ -30,7 +30,7 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 
 1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`
 
-2. Start Apache&trade; OODT
+2. Start Apache&trade; OODT:  
    `cd $DRAT_HOME/bin`
    ./oodt start  
 
