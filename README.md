@@ -17,13 +17,12 @@ You can build DRAT in a few steps:
 1. `mkdir -p /usr/local/drat/deploy`
 2. `mkdir -p /usr/local/drat/src`
 3. `cd /usr/local/drat/src`
-4. `git clone https://github.com/chrismattmann/drat.git`
-5. `cd drat`
-6. `mvn install`
-7. `cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../../deploy`
-8. `cd ../../deploy`
-9. `tar xvzf dms-distribution-0.1-bin.tar.gz`
-10. `rm -rf *.tar.gz`
+4. `git clone https://github.com/chrismattmann/drat.git .`
+5. `mvn install`
+6. `cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../deploy/`
+7. `cd ../deploy/`
+8. `tar xvzf dms-distribution-0.1-bin.tar.gz`
+9. `rm *.tar.gz`
 
 How to Run
 ===
