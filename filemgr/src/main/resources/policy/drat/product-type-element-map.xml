@@ -19,8 +19,8 @@ limitations under the License.
  <!-- can set the "parent" attribute on types below to allow inheritance
 of elements between the types
 -->
-   <type id="urn:xdata:RatLog" parent="urn:oodt:TraceableFile">
+   <type id="urn:drat:RatLog" parent="urn:oodt:TraceableFile">
   </type>
-   <type id="urn:xdata:RatAggregateLog" parent="urn:oodt:TraceableFile">
+   <type id="urn:drat:RatAggregateLog" parent="urn:oodt:TraceableFile">
   </type>  
 </cas:producttypemap>

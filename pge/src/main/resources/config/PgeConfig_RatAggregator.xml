@@ -16,7 +16,7 @@
   <output>
  <!-- one or more of these -->
     <dir path="[JobOutputDir]" createBeforeExe="false">
-       <files regExp=".*\.csv" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[DRAT_HOME]/pge/config/metout/rat_aggregate_log_metout.xml"/>
+       <files regExp=".*\.csv" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[DRAT_HOME]/pge/policy/metout/rat_aggregate_log_metout.xml"/>
      </dir>
 
   </output>
@@ -38,7 +38,7 @@
     <!-- Casi-specific keys -->
     <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
     <metadata key="DateMilis" val="[DATE_TO_MILLIS([ProductionDateTime],UTC_FORMAT,1970-01-01)]"/>
-    <metadata key="JobDir" val="/data/jobs/rataggregate/[DateMilis]"/>
+    <metadata key="JobDir" val="[DRAT_HOME]/data/jobs/rataggregate/[DateMilis]"/>
     <metadata key="JobInputDir" val="[JobDir]/input"/>
     <metadata key="JobOutputDir" val="[JobDir]/output"/>
     <metadata key="JobLogDir" val="[JobDir]/logs"/>

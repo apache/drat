@@ -40,6 +40,9 @@ the License.
 	    
 	<Parameter name="org.apache.oodt.pcs.health.workflow.statuses.filePath"
 	    value="[PCS_HOME]/policy/pcs-workflow-statuses.xml"/>	    
+
+    <Parameter name="org.apache.oodt.pcs.trace.excludeList"
+            value=""/>  	    
 	 
 	<Parameter name="ganglia.url" value="[GANGLIA_URL]"/>
 	<Parameter name="contact.email" value="user@oodt.apache.org"/>

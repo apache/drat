@@ -6,7 +6,7 @@
   <exe dir="[JobDir]" shell="/bin/bash">
      <cmd>export PATH=$HOME/bin/:${PATH}</cmd>
      <cmd>shopt -s expand_aliases</cmd>
-     <cmd>alias rat="java -jar [DRAT_HOME]/rat/apache-rat-0.9.jar"</cmd>
+     <cmd>alias rat="java -jar [RAT_HOME]/apache-rat-0.9.jar"</cmd>
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
@@ -19,7 +19,7 @@
   <output>
  <!-- one or more of these -->
     <dir path="[JobOutputDir]" createBeforeExe="false">
-       <files regExp=".*\.log" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[DRAT_HOME]/pge/config/metout/rat_log_metout.xml"/>
+       <files regExp=".*\.log" metFileWriterClass="org.apache.oodt.cas.pge.writers.metlist.MetadataListPcsMetFileWriter" args="[DRAT_HOME]/pge/policy/metout/rat_log_metout.xml"/>
        <files regExp=".*\.log" metFileWriterClass="org.apache.oodt.cas.pge.writers.FilenameExtractorWriter" args="[DRAT_HOME]/pge/extractors/filename/rat_log_filename_extractor.xml"/>
      </dir>
 
@@ -42,7 +42,7 @@
     <!-- Casi-specific keys -->
     <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
     <metadata key="DateMilis" val="[DATE_TO_MILLIS([ProductionDateTime],UTC_FORMAT,1970-01-01)]"/>
-    <metadata key="JobDir" val="/data/jobs/rat/[DateMilis]"/>
+    <metadata key="JobDir" val="[DRAT_HOME]/data/jobs/rat/[DateMilis]"/>
     <metadata key="JobInputDir" val="[JobDir]/input"/>
     <metadata key="JobOutputDir" val="[JobDir]/output"/>
     <metadata key="JobLogDir" val="[JobDir]/logs"/>

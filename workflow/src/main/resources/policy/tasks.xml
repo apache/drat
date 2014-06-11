@@ -17,7 +17,7 @@
 <cas:tasks xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 
   <task id="urn:drat:RatCodeAudit" name="RadCodeAudit" 
-    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
+    class="org.apache.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="RatCodeAudit"/>
@@ -35,7 +35,7 @@
   </task>
 
   <task id="urn:drat:MimePartitioner" name="MimePartitioner" 
-    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
+    class="org.apache.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>
@@ -54,7 +54,7 @@
   </task>
 
   <task id="urn:drat:RatAggregator" name="RatAggregator" 
-    class="gov.nasa.jpl.drat.pge.DRATPGETaskInstance">
+    class="org.apache.drat.pge.DRATPGETaskInstance">
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>

@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <cas:producttypes xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
-  <type id="urn:xdata:RatLog" name="RatLog">
+  <type id="urn:drat:RatLog" name="RatLog">
     <repository path="file://[OODT_HOME]/data/archive/rat"/>
     <versioner class="org.apache.oodt.cas.filemgr.versioning.ProductTypeMetVersioner"/>
     <!--
@@ -56,7 +56,7 @@ attribute.
     </metExtractors>
   </type>
 
-  <type id="urn:xdata:RatAggregateLog" name="RatAggregateLog">
+  <type id="urn:drat:RatAggregateLog" name="RatAggregateLog">
     <repository path="file://[OODT_HOME]/data/archive/rataggregate"/>
     <versioner class="org.apache.oodt.cas.filemgr.versioning.ProductTypeMetVersioner"/>
     <!--
