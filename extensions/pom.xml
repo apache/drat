@@ -59,6 +59,20 @@
       <groupId>org.apache.oodt</groupId>
       <artifactId>cas-pge</artifactId>
       <version>0.3</version>
+      <exclusions>
+        <exclusion> 
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-filemgr</artifactId>
+        </exclusion>
+        <exclusion> 
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-workflow</artifactId>
+        </exclusion>        
+        <exclusion> 
+          <groupId>org.apache.oodt</groupId>
+          <artifactId>cas-crawler</artifactId>
+        </exclusion>                
+      </exclusions>       
     </dependency>      
     <dependency>
       <groupId>junit</groupId>
