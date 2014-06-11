@@ -39,7 +39,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>gov.nasa.jpl.xdata</groupId>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-extensions</artifactId>
       <version>${project.parent.version}</version>
       <type>jar</type>
