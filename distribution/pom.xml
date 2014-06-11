@@ -21,6 +21,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.drat</groupId>
+      <artifactId>dms-rat</artifactId>
+      <version>${project.parent.version}</version>
+      <type>tar.gz</type>
+      <classifier>bin</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.drat</groupId>
       <artifactId>dms-filemgr</artifactId>
       <version>${project.parent.version}</version>
       <type>tar.gz</type>

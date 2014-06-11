@@ -1,0 +1,27 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <baseDirectory>rat</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>rat</outputDirectory>
+      <includes/>
+      <fileMode>664</fileMode>
+      <directoryMode>775</directoryMode>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>rat/lib</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>true</useProjectArtifact>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <unpackOptions/>
+    </dependencySet>
+  </dependencySets>  
+</assembly>

@@ -101,6 +101,7 @@
   </build>
 
   <modules>
+    <module>rat</module>
     <module>extensions</module>
     <module>resmgr</module>
     <module>pcs</module>
