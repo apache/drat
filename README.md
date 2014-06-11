@@ -32,7 +32,7 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 
 2. Start Apache&trade; OODT:  
    `cd $DRAT_HOME/bin`
-   ./oodt start  
+   `./oodt start`  
 
 3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
     `cd $DRAT_HOME/crawler/bin`  
