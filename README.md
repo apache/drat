@@ -29,23 +29,25 @@ How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
 
-1. Start Apache&trade; OODT  
-   `cd /usr/local/drat/deploy`  
+1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`
+
+2. Start Apache&trade; OODT  
+   `cd $DRAT_HOME`  
    `cd filemgr/bin && ./filemgr start`  
    `cd ../../workflowbin/ && ./wmgr start`  
 
-2. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
-    `cd /usr/local/drat/deploy/crawler/bin`  
-   `./crawler_launcher --operation --metPC --productPath $HOME/your-repo --metExtractorConfig /usr/local/drat/deploy/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory`
+3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
+    `cd $DRAT_HOME/crawler/bin`  
+   `./crawler_launcher --operation --metPC --productPath $HOME/your-repo --metExtractorConfig $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory`
 
-3. Index the crawled repo in Apache&trade; SOLR:  
-   `cd /usr/local/drat/deploy/filemgr/bin`  
-   `java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/drat/drat`  
+4. Index the crawled repo in Apache&trade; SOLR:  
+   `cd $DRAT_HOME/filemgr/bin`  
+   `java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/solr/drat`  
 
-4. Fire off the partitioner and mappers  
-   `cd /usr/local/drat/deploy/workflow/bin`  
+5. Fire off the partitioner and mappers  
+   `cd $DRAT_HOME/workflow/bin`  
    `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:MimePartitioner`  
 
-5. Fire off the reducer  
-   `cd /usr/local/drat/deploy/workflow/bin`  
+6. Fire off the reducer  
+   `cd $DRAT_HOME/workflow/bin`  
    `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator`  
