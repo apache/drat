@@ -44,6 +44,9 @@
             <overlay>
               <groupId>org.apache.oodt</groupId>
               <artifactId>pcs-opsui</artifactId>
+              <excludes>
+                <exclude>WEB-INF/web.xml</exclude>
+              </excludes>              
             </overlay>
           </overlays>
         </configuration>
