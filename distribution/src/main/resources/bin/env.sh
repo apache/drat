@@ -132,17 +132,17 @@ if [ -z "$FILEMGR_PORT" ]; then
 fi
 
 if [ -z "$CRAWLER_PORT" ]; then
-  CRAWLER_PORT=9100
+  CRAWLER_PORT=9010
   export CRAWLER_PORT
 fi 
 
 if [ -z "$WORKFLOW_PORT" ]; then
-  WORKFLOW_PORT=9200
+  WORKFLOW_PORT=9001
   export WORKFLOW_PORT
 fi
 
 if [ -z "$RESMGR_PORT" ]; then
-  RESMGR_PORT=9300
+  RESMGR_PORT=9002
   export RESMGR_PORT
 fi
 

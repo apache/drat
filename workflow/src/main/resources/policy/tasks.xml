@@ -21,7 +21,7 @@
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="RatCodeAudit"/>
-          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_Rat.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/pge/policy/PgeConfig_Rat.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
@@ -39,16 +39,16 @@
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>
-          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_MimePartitioner.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/pge/policy/PgeConfig_MimePartitioner.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
           <property name="PCS_MetFileExtension" value="met"/>
           <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
-	      <property name="SolrUrl" value="http://localhost:8080/dratsolr/drat"/>
+	      <property name="SolrUrl" value="http://localhost:8080/solr/drat"/>
           <property name="RatTaskId" value="urn:drat:RatCodeAudit"/>
           <property name="NumFilesPerJob" value="100"/>
-          <property name="MimePartitionerPyScript" value="[DRAT_HOME]/deploy/pge/bin/mime_partitioner/mime_rat_partitioner.py"/>
+          <property name="MimePartitionerPyScript" value="[DRAT_HOME]/pge/bin/mime_partitioner/mime_rat_partitioner.py"/>
           <requiredMetFields/>
     </configuration>
   </task>
@@ -58,13 +58,13 @@
         <conditions/>
         <configuration>
           <property name="PGETask_Name" value="MimePartitioner"/>
-          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/deploy/pge/config/PgeConfig_RatAggregator.xml" envReplace="true"/>
+          <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/pge/policy/PgeConfig_RatAggregator.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
           <property name="PCS_FileManagerUrl"     value="[FILEMGR_URL]" envReplace="true"/>
           <property name="PCS_MetFileExtension" value="met"/>
           <property name="PCS_ClientTransferServiceFactory" value="org.apache.oodt.cas.filemgr.datatransfer.LocalDataTransferFactory"/>
-          <property name="RatAggregatorScript" value="[DRAT_HOME]/deploy/pge/bin/rat_aggregator/rat_aggregator.py"/>
+          <property name="RatAggregatorScript" value="[DRAT_HOME]/pge/bin/rat_aggregator/rat_aggregator.py"/>
           <requiredMetFields/>
     </configuration>
   </task>
