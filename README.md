@@ -16,12 +16,12 @@ You can build DRAT in a few steps:
 
 1. `mkdir -p /usr/local/drat/deploy`
 2. `mkdir -p /usr/local/drat/src`
-3. `cd /usr/local/drat/`
+3. `cd /usr/local/drat/src`
 4. `git clone https://github.com/chrismattmann/drat.git`
-5. `mv drat src && cd src`
+5. `cd drat`
 6. `mvn install`
-7. `cp -R target/distribution/dms-distribution-0.1-bin.tar.gz deploy`
-8. `cd deploy`
+7. `cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../../deploy`
+8. `cd ../../deploy`
 9. `tar xvzf dms-distribution-0.1-bin.tar.gz`
 10. `rm -rf *.tar.gz`
 
@@ -34,7 +34,7 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 2. Start Apache&trade; OODT  
    `cd $DRAT_HOME`  
    `cd filemgr/bin && ./filemgr start`  
-   `cd ../../workflowbin/ && ./wmgr start`  
+   `cd ../../workflow/bin/ && ./wmgr start`  
 
 3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
     `cd $DRAT_HOME/crawler/bin`  
