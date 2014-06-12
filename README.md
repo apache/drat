@@ -104,7 +104,6 @@ If you want to analyze an entirely new code base, then you will want to:
 2. Blow away the following dirs:  
    `rm -rf $DRAT_HOME/data/workflow`  
    `rm -rf $DRAT_HOME/filemgr/catalog`  
-   `rm -rf $DRAT_HOME/solr/drat/data/`  
    
 3. Blow away files in following dirs:  
    `rm -rf $DRAT_HOME/data/archive/*`  
