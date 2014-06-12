@@ -49,3 +49,63 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 6. Fire off the reducer  
    `cd $DRAT_HOME/workflow/bin`  
    `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator`  
+   
+Interacting with DRAT
+==
+DRAT UIs are accessible at:
+
+http://localhost:8080/opsui/ - main cockpit, Apache OODT OPSUI
+http://localhost:8080/solr/ - Solr4 catalog
+
+DRAT publishes its analyzed aggregated RAT logs to:
+
+`$DRAT_HOME/data/archive/rataggregate/*.csv`
+
+These look like e.g.
+
+`cat *.csv
+Notes,Binaries,Archives,Standards,Apache,Generated,Unknown
+0,2,0,530,497,0,33
+`
+So, these are the counts of each of the source code files and what licenses they are:
+
+`
+Binaries - it's a binary file, no license
+Notes - it's a notes file
+Archives - it's a tar/zip/etc archive, no license
+Standards - it's one of the OSI approved licenses that isn't ALv2,
+so e.g., BSD, MIT, LGPL, etc.
+Generated - these are generated files (either source or binary)
+Apache - apache licensed files
+Unknown - non discernible license
+`
+
+Re-Running DRAT 
+==
+If you run DRAT on your source code and want to run it again the easiest way to do so is to:
+
+1. Grab the aliases for fmquery and fmdel from https://issues.apache.org/jira/browse/OODT-306 
+   and add them to your bash or tcsh profile
+
+2. Run 
+   `fmquery "ProductType:RatLog" | fmdel`
+3. Run 
+   `fmquery "ProductType:RatAggregateLog" | fmdel`
+
+You should be good to go to re-run the analysis at that point.
+
+If you want to analyze an entirely new code base, then you will want to:
+
+1. Shut down OODT by 
+   `cd $DRAT_HOME/bin && ./oodt stop`
+
+2. Blow away the following dirs:
+   `rm -rf $DRAT_HOME/data/workflow`
+   `rm -rf $DRAT_HOME/filemgr/catalog`
+   `rm -rf $DRAT_HOME/solr/drat/data/`
+   
+3. Blow away files in following dirs:
+   `rm -rf $DRAT_HOME/data/archive/*`
+   
+4. Restart OODT by   
+   `cd $DRAT_HOME/bin && ./oodt start`
