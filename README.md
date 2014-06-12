@@ -110,3 +110,26 @@ If you want to analyze an entirely new code base, then you will want to:
    
 4. Restart OODT by:  
    `cd $DRAT_HOME/bin && ./oodt start`  
+   
+
+Useful Environment Variables
+==
+The following useful environment variables are set by RADIX but can be overwritten
+on a per DRAT install basis. Here's the default confg, feel free to change/override
+in your own environment.
+
+```
+setenv DRAT_HOME /usr/local/drat/deploy
+setenv FILEMGR_URL http://localhost:9000
+setenv WORKFLOW_URL http://localhost:9001
+setenv RESMGR_URL http://localhost:9002
+setenv DRAT_HOME /usr/local/drat/deploy
+setenv WORKFLOW_HOME $DRAT_HOME/workflow
+setenv FILEMGR_HOME $DRAT_HOME/filemgr
+setenv PGE_ROOT $DRAT_HOME/pge
+setenv PCS_HOME $DRAT_HOME/pcs
+setenv GANGLIA_URL http://zipper.jpl.nasa.gov/ganglia/
+```
+
+Note the tomcat that we ship with DRAT won't start correctly unless you
+define the `$JAVA_HOME` environment variable, so make sure that's set too.
