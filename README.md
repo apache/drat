@@ -116,7 +116,7 @@ If you want to analyze an entirely new code base, then you will want to:
 Useful Environment Variables
 ==
 The following useful environment variables are set by RADIX but can be overwritten
-on a per DRAT install basis. Here's the default confg, feel free to change/override
+on a per DRAT install basis. Here's the default config, feel free to change/override
 in your own environment.
 
 ```
