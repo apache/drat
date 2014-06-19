@@ -133,32 +133,32 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.drat</groupId>
-                  <artifactId>${parent.artifactId}-opsui</artifactId>
+                  <artifactId>${project.parent.artifactId}-opsui</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/opsui</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.drat</groupId>
-                  <artifactId>${parent.artifactId}-pcs-services</artifactId>
+                  <artifactId>${project.parent.artifactId}-pcs-services</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/pcs</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.drat</groupId>
-                  <artifactId>${parent.artifactId}-fmprod</artifactId>
+                  <artifactId>${project.parent.artifactId}-fmprod</artifactId>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/fmprod</outputDirectory>
                 </artifactItem>
-				<artifactItem>
-				<groupId>org.apache.drat</groupId>
-				<artifactId>${parent.artifactId}-solr-webapp</artifactId>
-				<type>war</type>
-				<overWrite>true</overWrite>
-				<outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/solr</outputDirectory>
-				</artifactItem>                
+                <artifactItem>
+                  <groupId>org.apache.drat</groupId>
+                  <artifactId>${project.parent.artifactId}-solr-webapp</artifactId>
+                  <type>war</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/solr</outputDirectory>
+                </artifactItem>                
               </artifactItems>
             </configuration>
           </execution>
