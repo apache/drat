@@ -30,25 +30,31 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 
 1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`
 
-2. Start Apache&trade; OODT:  
+### Automated method:
+2. Go!  
    `cd $DRAT_HOME/bin`  
-   `./oodt start`  
+   `./drat go $HOME/your-repo`  
+   This will start up OODT, crawl the repo, index it, map it, and reduce it.
+
+### Manual method:
+If you would rather run the individual commands yourself, use the manual method:
+
+2. Start Apache&trade; OODT:  
+   `$DRAT_HOME/bin/oodt start`
 
 3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
-    `cd $DRAT_HOME/crawler/bin`  
-   `./crawler_launcher --operation --metPC --productPath $HOME/your-repo --metExtractorConfig $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory`
+   `$DRAT_HOME/bin/drat crawl $HOME/your-repo`
 
 4. Index the crawled repo in Apache&trade; SOLR:  
-   `cd $DRAT_HOME/filemgr/bin`  
-   `java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/solr/drat`  
+   `$DRAT_HOME/bin/drat index $HOME/your-repo`
 
 5. Fire off the partitioner and mappers  
-   `cd $DRAT_HOME/workflow/bin`  
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:MimePartitioner`  
+   `cd $DRAT_HOME/bin/drat map`
 
 6. Fire off the reducer  
-   `cd $DRAT_HOME/workflow/bin`  
-   `./wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator`  
+   `cd $DRAT_HOME/bin/drat reduce`
+
+Please see `$DRAT_HOME/bin/drat` for the specifics of each command.
    
 Interacting with DRAT
 ==
@@ -96,9 +102,12 @@ If you run DRAT on your source code and want to run it again the easiest way to 
 
 You should be good to go to re-run the analysis at that point.
 
-If you want to analyze an entirely new code base, then you will want to:
+##If you want to analyze an entirely new code base
+   `$DRAT_HOME/bin/drat reset`
 
-1. Shut down OODT by:  
+**You shouldn't need to run these**, but the manual version of `reset` is:
+
+1. Shut down OODT with
    `cd $DRAT_HOME/bin && ./oodt stop`  
 
 2. Blow away the following dirs:  
@@ -124,7 +133,6 @@ setenv DRAT_HOME /usr/local/drat/deploy
 setenv FILEMGR_URL http://localhost:9000
 setenv WORKFLOW_URL http://localhost:9001
 setenv RESMGR_URL http://localhost:9002
-setenv DRAT_HOME /usr/local/drat/deploy
 setenv WORKFLOW_HOME $DRAT_HOME/workflow
 setenv FILEMGR_HOME $DRAT_HOME/filemgr
 setenv PGE_ROOT $DRAT_HOME/pge
