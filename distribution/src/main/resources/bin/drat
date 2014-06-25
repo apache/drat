@@ -15,12 +15,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+function print_help {
+    echo "Usage: Call drat in the following order to analyze a repository."
+    echo "       Once you call reduce, navigate to http://localhost:8080/opsui/"
+    echo "       to view the OODT browser."
+    echo "drat"
+    echo "     crawl <path to repo>  | crawl the repositories files"
+    echo "     index <path to repo>  | index the crawled files"
+    echo "     map                   | fire off the MapReduce mapper"
+    echo "     reduce                | fire off the MapReduce reducer"
+    echo "     help                  | print this message"
+    echo "     reset                 | prepare to analyze an entirely new repo"
+    echo "                           | CAUTION: will delete previous crawls!"
+}
+
 if [ "$1" = "crawl" ]; then
-	$DRAT_HOME/crawler/bin/crawler_launcher --operation --metPC --metExtractorConfig $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $2
+    $DRAT_HOME/crawler/bin/crawler_launcher --operation --metPC --metExtractorConfig $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor --filemgrUrl http://localhost:9000 --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $2
 elif [[ "$1" = "index" ]]; then
-	java -Djava.ext.dirs=$DRAT_HOME/filemgr/lib -DSOLR_INDEXER_CONFIG=$DRAT_HOME/filemgr/etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/solr/drat $2
+    java -Djava.ext.dirs=$DRAT_HOME/filemgr/lib -DSOLR_INDEXER_CONFIG=$DRAT_HOME/filemgr/etc/indexer.properties org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl http://localhost:9000 --optimize --solrUrl http://localhost:8080/solr/drat $2
 elif [[ "$1" = "map" ]]; then
-	$DRAT_HOME/workflow/bin/wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
+    $DRAT_HOME/workflow/bin/wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
 elif [[ "$1" = "reduce" ]]; then
-	$DRAT_HOME/workflow/bin/wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator
+    $DRAT_HOME/workflow/bin/wmgr-client --url http://localhost:9001 --operation --dynWorkflow --taskIds urn:drat:RatAggregator
+elif [[ "$1" = "reset" ]]; then
+    echo "This will remove any previous or current crawls and restart OODT."
+    read -p "Do you wish to continue?" yN
+        case $yn in
+            [Yy]* )
+                $DRAT_HOME/bin/oodt stop
+                rm -rf $DRAT_HOME/data/workflow
+                rm -rf $DRAT_HOME/filemgr/catalog
+                rm -rf $DRAT_HOME/solr/drat/data
+                rm -rf $DRAT_HOME/data/archive/*
+                $DRAT_HOME/bin/oodt start;;
+            [Nn]* ) echo "Exiting..."; exit;;
+            * ) echo "Aborting..."; exit;;
+        esac
+elif [[ "$1" = "help" ]]; then
+    print_help
+else
+    print_help
 fi
