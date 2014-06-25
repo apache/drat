@@ -20,7 +20,7 @@ function print_help {
     echo "       Alternatively, call 'drat go' to run all four automatically."
     echo "       Navigate to http://localhost:8080/opsui/ to view the OODT browser."
     echo "drat"
-    echo "     go <path to repo>     | analyze the repository"
+    echo "     go <path to repo>     | start OODT and analyze the repository"
     echo "     crawl <path to repo>  | crawl the repositories files"
     echo "     index <path to repo>  | index the crawled files"
     echo "     map                   | fire off the MapReduce mapper"
