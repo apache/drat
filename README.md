@@ -30,17 +30,17 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 
 1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`
 
+2. Start Apache&trade; OODT:  
+   `$DRAT_HOME/bin/oodt start`
+
 ### Automated method:
-2. Go!  
+3. Go!  
    `cd $DRAT_HOME/bin`  
    `./drat go $HOME/your-repo`  
-   This will start up OODT, crawl the repo, index it, map it, and reduce it.
+   This will crawl the repo, index it, map it, and reduce it.
 
 ### Manual method:
 If you would rather run the individual commands yourself, use the manual method:
-
-2. Start Apache&trade; OODT:  
-   `$DRAT_HOME/bin/oodt start`
 
 3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
    `$DRAT_HOME/bin/drat crawl $HOME/your-repo`
@@ -103,24 +103,19 @@ If you run DRAT on your source code and want to run it again the easiest way to 
 You should be good to go to re-run the analysis at that point.
 
 ##If you want to analyze an entirely new code base
+   `$DRAT_HOME/bin/oodt stop`
    `$DRAT_HOME/bin/drat reset`
+   `$DRAT_HOME/bin/oodt start`
 
 **You shouldn't need to run these**, but the manual version of `reset` is:
 
-1. Shut down OODT with
-   `cd $DRAT_HOME/bin && ./oodt stop`  
-
-2. Blow away the following dirs:  
+1. Blow away the following dirs:  
    `rm -rf $DRAT_HOME/data/workflow`  
    `rm -rf $DRAT_HOME/filemgr/catalog`  
    `rm -rf $DRAT_HOME/solr/drat/data`
    
-3. Blow away files in following dirs:  
+2. Blow away files in following dirs:  
    `rm -rf $DRAT_HOME/data/archive/*`  
-   
-4. Restart OODT by:  
-   `cd $DRAT_HOME/bin && ./oodt start`  
-   
 
 Useful Environment Variables
 ==

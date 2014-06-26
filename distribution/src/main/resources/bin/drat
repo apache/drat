@@ -91,7 +91,6 @@ case $1 in
     go)
         # Add in some sleep just to give commands time to finish up. Some issues with Solr, otherwise.
         check_num_args $1 $# 2
-        echo
         echo "Crawling $2"
         crawl $2
         sleep 1
