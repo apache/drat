@@ -33,7 +33,6 @@ function print_help {
     echo "                                  | CAUTION: will delete previous crawls!"
 }
 
-OODT=$DRAT_HOME/bin/oodt
 FILEMGR_URL=http://localhost:9000
 SOLR_URL=http://localhost:8080/solr/drat
 CLIENT_URL=http://localhost:9001
@@ -92,31 +91,30 @@ case $1 in
     go)
         # Add in some sleep just to give commands time to finish up. Some issues with Solr, otherwise.
         check_num_args $1 $# 2
-        echo "Shutting any other OODT instances down..."
-        $OODT stop > /dev/null
-        sleep 2
-        echo "Starting OODT..."
-        $OODT start
-        sleep 2
+        echo
+        echo "Crawling $2"
         crawl $2
         sleep 1
+        echo
+        echo "Indexing $2"
         index $2
         sleep 1
+        echo
+        echo "Firing off the MapReduce mapper"
         map
+        echo
+        echo "Firing off the MapReduce reducer"
         reduce
         echo "Navigate to http://localhost:8080/opsui/ to view the OODT browser and http://localhost:8080/solr to view the Solr catalog."
     ;;
     reset)
         check_num_args $1 $# 1
-        echo "This will remove any previous or current crawls and restart OODT."
+        echo "Please stop OODT by running oodt stop before running reset."
+        echo "This will remove any previous or current crawls."
         read -p "Do you wish to continue? [yN] " yn
             case $yn in
                 [Yy]*)
                     echo
-                    # Hide the output of stopping OODT. We don't need to see the env variables twice in a row.
-                    echo "$OODT stop > /dev/null"
-                    $OODT stop > /dev/null 
-                    sleep 1
                     echo "rm -rf $DRAT_HOME/data/workflow"
                     rm -rf $DRAT_HOME/data/workflow
                     echo "rm -rf $DRAT_HOME/filemgr/catalog"
@@ -125,6 +123,7 @@ case $1 in
                     rm -rf $DRAT_HOME/solr/drat/data
                     echo "rm -rf $DRAT_HOME/data/archive/*"
                     rm -rf $DRAT_HOME/data/archive/*
+                    echo "Please restart OODT with oodt start if you with to run another crawl."
                 ;;
                 [Nn]*)
                     echo "Reset cancelled. Exiting..."
