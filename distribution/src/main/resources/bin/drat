@@ -116,9 +116,8 @@ case $1 in
         echo "Firing off the MapReduce mapper"
         map
         echo
-        echo "Firing off the MapReduce reducer"
-        reduce
-        echo "Navigate to http://localhost:8080/opsui/ to view the OODT browser and http://localhost:8080/solr to view the Solr catalog."
+        echo "After mapping finishes, you need to fire off the MapReduce reducer by running ./drat reduce."
+        print_ui_info
     ;;
     reset)
         check_num_args $1 $# 1
