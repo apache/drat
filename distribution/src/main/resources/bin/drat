@@ -66,9 +66,16 @@ function map {
     print_ui_info
 }
 
+# Get the current list of RatAuditTasks running.
+function current_pges {
+    STATUS="PGE%20EXEC"
+    tika="java -jar $DRAT_HOME/bin/tika-app-1.5.jar"
+    echo $($tika "http://localhost:8080/opsui/instances/${STATUS}/1" | grep TaskId)
+}
+
 # Fire off the MapReduce reducer. Expects no arguments.
 function reduce {
-    if [[ -n $(./current_pges) ]]; then
+    if [[ -n $(current_pges) ]]; then
         echo "There are still MapReduce mappers running! It is reccomended you wait for them to finish."
         read -p "Are you sure you wish to continue? [yN] " yn
             case $yn in
@@ -130,7 +137,7 @@ case $1 in
         map
         echo
         printf "Waiting for the mapping and partitioning to finish..."
-        while [[ -n $(./current_pges) ]]; do
+        while [[ -n $(current_pges) ]]; do
             print "..."
             sleep 2
         done
