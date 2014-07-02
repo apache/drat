@@ -22,6 +22,28 @@ You can build DRAT in a few steps:
 8. `tar xvzf dms-distribution-0.1-bin.tar.gz`
 9. `rm *.tar.gz`
 
+Running with Vagrant
+===
+
+Prerequisites:
+
+Install Vagrant from [here](http://www.vagrantup.com/).
+
+Install VirtualBox from [here](https://www.virtualbox.org/).
+
+```
+git clone https://github.com/chrismattmann/drat.git
+cd drat
+vagrant up
+vagrant ssh
+```
+
+Skip to automated method or manual method. Note that the /vagrant directory is a shared 
+folder to your host system and is a great way to interact with codebases you're looking to 
+audit with drat.
+
+
+
 How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
