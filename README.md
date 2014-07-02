@@ -26,16 +26,19 @@ How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
 
-1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`
+1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`.
+   Note the tomcat that we ship with DRAT won't start correctly unless you define 
+   the `$JAVA_HOME` environment variable, so make sure that's set too.
 
 2. Start Apache&trade; OODT:  
    `$DRAT_HOME/bin/oodt start`
 
 ### Automated method:
 3. Go!  
-   `cd $DRAT_HOME/bin`  
-   `./drat go $HOME/your-repo`  
-   This will crawl the repo, index it, map it, and reduce it.
+   `$DRAT_HOME/bin/drat go $HOME/your-repo`  
+   This will crawl the repo, index it, and map it.  
+4. Once mapping is done, run  
+   `./drat reduce`
 
 ### Manual method:
 If you would rather run the individual commands yourself, use the manual method:
@@ -47,12 +50,12 @@ If you would rather run the individual commands yourself, use the manual method:
    `$DRAT_HOME/bin/drat index $HOME/your-repo`
 
 5. Fire off the partitioner and mappers  
-   `cd $DRAT_HOME/bin/drat map`
+   `$DRAT_HOME/bin/drat map`
 
 6. Fire off the reducer  
-   `cd $DRAT_HOME/bin/drat reduce`
+   `$DRAT_HOME/bin/drat reduce`
 
-Please see `$DRAT_HOME/bin/drat` for the specifics of each command.
+Please see `$DRAT_HOME/bin/drat` for the specifics of each command. To shut down OODT, run `$DRAT_HOME/bin/oodt stop`.
    
 Interacting with DRAT
 ==
@@ -101,8 +104,8 @@ If you run DRAT on your source code and want to run it again the easiest way to 
 You should be good to go to re-run the analysis at that point.
 
 ##If you want to analyze an entirely new code base
-   `$DRAT_HOME/bin/oodt stop`
-   `$DRAT_HOME/bin/drat reset`
+   `$DRAT_HOME/bin/oodt stop`  
+   `$DRAT_HOME/bin/drat reset`  
    `$DRAT_HOME/bin/oodt start`
 
 **You shouldn't need to run these**, but the manual version of `reset` is:
@@ -132,6 +135,3 @@ setenv PGE_ROOT $DRAT_HOME/pge
 setenv PCS_HOME $DRAT_HOME/pcs
 setenv GANGLIA_URL http://zipper.jpl.nasa.gov/ganglia/
 ```
-
-Note the tomcat that we ship with DRAT won't start correctly unless you
-define the `$JAVA_HOME` environment variable, so make sure that's set too.
