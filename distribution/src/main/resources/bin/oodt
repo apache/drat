@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -96,15 +96,19 @@ if [ ! -x "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" ]; then
 fi
 
 if [ "$1" = "start" ]; then
+  pushd $DRAT_HOME/bin
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &
   exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" start "$@" >> "$OODT_OUT" 2>&1  &  
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" start "$@" >> "$OODT_OUT" 2>&1 &
+  popd
 elif [ "$1" = "stop" ]; then
+  pushd $DRAT_HOME/bin
   exec "$FILEMGR_HOME"/bin/"$FILEMGR_EXEC" stop "$@" >> "$OODT_OUT" 2>&1  &
   exec "$WORKFLOW_HOME"/bin/"$WORKFLOW_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
   exec "$RESMGR_HOME"/bin/"$RESMGR_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
   exec "$OODT_BASE"/tomcat/bin/"$TOMCAT_EXEC" stop "$@" >> "$OODT_OUT" 2>&1 &
+  popd
 else
   echo "Usage: oodt.sh ( commands ... )"
   echo "commands:"
