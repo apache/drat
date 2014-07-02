@@ -43,7 +43,7 @@ CLIENT_URL=http://localhost:9001
 
 # Crawl the given repository. Expects one argument -- the file path of the repo to be crawled.
 function crawl {
-    pushd $DRAT_HOME/crawler/bin
+    pushd $DRAT_HOME/crawler/bin > /dev/null
     ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
     --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $1
@@ -52,7 +52,7 @@ function crawl {
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
 function index {
-    pushd $DRAT_HOME/filemgr/bin
+    pushd $DRAT_HOME/filemgr/bin > /dev/null
     java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties \
     org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl $FILEMGR_URL --optimize --solrUrl $SOLR_URL $1
     popd
@@ -60,7 +60,7 @@ function index {
 
 # Fire off the MapReduce mapper. Expects no arguments.
 function map {
-    pushd $DRAT_HOME/workflow/bin
+    pushd $DRAT_HOME/workflow/bin > /dev/null
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
     popd
     print_ui_info
@@ -81,7 +81,7 @@ function reduce {
                 ;;
             esac
     fi
-    pushd $DRAT_HOME/workflow/bin
+    pushd $DRAT_HOME/workflow/bin > /dev/null
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:RatAggregator
     popd
     print_ui_info
@@ -129,7 +129,13 @@ case $1 in
         echo "Firing off the MapReduce mapper"
         map
         echo
-        echo "After mapping finishes, you need to fire off the MapReduce reducer by running ./drat reduce."
+        printf "Waiting for the mapping and partitioning to finish..."
+        while [[ -n $(./current_pges) ]]; do
+            print "..."
+            sleep 2
+        done
+        echo
+        reduce
         print_ui_info
     ;;
     reset)
