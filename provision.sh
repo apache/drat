@@ -37,5 +37,4 @@ chown -R vagrant /usr/local/drat
 chgrp -R vagrant /usr/local/drat
 export DRAT_HOME=/usr/local/drat/deploy
 echo "export DRAT_HOME=/usr/local/drat/deploy" >> /home/vagrant/.bashrc
-$DRAT_HOME/bin/oodt start
 
