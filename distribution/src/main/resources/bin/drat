@@ -33,31 +33,45 @@ function print_help {
     echo "                                  | CAUTION: will delete previous crawls!"
 }
 
+function print_ui_info {
+    echo "Navigate to http://localhost:8080/opsui/ to view the OODT browser and http://localhost:8080/solr to view the Solr catalog."
+}
+
 FILEMGR_URL=http://localhost:9000
 SOLR_URL=http://localhost:8080/solr/drat
 CLIENT_URL=http://localhost:9001
 
 # Crawl the given repository. Expects one argument -- the file path of the repo to be crawled.
 function crawl {
-    $DRAT_HOME/crawler/bin/crawler_launcher --operation --metPC --metExtractorConfig \
+    pushd $DRAT_HOME/crawler/bin
+    ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
     --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $1
+    popd
 }
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
 function index {
-    java -Djava.ext.dirs=$DRAT_HOME/filemgr/lib -DSOLR_INDEXER_CONFIG=$DRAT_HOME/filemgr/etc/indexer.properties \
+    pushd $DRAT_HOME/filemgr/bin
+    java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties \
     org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl $FILEMGR_URL --optimize --solrUrl $SOLR_URL $1
+    popd
 }
 
 # Fire off the MapReduce mapper. Expects no arguments.
 function map {
-    $DRAT_HOME/workflow/bin/wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
+    pushd $DRAT_HOME/workflow/bin
+    ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
+    popd
+    print_ui_info
 }
 
 # Fire off the MapReduce reducer. Expects no arguments.
 function reduce {
-    $DRAT_HOME/workflow/bin/wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:RatAggregator
+    pushd $DRAT_HOME/workflow/bin
+    ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:RatAggregator
+    popd
+    print_ui_info
 }
 
 # Ensure the number of arguments matches the expected number. Expects three arguments:
