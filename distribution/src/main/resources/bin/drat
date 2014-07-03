@@ -47,7 +47,7 @@ function crawl {
     ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
     --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $1
-    popd
+    popd > /dev/null
 }
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
@@ -55,14 +55,14 @@ function index {
     pushd $DRAT_HOME/filemgr/bin > /dev/null
     java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties \
     org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl $FILEMGR_URL --optimize --solrUrl $SOLR_URL $1
-    popd
+    popd > /dev/null
 }
 
 # Fire off the MapReduce mapper. Expects no arguments.
 function map {
     pushd $DRAT_HOME/workflow/bin > /dev/null
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
-    popd
+    popd > /dev/null
     print_ui_info
 }
 
@@ -90,7 +90,7 @@ function reduce {
     fi
     pushd $DRAT_HOME/workflow/bin > /dev/null
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:RatAggregator
-    popd
+    popd > /dev/null
     print_ui_info
 }
 
