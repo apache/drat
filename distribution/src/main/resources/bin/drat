@@ -137,8 +137,9 @@ case $1 in
         map
         echo
         printf "Waiting for the mapping and partitioning to finish..."
+        sleep 2
         while [[ -n $(current_pges) ]]; do
-            print "..."
+            printf "..."
             sleep 2
         done
         echo
