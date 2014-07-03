@@ -43,26 +43,26 @@ CLIENT_URL=http://localhost:9001
 
 # Crawl the given repository. Expects one argument -- the file path of the repo to be crawled.
 function crawl {
-    pushd $DRAT_HOME/crawler/bin > /dev/null
+    pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
     ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
     --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $1
-    popd > /dev/null
+    popd >> $DRAT_HOME/logs/drat.log 2>&1
 }
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
 function index {
-    pushd $DRAT_HOME/filemgr/bin > /dev/null
+    pushd $DRAT_HOME/filemgr/bin >> $DRAT_HOME/logs/drat.log 2>&1
     java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties \
     org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl $FILEMGR_URL --optimize --solrUrl $SOLR_URL $1
-    popd > /dev/null
+    popd >> $DRAT_HOME/logs/drat.log 2>&1
 }
 
 # Fire off the MapReduce mapper. Expects no arguments.
 function map {
-    pushd $DRAT_HOME/workflow/bin > /dev/null
+    pushd $DRAT_HOME/workflow/bin >> $DRAT_HOME/logs/drat.log 2>&1
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
-    popd > /dev/null
+    popd >> $DRAT_HOME/logs/drat.log 2>&1
     print_ui_info
 }
 
@@ -88,9 +88,9 @@ function reduce {
                 ;;
             esac
     fi
-    pushd $DRAT_HOME/workflow/bin > /dev/null
+    pushd $DRAT_HOME/workflow/bin >> $DRAT_HOME/logs/drat.log 2>&1
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:RatAggregator
-    popd > /dev/null
+    popd >> $DRAT_HOME/logs/drat.log 2>&1
     print_ui_info
 }
 
@@ -138,8 +138,10 @@ case $1 in
         echo
         printf "Waiting for the mapping and partitioning to finish..."
         while [[ -n $(current_pges) ]]; do
-            printf "..."
-            sleep 2
+            for (( i = 0; i < 10; i++ )); do
+                printf "."
+                sleep .5
+            done
         done
         echo
         reduce
