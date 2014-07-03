@@ -58,9 +58,7 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 ### Automated method:
 3. Go!  
    `$DRAT_HOME/bin/drat go $HOME/your-repo`  
-   This will crawl the repo, index it, and map it.  
-4. Once mapping is done, run  
-   `./drat reduce`
+   This will crawl the repo, index it, map it and then wait for the reduce to complete.  
 
 ### Manual method:
 If you would rather run the individual commands yourself, use the manual method:
