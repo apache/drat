@@ -70,7 +70,7 @@ function map {
 function current_pges {
     STATUS="PGE%20EXEC"
     tika="java -jar $DRAT_HOME/bin/tika-app-1.5.jar"
-    echo $($tika "http://localhost:8080/opsui/instances/${STATUS}/1" | grep TaskId)
+    echo $($tika "http://localhost:8080/opsui/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit)
 }
 
 # Fire off the MapReduce reducer. Expects no arguments.
@@ -137,14 +137,12 @@ case $1 in
         map
         echo
         printf "Waiting for the mapping and partitioning to finish..."
-        sleep 2
         while [[ -n $(current_pges) ]]; do
             printf "..."
             sleep 2
         done
         echo
         reduce
-        print_ui_info
     ;;
     reset)
         check_num_args $1 $# 1
