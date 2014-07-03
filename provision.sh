@@ -38,3 +38,18 @@ chgrp -R vagrant /usr/local/drat
 export DRAT_HOME=/usr/local/drat/deploy
 echo "export DRAT_HOME=/usr/local/drat/deploy" >> /home/vagrant/.bashrc
 
+##### BASH SHELL ALIASES #####
+#
+# The following aliases must be used within a filemgr's
+# bin directory since relative pathing is being used.  This block also
+# assumes that the filemgr is running on port 9000 (the default port of filemgr)
+#
+# For complete documentation see: 
+#     https://cwiki.apache.org/confluence/display/OODT/BASH+and+TCSH+shell+tools+for+File+Manager
+#
+
+echo "alias lucenequery=\"java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --lucene -query \"" >> /home/vagrant/.bashrc
+echo "alias sqlquery=\"java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --sql -query \"" >> /home/vagrant/.bashrc
+echo "alias fmdel=\"java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl http://localhost:9000 --read\"" >> /home/vagrant/.bashrc
+echo "alias metdump=\"java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url http://localhost:9000 --out . --productId \"" >> /home/vagrant/.bashrc
+
