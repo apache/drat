@@ -93,8 +93,10 @@
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <unpack>false</unpack>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useStrictFiltering>true</useStrictFiltering>
       <includes>
-        <include>org.apache.tika:tika-app</include>
+        <include>org.apache.tika:tika-app:jar</include>
       </includes>
     </dependencySet>
   </dependencySets>
