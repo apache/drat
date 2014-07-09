@@ -155,3 +155,14 @@ setenv PGE_ROOT $DRAT_HOME/pge
 setenv PCS_HOME $DRAT_HOME/pcs
 setenv GANGLIA_URL http://zipper.jpl.nasa.gov/ganglia/
 ```
+
+Running DRAT on XDATA and the Computational Infrastructure for Geodynamics
+===
+There is now a [Youtube video on DRAT](https://www.youtube.com/watch?v=9w3fpnNWdIE) 
+explaining DRAT's motivation, and results of running it on 
+[DARPA XDATA](http://www.darpa.mil/Our_Work/I2O/Programs/XDATA.aspx) and on the 
+[Computational Infrastructure for Geodynamics](http://www.geodynamics.org/cig/) as
+part of the [my NSF project](https://github.com/chrismattmann/earthcube/).
+The video was made for the 
+[2014 Summer Earth Science Information Partners Federation Meeting](http://commons.esipfed.org/2014SummerMeeting).
+ 
