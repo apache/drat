@@ -1,3 +1,17 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Distributed Release Audit Tool (DRAT)](#user-content-distributed-release-audit-tool-drat)
+- [How to Build](#user-content-how-to-build)
+- [Running with Vagrant](#user-content-running-with-vagrant)
+- [How to Run](#user-content-how-to-run)
+      - [Automated method](#user-content-automated-method)
+      - [Manual method](#user-content-manual-method)
+- [Interacting with DRAT](#user-content-interacting-with-drat)
+- [Re-Running DRAT](#user-content-re-running-drat)
+   - [If you want to analyze an entirely new code base](#user-content-if-you-want-to-analyze-an-entirely-new-code-base)
+- [Useful Environment Variables](#user-content-useful-environment-variables)
+- [DRAT Tutorials/Videos](#user-content-drat-tutorialsvideos)
+
 Distributed Release Audit Tool (DRAT)
 ====
 
@@ -55,12 +69,12 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
 2. Start Apache&trade; OODT:  
    `$DRAT_HOME/bin/oodt start`
 
-### Automated method:
+### Automated method
 3. Go!  
    `$DRAT_HOME/bin/drat go $HOME/your-repo`  
    This will crawl the repo, index it, map it and then wait for the reduce to complete.  
 
-### Manual method:
+### Manual method
 If you would rather run the individual commands yourself, use the manual method:
 
 3. Crawl the repository of interest, e.g., `$HOME/your-repo`:  
@@ -108,8 +122,9 @@ Apache - apache licensed files
 Unknown - non discernible license
 ```
 
-Re-Running DRAT 
+Re-Running DRAT
 ==
+
 If you run DRAT on your source code and want to run it again the easiest way to do so is to:
 
 1. Grab the aliases for fmquery and fmdel from https://issues.apache.org/jira/browse/OODT-306 
