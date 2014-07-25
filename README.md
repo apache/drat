@@ -50,12 +50,12 @@ git clone https://github.com/chrismattmann/drat.git
 cd drat
 vagrant up
 vagrant ssh
+$DRAT_HOME/bin/oodt start
 ```
 
 Skip to automated method or manual method. Note that the /vagrant directory is a shared 
 folder to your host system and is a great way to interact with codebases you're looking to 
 audit with drat.
-
 
 
 How to Run
