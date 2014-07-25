@@ -43,6 +43,8 @@ CLIENT_URL=http://localhost:9001
 
 # Crawl the given repository. Expects one argument -- the file path of the repo to be crawled.
 function crawl {
+    check_services_running
+    check_num_args "crawl" $# 1
     pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
     ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
@@ -52,6 +54,8 @@ function crawl {
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
 function index {
+    check_services_running
+    check_num_args "index" $# 1
     pushd $DRAT_HOME/filemgr/bin >> $DRAT_HOME/logs/drat.log 2>&1
     java -Djava.ext.dirs=../lib -DSOLR_INDEXER_CONFIG=../etc/indexer.properties \
     org.apache.oodt.cas.filemgr.tools.SolrIndexer --all --fmUrl $FILEMGR_URL --optimize --solrUrl $SOLR_URL $1
@@ -60,6 +64,8 @@ function index {
 
 # Fire off the MapReduce mapper. Expects no arguments.
 function map {
+    check_services_running
+    check_num_args "map" $# 0
     pushd $DRAT_HOME/workflow/bin >> $DRAT_HOME/logs/drat.log 2>&1
     ./wmgr-client --url $CLIENT_URL --operation --dynWorkflow --taskIds urn:drat:MimePartitioner
     popd >> $DRAT_HOME/logs/drat.log 2>&1
@@ -75,8 +81,11 @@ function current_pges {
 
 # Fire off the MapReduce reducer. Expects no arguments.
 function reduce {
+    check_services_running
+    check_num_args "reduce" $# 0
     if [[ -n $(current_pges) ]]; then
-        echo "There are still MapReduce mappers running! It is reccomended you wait for them to finish."
+        echo "There are still MapReduce mappers running! It is reccomended you wait for them to finish, "
+        echo "then try to run '\$DRAT_HOME/bin/drat reduce' again later."
         read -p "Are you sure you wish to continue? [yN] " yn
             case $yn in
                 [Yy]*)
@@ -98,81 +107,110 @@ function reduce {
 # the option name, the actual number of arguments, and the expected number of arguments.
 function check_num_args {
     if [[ "$2" != "$3" ]]; then
-            echo "Expected $(($3 - 1)) args for $1, but got $(($2 - 1))."   # Use (( )) for arithmetic evaluation.
-            print_help
-            exit 1
+        echo "Expected $3 args for '$1', but got $2."
+        print_help
+        exit 1
     fi
+}
+
+# Return a list of what is running on a the given port. Expects 1 argument: the port number.
+function check_port {
+    check_num_args "check port" $# 1
+    lsof -i tcp:$1
+}
+
+# Check the Solr and OODT ports. If no arguments are passed, ensure the ports are all busy.
+# Otherwise, check the ports are not busy.
+function check_services_running {
+    if [[ $# == 0 ]]; then
+        if [[ ! -n $(check_port 9000) ]] || [[ ! -n $(check_port 9001) ]] || [[ ! -n $(check_port 9002) ]] || [[ ! -n $(check_port 8080) ]]; then
+            echo "Please start OODT by running '\$DRAT_HOME/bin/oodt start'"
+            echo "Aborting..."
+            exit 1
+        fi
+    elif [[ -n $(check_port 9000) ]] || [[ -n $(check_port 9001) ]] || [[ -n $(check_port 9002) ]] || [[ -n $(check_port 8080) ]]; then
+        echo "Please stop OODT by running '\$DRAT_HOME/bin/oodt stop'"
+        echo "Aborting..."
+        exit 1
+    fi
+    
+}
+
+# Attempt to automate crawling, indexing, mapping, and reducing. Expects 1 argument: the directory to analyze.
+function go {
+    check_services_running
+    check_num_args "go" $# 1
+    echo "Crawling $2"
+    crawl $1
+    sleep 3
+    echo
+    echo "Indexing $2"
+    index $1
+    sleep 3
+    echo
+    echo "Firing off the MapReduce mapper"
+    map
+    echo
+    printf "Waiting for the mapping and partitioning to finish..."
+    sleep 3
+    while [[ -n $(current_pges) ]]; do
+        for (( i = 0; i < 10; i++ )); do
+            printf "."
+            sleep .5
+        done
+    done
+    echo
+    reduce
+}
+
+# Reset drat to prepare for analyzing an entirely new repo. Expects no arguments.
+function reset {
+    check_services_running "running"
+    check_num_args "reset" $# 0
+    echo "This will remove any previous or current crawls."
+    read -p "Do you wish to continue? [yN] " yn
+        case $yn in
+            [Yy]*)
+                echo "rm -rf $DRAT_HOME/data/workflow"
+                rm -rf $DRAT_HOME/data/workflow
+                echo "rm -rf $DRAT_HOME/filemgr/catalog"
+                rm -rf $DRAT_HOME/filemgr/catalog
+                echo "rm -rf $DRAT_HOME/solr/drat/data"
+                rm -rf $DRAT_HOME/solr/drat/data
+                echo "rm -rf $DRAT_HOME/data/archive/*"
+                rm -rf $DRAT_HOME/data/archive/*
+                echo "Please restart OODT with '\$DRAT_HOME/bin/oodt start' if you wish to run another crawl."
+            ;;
+            [Nn]*)
+                echo "Reset cancelled. Exiting..."
+                exit 0
+            ;;
+            *) 
+                echo "Aborting..."
+                exit 1
+            ;;
+        esac
 }
 
 # Start parsing the arguments.
 case $1 in
     crawl)
-        check_num_args $1 $# 2
         crawl $2
     ;;
     index)
-        check_num_args $1 $# 2
         index $2
     ;;
     map)
-        check_num_args $1 $# 1
         map
     ;;
     reduce)
-        check_num_args $1 $# 1
         reduce
     ;;
     go)
-        # Add in some sleep just to give commands time to finish up. Some issues with Solr, otherwise.
-        check_num_args $1 $# 2
-        echo "Crawling $2"
-        crawl $2
-        sleep 1
-        echo
-        echo "Indexing $2"
-        index $2
-        sleep 1
-        echo
-        echo "Firing off the MapReduce mapper"
-        map
-        echo
-        printf "Waiting for the mapping and partitioning to finish..."
-        while [[ -n $(current_pges) ]]; do
-            for (( i = 0; i < 10; i++ )); do
-                printf "."
-                sleep .5
-            done
-        done
-        echo
-        reduce
+        go $2
     ;;
     reset)
-        check_num_args $1 $# 1
-        echo "Please stop OODT by running oodt stop before running reset."
-        echo "This will remove any previous or current crawls."
-        read -p "Do you wish to continue? [yN] " yn
-            case $yn in
-                [Yy]*)
-                    echo
-                    echo "rm -rf $DRAT_HOME/data/workflow"
-                    rm -rf $DRAT_HOME/data/workflow
-                    echo "rm -rf $DRAT_HOME/filemgr/catalog"
-                    rm -rf $DRAT_HOME/filemgr/catalog
-                    echo "rm -rf $DRAT_HOME/solr/drat/data"
-                    rm -rf $DRAT_HOME/solr/drat/data
-                    echo "rm -rf $DRAT_HOME/data/archive/*"
-                    rm -rf $DRAT_HOME/data/archive/*
-                    echo "Please restart OODT with oodt start if you with to run another crawl."
-                ;;
-                [Nn]*)
-                    echo "Reset cancelled. Exiting..."
-                    exit 0
-                ;;
-                *) 
-                    echo "Aborting..."
-                    exit 1
-                ;;
-            esac
+        reset
     ;;
     help)
         print_help
