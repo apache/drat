@@ -31,10 +31,7 @@ First, set the DRAT_HOME (e.g. `~/drat/deploy`), JAVA_HOME (e.g. `readlink -f /u
 3. `cd ~/drat/src`
 4. `git clone https://github.com/chrismattmann/drat.git .`
 5. `mvn install`
-6. `cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../deploy/`
-7. `cd ../deploy/`
-8. `tar xvzf dms-distribution-0.1-bin.tar.gz`
-9. `rm *.tar.gz`
+6. `tar -C ../deploy/ -xvzf distribution/target/dms-distribution-0.1-bin.tar.gz`
 
 Running with Vagrant
 ===
