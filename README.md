@@ -24,11 +24,11 @@ A distributed, parallelized (Map Reduce) wrapper around [Apache&trade; RAT](http
 
 How to Build
 ===
-You can build DRAT in a few steps:
+You can build DRAT in a few steps, substituting `~/drat/` with your prefered install directory.
 
-1. `mkdir -p /usr/local/drat/deploy`
-2. `mkdir -p /usr/local/drat/src`
-3. `cd /usr/local/drat/src`
+1. `mkdir -p ~/drat/deploy`
+2. `mkdir -p ~/drat/src`
+3. `cd ~/drat/src`
 4. `git clone https://github.com/chrismattmann/drat.git .`
 5. `mvn install`
 6. `cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../deploy/`
@@ -62,7 +62,7 @@ How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
 
-1. Set your `$DRAT_HOME` environment variable, e.g., to `/usr/local/drat/deploy`.
+1. Set your `$DRAT_HOME` environment variable, e.g., to `~/drat/deploy`.
    Note the tomcat that we ship with DRAT won't start correctly unless you define 
    the `$JAVA_HOME` environment variable, so make sure that's set too.
 
@@ -160,7 +160,7 @@ on a per DRAT install basis. Here's the default config, feel free to change/over
 in your own environment.
 
 ```
-setenv DRAT_HOME /usr/local/drat/deploy
+setenv DRAT_HOME ~/drat/deploy
 setenv FILEMGR_URL http://localhost:9000
 setenv WORKFLOW_URL http://localhost:9001
 setenv RESMGR_URL http://localhost:9002
