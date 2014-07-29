@@ -85,15 +85,7 @@ Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo,
    `$DRAT_HOME/bin/oodt start`
 
 ### Automated method
-3. Go!  
-   `$DRAT_HOME/bin/drat go $HOME/your-repo`  
-   This will crawl the repo, index it, map it and then wait for the reduce to complete.  
 
-=======
-1. Start Apache&trade; OODT:  
-   `$DRAT_HOME/bin/oodt start`
-
-### Automated method
 3. Go!  
    `$DRAT_HOME/bin/drat go $HOME/your-repo`  
    This will crawl the repo, index it into Solr, and analyze it with MapReduce RAT.  
