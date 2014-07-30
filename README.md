@@ -55,10 +55,15 @@ How to Run
 ===
 Here are the basic commands to run DRAT. Imagine you had a code repo, your-repo, that lives in `$HOME/your-repo`.
 
-1. Start Apache&trade; OODT:  
+1. Set your `$DRAT_HOME` environment variable, e.g., to `~/drat/deploy`.
+   Note the tomcat that we ship with DRAT won't start correctly unless you define 
+   the `$JAVA_HOME` environment variable, so make sure that's set too.
+
+2. Start Apache&trade; OODT:  
    `$DRAT_HOME/bin/oodt start`
 
 ### Automated method
+
 3. Go!  
    `$DRAT_HOME/bin/drat go $HOME/your-repo`  
    This will crawl the repo, index it into Solr, and analyze it with MapReduce RAT.  
@@ -72,10 +77,10 @@ If you would rather run the individual commands yourself, use the manual method:
 4. Index the crawled repo in Apache&trade; SOLR:  
    `$DRAT_HOME/bin/drat index $HOME/your-repo`
 
-5. Fire off the partitioner and mappers:  
+5. Fire off the partitioner and mappers  
    `$DRAT_HOME/bin/drat map`
 
-6. Fire off the reducer:  
+6. Fire off the reducer  
    `$DRAT_HOME/bin/drat reduce`
 
 Please see `$DRAT_HOME/bin/drat` for the specifics of each command. Once finished, shut down OODT by running `$DRAT_HOME/bin/oodt stop`.
@@ -169,4 +174,3 @@ explaining DRAT's motivation, and results of running it on
 part of [my NSF project](https://github.com/chrismattmann/earthcube/).
 The video was made for the 
 [2014 Summer Earth Science Information Partners Federation Meeting](http://commons.esipfed.org/2014SummerMeeting).
- 
