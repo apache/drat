@@ -27,7 +27,7 @@ echo "[vagrant provisioning] Installing drat..."
 mkdir -p /usr/local/drat/deploy
 mkdir -p /usr/local/drat/src
 cd /usr/local/drat/src
-git clone https://github.com/chrismattmann/drat.git .
+git clone -q https://github.com/chrismattmann/drat.git .
 mvn install
 cp -R distribution/target/dms-distribution-0.1-bin.tar.gz ../deploy/
 cd ../deploy/
