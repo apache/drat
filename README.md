@@ -84,8 +84,8 @@ Interacting with DRAT
 ==
 DRAT UIs are accessible at:
 
-http://localhost:8080/opsui/ - main cockpit, Apache OODT OPSUI  
-http://localhost:8080/solr/ - Solr4 catalog  
+http://localhost:8080/opsui/ - main cockpit, [Apache OODT OPSUI](https://cwiki.apache.org/confluence/display/OODT/Quick+Start+for+PCS+OPSUI)  
+http://localhost:8080/solr/ - [Solr4 Admin UI](https://cwiki.apache.org/confluence/display/solr/Overview+of+the+Solr+Admin+UI)
 
 DRAT publishes its analyzed aggregated RAT logs to:
 
