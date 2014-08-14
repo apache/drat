@@ -138,7 +138,7 @@ if [ "$1" = "start" ]; then
   fi
 
 
- WorkflowManager
+# WorkflowManager
 # check if the PID file exists:
   if [ ! -e "../workflow/run/cas.workflow.pid" ]
   then
