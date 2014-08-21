@@ -16,4 +16,4 @@ See the wiki for more information on installing and running DRAT:
 * [Vagrant setup](https://github.com/chrismattmann/drat/wiki/Vagrant)
 
 You can clone the wiki by running  
-`git clone git@github.com:chrismattmann/drat.wiki.git`
+`git clone https://github.com/chrismattmann/drat.wiki.git`
