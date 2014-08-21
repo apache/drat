@@ -13,4 +13,7 @@ See the wiki for more information on installing and running DRAT:
 * [How to run](https://github.com/chrismattmann/drat/wiki/How-to-Run)  
 * [How to re-run](https://github.com/chrismattmann/drat/wiki/Re-running-DRAT)  
 * [How to interact with DRAT](https://github.com/chrismattmann/drat/wiki/Interacting-with-DRAT)  
-* [Vagrant setup](https://github.com/chrismattmann/drat/wiki/Vagrant)  
+* [Vagrant setup](https://github.com/chrismattmann/drat/wiki/Vagrant)
+
+You can clone the wiki by running  
+`git clone git@github.com:chrismattmann/drat.wiki.git`
