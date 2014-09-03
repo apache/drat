@@ -39,7 +39,6 @@
     <metadata key="CshPipeToStdOutAndError" val="[GreaterThan][Ampersand][Exclamation]"/>
 
 
-    <!-- Casi-specific keys -->
     <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
     <metadata key="DateMilis" val="[DATE_TO_MILLIS([ProductionDateTime],UTC_FORMAT,1970-01-01)]"/>
     <metadata key="JobDir" val="[DRAT_HOME]/data/jobs/rat/[DateMilis]"/>
