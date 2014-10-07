@@ -108,7 +108,7 @@ def main(argv):
 
 
    print "Configured SOLR url: ["+solrUrl+"]"
-   mimeTypes = ['x-java-source', 'x-c', 'javascript', 'xml', 'html', 'css', 'x-json', 'x-sh', 'x-fortran', 'csv' 'tab-separated-values', 'x-tex', 'x-asm', 'x-diff']
+   mimeTypes = ['x-java-source', 'x-c', 'javascript', 'xml', 'html', 'css', 'x-json', 'x-sh', 'x-fortran', 'csv' 'tab-separated-values', 'x-tex', 'x-asm', 'x-diff', 'x-python']
    for type in mimeTypes:
        print "Executing RAT for MIME: ["+type+"]: num files per job: ["+str(numFilesPerJob)+"]"
        executeRatJobs(solrUrl, numFilesPerJob, type, workflowUrl, ratTaskId)
