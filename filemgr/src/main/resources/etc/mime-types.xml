@@ -1214,7 +1214,8 @@
     <glob pattern="*.chm"/>
   </mime-type>
   <mime-type type="application/vnd.ms-ims">
-    <glob pattern="*.ims"/>
+
+   <glob pattern="*.ims"/>
   </mime-type>
   <mime-type type="application/vnd.ms-lrm">
     <glob pattern="*.lrm"/>
@@ -3737,7 +3738,6 @@
     <glob pattern="*.pom"/>
     <glob pattern="*.project"/>
     <glob pattern="*.properties"/>
-    <glob pattern="*.py"/>
     <glob pattern="*.rb"/>
     <glob pattern="*.rng"/>
     <glob pattern="*.rnx"/>
@@ -4114,6 +4114,24 @@
   <mime-type type="x-conference/x-cooltalk">
     <_comment>Cooltalk Audio</_comment>
     <glob pattern="*.ice"/>
+  </mime-type>
+
+  <mime-type type="text/x-python">
+    <_comment>Python script</_comment>
+    <magic priority="50">
+      <match value="#!/bin/python" type="string" offset="0"/>
+      <match value="#! /bin/python" type="string" offset="0"/>
+      <match value="eval &quot;exec /bin/python" type="string" offset="0"/>
+      <match value="#!/usr/bin/python" type="string" offset="0"/>
+      <match value="#! /usr/bin/python" type="string" offset="0"/>
+      <match value="eval &quot;exec /usr/bin/python" type="string" offset="0"/>
+      <match value="#!/usr/local/bin/python" type="string" offset="0"/>
+      <match value="#! /usr/local/bin/python" type="string" offset="0"/>
+      <match value="eval &quot;exec /usr/local/bin/python" type="string" offset="0"/>
+      <match value="/bin/env python" type="string" offset="1"/>
+    </magic>
+    <glob pattern="*.py"/>
+    <sub-class-of type="text/plain"/>
   </mime-type>
 
 </mime-info>
