@@ -179,6 +179,8 @@ function reset {
                 rm -rf $DRAT_HOME/solr/drat/data
                 echo "rm -rf $DRAT_HOME/data/archive/*"
                 rm -rf $DRAT_HOME/data/archive/*
+                echo "rm -rf $DRAT_HOME/data/jobs/*"
+                rm -rf $DRAT_HOME/data/jobs/*
                 echo "Please restart OODT with '\$DRAT_HOME/bin/oodt start' if you wish to run another crawl."
             ;;
             [Nn]*)
