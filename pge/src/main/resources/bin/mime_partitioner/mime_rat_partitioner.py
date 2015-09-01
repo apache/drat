@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -108,7 +109,9 @@ def main(argv):
 
 
    print "Configured SOLR url: ["+solrUrl+"]"
-   mimeTypes = ['x-java-source', 'x-c', 'javascript', 'xml', 'html', 'css', 'x-json', 'x-sh', 'x-fortran', 'csv' 'tab-separated-values', 'x-tex', 'x-asm', 'x-diff', 'x-python', 'x-matlab’]
+   mimeTypes = ["x-java-source", "x-c", "javascript", "xml", "html", "css", \
+   "x-json", "x-sh", "x-fortran", "csv" "tab-separated-values", "x-tex", \
+   "x-asm", "x-diff", "x-python", "x-matlab"]
    for type in mimeTypes:
        print "Executing RAT for MIME: ["+type+"]: num files per job: ["+str(numFilesPerJob)+"]"
        executeRatJobs(solrUrl, numFilesPerJob, type, workflowUrl, ratTaskId)
