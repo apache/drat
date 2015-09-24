@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# Print out usage information for this script.
+function print_help {
+    echo "Usage: dratseq [run] in order to analyze multiple repositories."
+    echo "            run <path to list of repository URLs> <path to data directory>  | start OODT and analyze the repositories"
+    echo "            help                  | print this message"
+}
+
+# Check for Environment variables
+function check_env_var {
+    if ! [ -n "$DRAT_HOME" ]; then
+        echo "Environment variable \$DRAT_HOME is not set"
+        exit 1
+    fi
+    if ! [ -n "$JAVA_HOME" ]; then
+        echo "Environment variable \$JAVA_HOME is not set"
+        exit 1
+    fi
+}
+
+# Start OODT
+function oodt_start {
+    ${DRAT_HOME}/bin/oodt start
+    if [ $? -ne 0 ]; then
+        echo "OODT failed to start. Aborting script..."
+        exit 1
+    fi
+    sleep 5
+}
+
+# Stop OODT
+function oodt_stop {
+    ${DRAT_HOME}/bin/oodt stop
+    if [ $? -ne 0 ]; then
+        echo "OODT failed to stop. Aborting script..."
+        exit 1
+    fi
+    sleep 5
+}
+
+# Reset DRAT
+function drat_reset {
+    echo "rm -rf $DRAT_HOME/data/workflow"
+    rm -rf $DRAT_HOME/data/workflow
+    echo "rm -rf $DRAT_HOME/filemgr/catalog"
+    rm -rf $DRAT_HOME/filemgr/catalog
+    echo "rm -rf $DRAT_HOME/solr/drat/data"
+    rm -rf $DRAT_HOME/solr/drat/data
+    echo "rm -rf $DRAT_HOME/data/archive/*"
+    rm -rf $DRAT_HOME/data/archive/*
+    echo "rm -rf $DRAT_HOME/data/jobs/*"
+    rm -rf $DRAT_HOME/data/jobs/*
+    sleep 5
+}
+
+# Run DRAT on multiple repositories
+function run {
+    check_num_args "run" $# 2
+    if ! [ -f "$1" ] || ! [ -d "$2" ]; then
+        echo "Something went wrong. Please check the arguments."
+        print_help
+        exit 1
+    fi
+
+    echo "Verifying environment variables..."
+    check_env_var
+    echo "Environment Variables: OK"
+
+    while read repository
+    do
+        echo "Verifying repository path..."
+        if ! [ -f "$repository" ] && ! [ -d "$repository" ]; then
+            echo "Path '$repository' is not valid. Skipping and moving on..."
+            continue
+        fi
+        echo "Repository Path: OK"
+
+        echo "Starting OODT ..."
+        oodt_start
+        echo "DRAT Started: OK"
+
+        echo "Running DRAT on '$repository' ..."
+        ${DRAT_HOME}/bin/drat go ${repository}
+        if [ $? -ne 0 ]; then
+                echo "DRAT Failed for repository '$repository'"
+        fi
+        sleep 5
+        echo "DRAT Scan Completed: OK"
+
+        echo "Stopping OODT ..."
+        oodt_stop
+        echo "OODT Stopped: OK"
+
+        echo "Copying Data ..."
+        repository_data=$( normalize_path ${repository} )
+        repository_data=${2}${repository_data}
+        mkdir -p ${repository_data}
+        cp -pir ${DRAT_HOME}/data/* ${repository_data}
+        if [ $? -ne 0 ]; then
+                echo "Something went wrong while copying. Aborting script..."
+                exit 1
+        fi
+        echo "Data Copied: OK"
+
+        echo "Reseting DRAT ..."
+        drat_reset
+        echo "DRAT Reset: OK"
+
+    done < $1
+
+    echo "DRAT SCAN COMPLETED!!!"
+}
+
+# Ensure the number of arguments matches the expected number. Expects three arguments:
+# the option name, the actual number of arguments, and the expected number of arguments.
+function check_num_args {
+    if [[ "$2" != "$3" ]]; then
+        echo "Expected $3 args for '$1', but got $2."
+        print_help
+        exit 1
+    fi
+}
+
+# Normalizing Path. Replace '/' with '_' in the repository path
+function normalize_path {
+    tmp=${1:1}
+    tmp=$( sed -r 's/[\/]+/_/g' <<< ${tmp} )
+    ts=$(print_ts)
+    tmp="${tmp}_${ts}"
+    echo "${tmp}"
+}
+
+# Return Current Timestamp
+function print_ts {
+    dt=$(date +%Y%m%d%H%M%S)
+    echo "${dt}"
+}
+
+# Start parsing the arguments.
+case $1 in
+    run)
+        run $2 $3
+    ;;
+    help)
+        print_help
+    ;;
+    *)
+        echo "Unrecognized option: '$1'"
+        print_help
+        exit 1
+    ;;
+esac
