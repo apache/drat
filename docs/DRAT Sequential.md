@@ -1,4 +1,4 @@
-Sequential DRAT (Distributed Release Audit Tool)
+DRAT (Distributed Release Audit Tool) Sequential 
 ---
 
 **What**
