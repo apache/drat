@@ -58,4 +58,11 @@ the License.
         </property>
         <property name="type" value="equal_to" />
     </bean>
+    <bean id="RegExExcludeComparator" lazy-init="true" class="org.apache.oodt.cas.metadata.preconditions.RegExExcludeComparator">
+        <property name="description" value="Check if the current data file has excluded file/directory name" />
+        <property name="compareItem">
+            <value type="java.lang.String">${DRAT_EXCLUDE}</value>
+        </property>
+        <property name="type" value="greater_than" />
+    </bean>
 </beans>
