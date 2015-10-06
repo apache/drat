@@ -23,7 +23,7 @@ function print_help {
     echo "Usage: drat [crawl, index, map, reduce] in order to analyze a repository." 
     echo "       Alternatively, call 'drat go' to run all four automatically."
     echo "       drat"
-    echo "            go <path to repo>     					| start OODT and analyze the repository"
+    echo "            go [--exclude <file/directory name>] <path to repo> 	| start OODT and analyze the repository"
     echo "            crawl [--exclude <file/directory name>] <path to repo>	| crawl the repository files"
     echo "            index <path to repo>  					| index the crawled files"
     echo "            map                   					| fire off the MapReduce mapper"
@@ -150,13 +150,21 @@ function check_services_running {
 # Attempt to automate crawling, indexing, mapping, and reducing. Expects 1 argument: the directory to analyze.
 function go {
     check_services_running
-    check_num_args "go" $# 1
-    echo "Crawling $2"
-    crawl $1
+    if [ $1 = "--exclude" ]; then
+        check_num_args "go" $# 3
+	echo "Crawling $3"
+    	crawl $1 $2 $3
+        PRODUCT_PATH=$3
+    else
+        check_num_args "go" $# 1
+	echo "Crawling $1"
+        crawl $1
+        PRODUCT_PATH=$1
+    fi
     sleep 3
     echo
-    echo "Indexing $2"
-    index $1
+    echo "Indexing $PRODUCT_PATH"
+    index $PRODUCT_PATH
     sleep 3
     echo
     echo "Firing off the MapReduce mapper"
@@ -220,7 +228,7 @@ case $1 in
         reduce
     ;;
     go)
-        go $2
+        go $2 $3 $4
     ;;
     reset)
         reset
