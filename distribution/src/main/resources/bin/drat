@@ -152,15 +152,13 @@ function go {
     check_services_running
     if [ $1 = "--exclude" ]; then
         check_num_args "go" $# 3
-	echo "Crawling $3"
-    	crawl $1 $2 $3
         PRODUCT_PATH=$3
     else
         check_num_args "go" $# 1
-	echo "Crawling $1"
-        crawl $1
         PRODUCT_PATH=$1
     fi
+    echo "Crawling $PRODUCT_PATH"
+    crawl $1 $2 $3
     sleep 3
     echo
     echo "Indexing $PRODUCT_PATH"
