@@ -1,10 +1,12 @@
 package com.company;
 
+import java.io.IOException;
+
 /**
  * Created by stevenfrancus on 10/13/15.
  */
 public interface AbstractOodtWrapper {
-    public boolean run();
-    public boolean reset();
-    public boolean stop();
+    public void run() throws IOException;
+    public void reset() throws IOException;
+    public void stop() throws IOException;
 }
