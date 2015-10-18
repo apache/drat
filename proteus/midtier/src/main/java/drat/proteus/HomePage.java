@@ -31,7 +31,7 @@ public class HomePage extends WebPage {
 					File newFile = new File(UPLOAD_FOLDER
 							+ uploadedFile.getClientFileName());
 
-					System.out.println(newFile.getAbsolutePath());
+					String path = newFile.getAbsolutePath();
 
 					if (newFile.exists()) {
 						newFile.delete();
