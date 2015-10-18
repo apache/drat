@@ -6,11 +6,27 @@
 		<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />
 	</head>
+
+	<style>
+		.feedbackPanelINFO {
+		color: green;
+		}
+		.feedbackPanelERROR {
+		color: red;
+		}
+	</style>
+
 	<body>
 	<div>
-		input:
-		<input type="text" name="input">
-		<button>submit</button>
+		<div wicket:id="feedback"></div> <!-- gives user warnings/messages -->
+
+		<form wicket:id="form">
+			<p>
+				<label>Select file :</label>
+				<input wicket:id="fileUpload" size="40" type="file"/>
+				<input type="submit" value="Upload"/>
+			</p>
+		</form>
 	</div>
 
 
