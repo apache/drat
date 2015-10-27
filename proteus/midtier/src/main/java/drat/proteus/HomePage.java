@@ -8,9 +8,9 @@ import org.apache.wicket.markup.html.WebPage;
 
 import java.io.File;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.IRequestMapper;
 import org.apache.wicket.request.Request;
@@ -18,45 +18,29 @@ import org.apache.wicket.request.Request;
 public class HomePage extends WebPage {
 	private static final long serialVersionUID = 1L;
 
-	private FileUploadField fileUpload;
+	final TextField<String> path = new TextField<String>("path",
+			Model.of("")
+	);
 
 	public HomePage(final PageParameters parameters) {
 		super(parameters);
 
 		add(new FeedbackPanel("feedback"));
 
+		path.setRequired(true);
+
+
 		Form<?> form = new Form<Void>("form") {
 			@Override
 			protected void onSubmit() {
 
-				String path = "";
-
-				final FileUpload uploadedFile = fileUpload.getFileUpload();
-				if (uploadedFile != null) {
-					// write to a new file
-					File newFile = new File(uploadedFile.getClientFileName());
-
-					path = newFile.getAbsolutePath();
-
-					if (newFile.exists()) {
-						newFile.delete();
-					}
-
-					try {
-						newFile.createNewFile();
-						uploadedFile.writeTo(newFile);
-
-						info("saved file: " + uploadedFile.getClientFileName());
-					} catch (Exception e) {
-						throw new IllegalStateException("Error");
-					}
-
-
-				}
+				String pathStr = path.getModelObject();
 
 				PageParameters pageParameters = new PageParameters();
-				pageParameters.add("path", path);
+				pageParameters.add("path", pathStr);
 				setResponsePage(Drat.class, pageParameters);
+			}
+		};
 
 				//throw new RestartResponseException(Drat.class);
 
@@ -75,16 +59,12 @@ public class HomePage extends WebPage {
 				getRequestCycle().setResponsePage(new Drat());
 
 				*/
-			}
-
-		};
+			//}
 
 		// Enable multipart mode (need for uploads file)
 		form.setMultiPart(true);
 
-		form.add(fileUpload = new FileUploadField("fileUpload"));
-
-
+		form.add(path);
 
 		add(form);
 
