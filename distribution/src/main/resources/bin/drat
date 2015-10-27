@@ -55,10 +55,20 @@ function crawl {
 	PRODUCT_PATH=$1
     fi
     pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
+    
+#   Use this command for RegEx Filtering - works with OODT 0.11-SNAPSHOT onwards
+#   ============================================================================
+#   ./crawler_launcher --operation --metPC --metExtractorConfig \
+#   $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
+#   --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory \
+#   --preCondIds RegExExcludeComparator --productPath $PRODUCT_PATH
+#   ===========================================================================
+
     ./crawler_launcher --operation --metPC --metExtractorConfig \
     $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
     --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory \
-    --preCondIds RegExExcludeComparator --productPath $PRODUCT_PATH
+    --productPath $PRODUCT_PATH
+
     popd >> $DRAT_HOME/logs/drat.log 2>&1
     export DRAT_EXCLUDE=""
 }
