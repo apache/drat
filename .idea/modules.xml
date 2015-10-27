@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dms.iml" filepath="$PROJECT_DIR$/dms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crawler/dms-crawler.iml" filepath="$PROJECT_DIR$/crawler/dms-crawler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/dms-distribution.iml" filepath="$PROJECT_DIR$/distribution/dms-distribution.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/dms-extensions.iml" filepath="$PROJECT_DIR$/extensions/dms-extensions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/filemgr/dms-filemgr.iml" filepath="$PROJECT_DIR$/filemgr/dms-filemgr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webapps/fmprod/dms-fmprod.iml" filepath="$PROJECT_DIR$/webapps/fmprod/dms-fmprod.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webapps/opsui/dms-opsui.iml" filepath="$PROJECT_DIR$/webapps/opsui/dms-opsui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pcs/dms-pcs.iml" filepath="$PROJECT_DIR$/pcs/dms-pcs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webapps/pcs-services/dms-pcs-services.iml" filepath="$PROJECT_DIR$/webapps/pcs-services/dms-pcs-services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pge/dms-pge.iml" filepath="$PROJECT_DIR$/pge/dms-pge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rat/dms-rat.iml" filepath="$PROJECT_DIR$/rat/dms-rat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/resmgr/dms-resmgr.iml" filepath="$PROJECT_DIR$/resmgr/dms-resmgr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/solr/dms-solr.iml" filepath="$PROJECT_DIR$/solr/dms-solr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webapps/solr-webapp/dms-solr-webapp.iml" filepath="$PROJECT_DIR$/webapps/solr-webapp/dms-solr-webapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webapps/dms-webapps.iml" filepath="$PROJECT_DIR$/webapps/dms-webapps.iml" />
+      <module fileurl="file://$PROJECT_DIR$/workflow/dms-workflow.iml" filepath="$PROJECT_DIR$/workflow/dms-workflow.iml" />
+    </modules>
+  </component>
+</project>

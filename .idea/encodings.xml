@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/crawler" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/distribution" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/extensions" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/filemgr" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pcs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pge" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rat" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resmgr" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/solr" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/fmprod" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/opsui" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/pcs-services" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/solr-webapp" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/workflow" charset="UTF-8" />
+  </component>
+</project>

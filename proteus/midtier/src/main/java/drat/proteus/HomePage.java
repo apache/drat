@@ -1,5 +1,7 @@
 package drat.proteus;
 
+import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebPage;
@@ -9,6 +11,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.IRequestMapper;
+import org.apache.wicket.request.Request;
 
 public class HomePage extends WebPage {
 	private static final long serialVersionUID = 1L;
@@ -25,13 +30,15 @@ public class HomePage extends WebPage {
 			@Override
 			protected void onSubmit() {
 
+				String path = "";
+
 				final FileUpload uploadedFile = fileUpload.getFileUpload();
 				if (uploadedFile != null) {
 					// write to a new file
 					File newFile = new File(UPLOAD_FOLDER
 							+ uploadedFile.getClientFileName());
 
-					String path = newFile.getAbsolutePath();
+					path = newFile.getAbsolutePath();
 
 					if (newFile.exists()) {
 						newFile.delete();
@@ -45,8 +52,31 @@ public class HomePage extends WebPage {
 					} catch (Exception e) {
 						throw new IllegalStateException("Error");
 					}
+
+
 				}
 
+				PageParameters pageParameters = new PageParameters();
+				pageParameters.add(path, path);
+				setResponsePage(Drat.class, pageParameters);
+
+				//throw new RestartResponseException(Drat.class);
+
+				/*
+
+				IRequestMapper mapper = getApplication().getRootRequestMapper();
+				Request request =
+
+				IRequestHandler handler = mapper.mapRequest(request);
+
+				if (handler != null)
+				{
+					getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
+				}
+
+				getRequestCycle().setResponsePage(new Drat());
+
+				*/
 			}
 
 		};
@@ -56,9 +86,13 @@ public class HomePage extends WebPage {
 
 		form.add(fileUpload = new FileUploadField("fileUpload"));
 
+
+
 		add(form);
 
 		add(new Label("version", getApplication().getFrameworkSettings().getVersion()));
+
+
 
     }
 }

@@ -25,7 +25,7 @@
       <file leaf-file-name="HomePage.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5300353">
+            <state vertical-scroll-proportion="0.20118344">
               <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -39,7 +39,56 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="1812" column="19" selection-start-line="1812" selection-start-column="19" selection-end-line="1812" selection-end-column="19" />
-              <folding />
+              <folding>
+                <element signature="e#0#63369#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#8725#8726#0" expanded="false" />
+                <element signature="e#8762#8763#0" expanded="false" />
+                <element signature="e#11659#11660#0" expanded="false" />
+                <element signature="e#11680#11681#0" expanded="false" />
+                <element signature="e#19662#19663#0" expanded="false" />
+                <element signature="e#19687#19688#0" expanded="false" />
+                <element signature="e#21061#21062#0" expanded="false" />
+                <element signature="e#21079#21080#0" expanded="false" />
+                <element signature="e#21678#21679#0" expanded="false" />
+                <element signature="e#21722#21723#0" expanded="false" />
+                <element signature="e#21932#21933#0" expanded="false" />
+                <element signature="e#21969#21970#0" expanded="false" />
+                <element signature="e#23290#23291#0" expanded="false" />
+                <element signature="e#23335#23336#0" expanded="false" />
+                <element signature="e#26059#26060#0" expanded="false" />
+                <element signature="e#26106#26107#0" expanded="false" />
+                <element signature="e#28877#28878#0" expanded="false" />
+                <element signature="e#28896#28897#0" expanded="false" />
+                <element signature="e#29287#29288#0" expanded="false" />
+                <element signature="e#29305#29306#0" expanded="false" />
+                <element signature="e#33723#33724#0" expanded="false" />
+                <element signature="e#33752#33753#0" expanded="false" />
+                <element signature="e#33895#33896#0" expanded="false" />
+                <element signature="e#33932#33933#0" expanded="false" />
+                <element signature="e#37840#37841#0" expanded="false" />
+                <element signature="e#37879#37880#0" expanded="false" />
+                <element signature="e#41633#41634#0" expanded="false" />
+                <element signature="e#41693#41694#0" expanded="false" />
+                <element signature="e#42604#42605#0" expanded="false" />
+                <element signature="e#42623#42624#0" expanded="false" />
+                <element signature="e#49954#49955#0" expanded="false" />
+                <element signature="e#50027#50028#0" expanded="false" />
+                <element signature="e#50712#50713#0" expanded="false" />
+                <element signature="e#50766#50767#0" expanded="false" />
+                <element signature="e#60361#60362#0" expanded="false" />
+                <element signature="e#60377#60378#0" expanded="false" />
+                <element signature="e#60459#60460#0" expanded="false" />
+                <element signature="e#60501#60502#0" expanded="false" />
+                <element signature="e#60561#60562#0" expanded="false" />
+                <element signature="e#60590#60591#0" expanded="false" />
+                <element signature="e#60670#60671#0" expanded="false" />
+                <element signature="e#60710#60711#0" expanded="false" />
+                <element signature="e#60769#60770#0" expanded="false" />
+                <element signature="e#60805#60806#0" expanded="false" />
+                <element signature="e#60935#60936#0" expanded="false" />
+                <element signature="e#60981#60982#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -47,7 +96,7 @@
       <file leaf-file-name="HomePage.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.647059">
+            <state vertical-scroll-proportion="0.0">
               <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
               <folding />
             </state>
@@ -59,7 +108,11 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#484#485#0" expanded="false" />
+                <element signature="e#512#513#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -90,10 +143,9 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1280" />
     <option name="y" value="23" />
     <option name="width" value="1280" />
-    <option name="height" value="997" />
+    <option name="height" value="773" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -118,6 +170,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -211,7 +264,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -410,6 +462,9 @@
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="b7ccaabc-0d8b-4813-9ceb-5ca1c157c4b7" name="Default" comment="" />
@@ -420,18 +475,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1280" y="23" width="1280" height="997" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1280" height="773" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33081895" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -439,14 +492,24 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33081895" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -462,6 +525,93 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/wicket/wicket-core/7.0.0/wicket-core-7.0.0-sources.jar!/org/apache/wicket/markup/html/form/Form.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1812" column="19" selection-start-line="1812" selection-start-column="19" selection-end-line="1812" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#63369#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#8725#8726#0" expanded="false" />
+            <element signature="e#8762#8763#0" expanded="false" />
+            <element signature="e#11659#11660#0" expanded="false" />
+            <element signature="e#11680#11681#0" expanded="false" />
+            <element signature="e#19662#19663#0" expanded="false" />
+            <element signature="e#19687#19688#0" expanded="false" />
+            <element signature="e#21061#21062#0" expanded="false" />
+            <element signature="e#21079#21080#0" expanded="false" />
+            <element signature="e#21678#21679#0" expanded="false" />
+            <element signature="e#21722#21723#0" expanded="false" />
+            <element signature="e#21932#21933#0" expanded="false" />
+            <element signature="e#21969#21970#0" expanded="false" />
+            <element signature="e#23290#23291#0" expanded="false" />
+            <element signature="e#23335#23336#0" expanded="false" />
+            <element signature="e#26059#26060#0" expanded="false" />
+            <element signature="e#26106#26107#0" expanded="false" />
+            <element signature="e#28877#28878#0" expanded="false" />
+            <element signature="e#28896#28897#0" expanded="false" />
+            <element signature="e#29287#29288#0" expanded="false" />
+            <element signature="e#29305#29306#0" expanded="false" />
+            <element signature="e#33723#33724#0" expanded="false" />
+            <element signature="e#33752#33753#0" expanded="false" />
+            <element signature="e#33895#33896#0" expanded="false" />
+            <element signature="e#33932#33933#0" expanded="false" />
+            <element signature="e#37840#37841#0" expanded="false" />
+            <element signature="e#37879#37880#0" expanded="false" />
+            <element signature="e#41633#41634#0" expanded="false" />
+            <element signature="e#41693#41694#0" expanded="false" />
+            <element signature="e#42604#42605#0" expanded="false" />
+            <element signature="e#42623#42624#0" expanded="false" />
+            <element signature="e#49954#49955#0" expanded="false" />
+            <element signature="e#50027#50028#0" expanded="false" />
+            <element signature="e#50712#50713#0" expanded="false" />
+            <element signature="e#50766#50767#0" expanded="false" />
+            <element signature="e#60361#60362#0" expanded="false" />
+            <element signature="e#60377#60378#0" expanded="false" />
+            <element signature="e#60459#60460#0" expanded="false" />
+            <element signature="e#60501#60502#0" expanded="false" />
+            <element signature="e#60561#60562#0" expanded="false" />
+            <element signature="e#60590#60591#0" expanded="false" />
+            <element signature="e#60670#60671#0" expanded="false" />
+            <element signature="e#60710#60711#0" expanded="false" />
+            <element signature="e#60769#60770#0" expanded="false" />
+            <element signature="e#60805#60806#0" expanded="false" />
+            <element signature="e#60935#60936#0" expanded="false" />
+            <element signature="e#60981#60982#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/WicketApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#484#485#0" expanded="false" />
+            <element signature="e#512#513#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -484,7 +634,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#484#485#0" expanded="false" />
+            <element signature="e#512#513#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -492,7 +646,56 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1812" column="19" selection-start-line="1812" selection-start-column="19" selection-end-line="1812" selection-end-column="19" />
-          <folding />
+          <folding>
+            <element signature="e#0#63369#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#8725#8726#0" expanded="false" />
+            <element signature="e#8762#8763#0" expanded="false" />
+            <element signature="e#11659#11660#0" expanded="false" />
+            <element signature="e#11680#11681#0" expanded="false" />
+            <element signature="e#19662#19663#0" expanded="false" />
+            <element signature="e#19687#19688#0" expanded="false" />
+            <element signature="e#21061#21062#0" expanded="false" />
+            <element signature="e#21079#21080#0" expanded="false" />
+            <element signature="e#21678#21679#0" expanded="false" />
+            <element signature="e#21722#21723#0" expanded="false" />
+            <element signature="e#21932#21933#0" expanded="false" />
+            <element signature="e#21969#21970#0" expanded="false" />
+            <element signature="e#23290#23291#0" expanded="false" />
+            <element signature="e#23335#23336#0" expanded="false" />
+            <element signature="e#26059#26060#0" expanded="false" />
+            <element signature="e#26106#26107#0" expanded="false" />
+            <element signature="e#28877#28878#0" expanded="false" />
+            <element signature="e#28896#28897#0" expanded="false" />
+            <element signature="e#29287#29288#0" expanded="false" />
+            <element signature="e#29305#29306#0" expanded="false" />
+            <element signature="e#33723#33724#0" expanded="false" />
+            <element signature="e#33752#33753#0" expanded="false" />
+            <element signature="e#33895#33896#0" expanded="false" />
+            <element signature="e#33932#33933#0" expanded="false" />
+            <element signature="e#37840#37841#0" expanded="false" />
+            <element signature="e#37879#37880#0" expanded="false" />
+            <element signature="e#41633#41634#0" expanded="false" />
+            <element signature="e#41693#41694#0" expanded="false" />
+            <element signature="e#42604#42605#0" expanded="false" />
+            <element signature="e#42623#42624#0" expanded="false" />
+            <element signature="e#49954#49955#0" expanded="false" />
+            <element signature="e#50027#50028#0" expanded="false" />
+            <element signature="e#50712#50713#0" expanded="false" />
+            <element signature="e#50766#50767#0" expanded="false" />
+            <element signature="e#60361#60362#0" expanded="false" />
+            <element signature="e#60377#60378#0" expanded="false" />
+            <element signature="e#60459#60460#0" expanded="false" />
+            <element signature="e#60501#60502#0" expanded="false" />
+            <element signature="e#60561#60562#0" expanded="false" />
+            <element signature="e#60590#60591#0" expanded="false" />
+            <element signature="e#60670#60671#0" expanded="false" />
+            <element signature="e#60710#60711#0" expanded="false" />
+            <element signature="e#60769#60770#0" expanded="false" />
+            <element signature="e#60805#60806#0" expanded="false" />
+            <element signature="e#60935#60936#0" expanded="false" />
+            <element signature="e#60981#60982#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -500,13 +703,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#484#485#0" expanded="false" />
+            <element signature="e#512#513#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.647059">
+        <state vertical-scroll-proportion="0.0">
           <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
           <folding />
         </state>
@@ -514,7 +721,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/drat/proteus/HomePage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5300353">
+        <state vertical-scroll-proportion="0.20118344">
           <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
