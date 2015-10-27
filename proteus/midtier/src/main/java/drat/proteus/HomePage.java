@@ -19,7 +19,6 @@ public class HomePage extends WebPage {
 	private static final long serialVersionUID = 1L;
 
 	private FileUploadField fileUpload;
-	private String UPLOAD_FOLDER = "C:\\";
 
 	public HomePage(final PageParameters parameters) {
 		super(parameters);
@@ -35,8 +34,7 @@ public class HomePage extends WebPage {
 				final FileUpload uploadedFile = fileUpload.getFileUpload();
 				if (uploadedFile != null) {
 					// write to a new file
-					File newFile = new File(UPLOAD_FOLDER
-							+ uploadedFile.getClientFileName());
+					File newFile = new File(uploadedFile.getClientFileName());
 
 					path = newFile.getAbsolutePath();
 
@@ -57,7 +55,7 @@ public class HomePage extends WebPage {
 				}
 
 				PageParameters pageParameters = new PageParameters();
-				pageParameters.add(path, path);
+				pageParameters.add("path", path);
 				setResponsePage(Drat.class, pageParameters);
 
 				//throw new RestartResponseException(Drat.class);

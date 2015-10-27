@@ -7,6 +7,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 public class Drat extends WebPage {
     public Drat() {
-        add(new Label("message", "DRAT!"));
+        add(new Label("message", getPageParameters()));
     }
 }
