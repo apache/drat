@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="dms-filemgr-0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/filemgr/target/dms-filemgr-0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

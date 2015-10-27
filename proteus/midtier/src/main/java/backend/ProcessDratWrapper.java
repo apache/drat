@@ -11,6 +11,7 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     private boolean isIndexedFlag = false;
     public ProcessDratWrapper() {
         super(DRAT);
+        this.path = "";
     }
     public ProcessDratWrapper(String canonicalPath) {
         this();

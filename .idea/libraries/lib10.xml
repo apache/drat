@@ -1,0 +1,42 @@
+<component name="libraryTable">
+  <library name="lib10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-analyzers-phonetic-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/cglib-nodep-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-queryparser-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-highlighter-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-analyzers-kuromoji-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-grouping-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-queries-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/solr-core-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/commons-codec-1.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/org.restlet-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/wstx-asl-3.2.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/commons-cli-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/org.restlet.ext.servlet-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/solr-solrj-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/zookeeper-3.4.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-analyzers-common-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/commons-lang-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/commons-fileupload-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/spatial4j-0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/guava-13.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-memory-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/slf4j-jdk14-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/jcl-over-slf4j-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-codecs-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-misc-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/httpmime-4.2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/objenesis-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-suggest-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/slf4j-api-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-spatial-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/lucene-core-4.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/commons-io-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/httpcore-4.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/solr/WEB-INF/lib/httpclient-4.2.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -9,7 +9,7 @@ import java.util.Map;
 public class Utils {
     private static Map<String, String> environment = new HashMap<String, String>();
     static {
-        environment.put("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home");
+        environment.put("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home");
         environment.put("DRAT_HOME", FileConstants.buildDratSubdirectoryPath("/deploy"));
         environment.put("GANGLIA_URL", "http://zipper.jpl.nasa.gov/ganglia/");
     }

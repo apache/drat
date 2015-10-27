@@ -42,7 +42,7 @@ class RouteResource {
     }
 }
 public class Routes {
-    private static HashMap<String, RouteResource> routes = new HashMap<>();
+    private static HashMap<String, RouteResource> routes = new HashMap<String, RouteResource>();
     static {
         //use this static block to add new routes for Proteus, and add a comment explaining each route below the add
         add(new RouteResource("/drat", DratMethod.class, ResourceType.SINGLE_RESOURCE));

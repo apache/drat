@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/extensions/src/main/main.iml" filepath="$PROJECT_DIR$/extensions/src/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/proteus/midtier/src/main/main1.iml" filepath="$PROJECT_DIR$/proteus/midtier/src/main/main1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/proteus/backend/Prot2/Prot2.iml" filepath="$PROJECT_DIR$/proteus/backend/Prot2/Prot2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/servlets-examples/WEB-INF/WEB-INF.iml" filepath="$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/servlets-examples/WEB-INF/WEB-INF.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/WEB-INF/WEB-INF1.iml" filepath="$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/WEB-INF/WEB-INF1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/WEB-INF/jsp/jsp.iml" filepath="$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/WEB-INF/jsp/jsp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/proteus/midtier/src/main/main.iml" filepath="$PROJECT_DIR$/proteus/midtier/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/src/main/main1.iml" filepath="$PROJECT_DIR$/extensions/src/main/main1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/plugin/plugin.iml" filepath="$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/jsp-examples/plugin/plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/tomcat-docs/appdev/sample/sample.iml" filepath="$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/tomcat-docs/appdev/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/proteus/midtier/src/test/test.iml" filepath="$PROJECT_DIR$/proteus/midtier/src/test/test.iml" />
     </modules>
   </component>

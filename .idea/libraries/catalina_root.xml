@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="catalina-root">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/ROOT/WEB-INF/lib/catalina-root.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/server/webapps/manager/WEB-INF/lib/commons-fileupload-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/server/webapps/manager/WEB-INF/lib/catalina-manager.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

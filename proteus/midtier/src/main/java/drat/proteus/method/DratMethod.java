@@ -6,8 +6,6 @@ import backend.AbstractOodtWrapper;
 import backend.ProcessDratWrapper;
 import backend.ProcessOodtWrapper;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-
 /**
  * Created by stevenfrancus on 10/20/15.
  */
@@ -21,9 +19,9 @@ public class DratMethod extends WebPage {
     private static final String DIR_PARAMS = "dir";
     private String query;
     private String dratDirectoryPath;
-    public DratMethod(final PageParameters parameters) throws Exception {
-        this.query = parameters.get(Q_PARAMS).toString();
-        this.dratDirectoryPath = parameters.get(DIR_PARAMS).toString();
+    public DratMethod() throws Exception {
+        //this.query = parameters.get(Q_PARAMS).toString();
+       // this.dratDirectoryPath = parameters.get(DIR_PARAMS).toString();
         oodtWrapper = new ProcessOodtWrapper();
         dratWrapper = new ProcessDratWrapper(this.dratDirectoryPath);
         execute();

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="catalina-balancer">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/webapps/balancer/WEB-INF/lib/catalina-balancer.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

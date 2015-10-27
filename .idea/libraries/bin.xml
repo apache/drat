@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="bin">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/bin/commons-logging-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/bin/bootstrap.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/bin/tomcat-juli.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/bin/commons-daemon.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

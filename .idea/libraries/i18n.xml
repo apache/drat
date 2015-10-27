@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="i18n">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/i18n/tomcat-i18n-fr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/i18n/tomcat-i18n-ja.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/i18n/tomcat-i18n-es.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/i18n/tomcat-i18n-en.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

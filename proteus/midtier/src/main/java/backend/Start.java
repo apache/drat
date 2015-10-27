@@ -10,12 +10,16 @@ public class Start {
     private static AbstractDratWrapper dratWrapper = new ProcessDratWrapper();
     private static AbstractOodtWrapper oodtWrapper = new ProcessOodtWrapper();
     public static void main(String[] args) {
-        String dratPath = (args[0] != null) ? args[0] : FileConstants.DRAT_SRC;
+        dratWrapper.setIndexablePath(FileConstants.DRAT_SRC);
         try {
             restartOodt();
+            dratWrapper.go();
         }
         catch(IOException ioe) {
             ioe.printStackTrace();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
     public static void restartOodt() throws IOException {

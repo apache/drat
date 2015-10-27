@@ -2,7 +2,6 @@ package drat.proteus;
 
 import backend.AbstractOodtWrapper;
 import backend.ProcessOodtWrapper;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebPage;
 
@@ -20,8 +19,8 @@ public class HomePage extends WebPage {
 	private FileUploadField fileUpload;
 	private String UPLOAD_FOLDER = "C:\\";
 
-	public HomePage(final PageParameters parameters) {
-		super(parameters);
+	public HomePage() {
+		super();
 
 		add(new FeedbackPanel("feedback"));
 

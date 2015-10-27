@@ -22,9 +22,9 @@ public class RoutingHandler {
     }
     private void createRoute(String route, Class handlerClass, ResourceType resourceType) {
         if(resourceType == ResourceType.SINGLE_RESOURCE) {
-            this.application.mountPackage(route, handlerClass);
+            //this.application.mountPackage(route, handlerClass);
         } else {
-            this.application.mountPage(route, handlerClass);
+            //this.application.mountPage(route, handlerClass);
         }
     }
     private void reloadRoutes() {

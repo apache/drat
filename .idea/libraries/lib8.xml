@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="lib8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/commons-el.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/jasper-compiler-jdt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/jsp-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/naming-resources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/jasper-runtime.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/naming-factory-dbcp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/jasper-compiler.jar!/" />
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/common/lib/naming-factory.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

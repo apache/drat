@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="catalina-host-manager">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distribution/target/apache-tomcat-5.5.23/server/webapps/host-manager/WEB-INF/lib/catalina-host-manager.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

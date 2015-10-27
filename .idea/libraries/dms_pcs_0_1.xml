@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="dms-pcs-0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pcs/target/dms-pcs-0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
