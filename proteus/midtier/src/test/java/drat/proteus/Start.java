@@ -34,11 +34,11 @@ public class Start
 
 		HttpConfiguration http_config = new HttpConfiguration();
 		http_config.setSecureScheme("https");
-		http_config.setSecurePort(8443);
+		http_config.setSecurePort(8444);
 		http_config.setOutputBufferSize(32768);
 
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
-		http.setPort(8080);
+		http.setPort(8081);
 		http.setIdleTimeout(1000 * 60 * 60);
 
 		server.addConnector(http);
