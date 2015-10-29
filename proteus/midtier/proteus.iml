@@ -33,6 +33,16 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-servlet:9.2.11.v20150529" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-security:9.2.11.v20150529" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jetty:jetty-jmx:9.2.11.v20150529" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-rs-client:3.0.0-milestone1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-transports-http:3.0.0-milestone1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.cxf:cxf-core:3.0.0-milestone1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.woodstox:woodstox-core-asl:4.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ws.xmlschema:xmlschema-core:2.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-frontend-jaxrs:3.0.0-milestone1" level="project" />
+    <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-transports-http-hc:2.2.3" level="project" />
   </component>
 </module>
 

@@ -14,6 +14,8 @@ public class Start {
         try {
             restartOodt();
             dratWrapper.go();
+            //Thread.sleep(5000);
+            //dratWrapper.getNumberOfRatTasksRunning();
         }
         catch(IOException ioe) {
             ioe.printStackTrace();

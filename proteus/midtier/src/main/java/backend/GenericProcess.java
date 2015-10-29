@@ -12,19 +12,23 @@ public class GenericProcess {
     public GenericProcess(String path) {
         this.path = path;
     }
-    public void createProcess(String command) throws IOException {
+    public Process createProcess(String command, boolean doPrint) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(this.path, command);
-        spawnProcess(builder);
+        return spawnProcess(builder, doPrint);
     }
-    public void createProcess(String command, String canonicalPath) throws IOException {
+    public Process createProcess(String command, String canonicalPath, boolean doPrint) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(this.path, command, canonicalPath);
-        spawnProcess(builder);
+        return spawnProcess(builder, doPrint);
     }
-    private void spawnProcess(ProcessBuilder builder) throws IOException {
-        String line;
+    private Process spawnProcess(ProcessBuilder builder, boolean doPrint) throws IOException {
         builder.environment().putAll(Utils.getEnvironment());
-        builder.redirectErrorStream(true);
-        Process process = builder.start();
+        Process process = builder.redirectErrorStream(true)
+                .start();
+        if(doPrint) { printProcessOutput(process); }
+        return process;
+    }
+    private void printProcessOutput(Process process) throws IOException {
+        String line = "";
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         while (true) {
             line = reader.readLine();

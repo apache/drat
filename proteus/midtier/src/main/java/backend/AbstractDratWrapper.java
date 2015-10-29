@@ -12,5 +12,6 @@ public interface AbstractDratWrapper {
     public void go() throws Exception;
     public void setIndexablePath(String path);
     public String getIndexablePath();
-    public boolean isRunning();
+    public boolean isRunning() throws Exception;
+    public int getNumberOfRatTasksRunning() throws Exception;
 }

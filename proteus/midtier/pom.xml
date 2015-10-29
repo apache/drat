@@ -46,7 +46,8 @@
 		<log4j.version>2.3</log4j.version>
 		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
+        <cxf.version>2.2.3</cxf.version>
+        <!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>
 	<dependencies>
@@ -109,6 +110,17 @@
 			<version>${jetty9.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.0.0-milestone1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-hc</artifactId>
+            <!-- 2.7.8 or 3.0.0-milestone1 -->
+            <version>${cxf.version}</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<resources>

@@ -11,7 +11,7 @@ public class ProcessOodtWrapper extends GenericProcess implements AbstractOodtWr
         super(OODT);
     }
     public void run() throws IOException {
-        super.createProcess("start");
+        super.createProcess("start", true);
     }
 
     public void reset() throws IOException {
@@ -27,7 +27,7 @@ public class ProcessOodtWrapper extends GenericProcess implements AbstractOodtWr
     }
 
     public void stop() throws IOException {
-        super.createProcess("stop");
+        super.createProcess("stop", true);
     }
 
     public boolean isRunning() {
