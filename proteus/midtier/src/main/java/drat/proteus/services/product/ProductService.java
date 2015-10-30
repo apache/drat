@@ -1,8 +1,8 @@
 package drat.proteus.services.product;
 
+import drat.proteus.services.general.AbstractRestService;
 import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.constants.ProteusEndpointConstants;
-import drat.proteus.services.general.RequestEmitter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by stevenfrancus on 10/28/15.
  */
-public class ProductService extends RequestEmitter {
+public class ProductService extends AbstractRestService {
     private static final String PRODUCT_XML_DEMARCATING_TAG = "item";
     private static final String PRODUCT_TITLE = "title";
     private static final String PRODUCT_DESC = "description";

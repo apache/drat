@@ -1,6 +1,5 @@
 package drat.proteus;
 
-import drat.proteus.method.DratMethod;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebPage;
