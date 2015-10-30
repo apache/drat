@@ -5,8 +5,12 @@ package drat.proteus.services.constants;
  */
 public class ProteusEndpointConstants {
     public static final String BASE_URL = "http://localhost:8080";
-    public static final String RSS_FEED_SERVICE = "/fmprod";
-    public static final String RSS_FEED_PRODUCTS = "viewRecent";
-    public static final String HEALTH_STATUS_SERVICE = "/pcs/services/health";
+    public static final String FILE_MANAGER_PRODUCTS = "viewRecent";
+    public static final String FILE_MANAGER_DATASET = "dataset";
     public static final String HEALTH_STATUS_REPORT = "report";
+
+    public static class Services {
+        public static final String FILE_MANAGER_PRODUCT = "/fmprod";
+        public static final String HEALTH_MONITOR = "/pcs/services/health";
+    }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by stevenfrancus on 10/28/15.
  */
-public class RequestEmitter {
+public abstract class RequestEmitter {
     private static Client client = ClientBuilder.newBuilder().newClient();
     private String serviceName;
     public RequestEmitter(String serviceName) {

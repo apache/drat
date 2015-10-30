@@ -12,6 +12,7 @@ import org.xml.sax.InputSource;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +31,15 @@ public class ProductService extends RequestEmitter {
     private static final String PRODUCT_CAS_SOURCE = "cas:source";
     private static final String PRODUCT_SOURCE = "source";
     private static final String PRODUCT_PARAM = "channel";
+    private DocumentBuilder dbFactory;
     public ProductService() {
-        super(ProteusEndpointConstants.RSS_FEED_SERVICE);
+        super(ProteusEndpointConstants.Services.FILE_MANAGER_PRODUCT);
+        try {
+            dbFactory = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        }
+        catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+        }
     }
     public List<ProductItem> getAllRecentProducts() {
         return getRecentProductsByType("ALL");
@@ -40,27 +48,30 @@ public class ProductService extends RequestEmitter {
     public List<ProductItem> getRecentProductsByType(String type) {
         Map<String, String> params = new HashMap<>();
         params.put(PRODUCT_PARAM, type);
-        Response response = this.createRequest(ProteusEndpointConstants.RSS_FEED_PRODUCTS, params)
+        Response response = this.createRequest(ProteusEndpointConstants.FILE_MANAGER_PRODUCTS, params)
                 .getResponse(HttpMethodEnum.GET);
         List<ProductItem> products = null;
         try {
             products = this.convertProductsFromXml(response.readEntity(String.class));
         }
         catch(Exception ioe) {
-
+            ioe.printStackTrace();
         }
         return products;
     }
 
     private List<ProductItem> convertProductsFromXml(String xmlDoc) throws Exception {
-        DocumentBuilder dbFactory = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xmlDoc));
-        Document doc = dbFactory.parse(is);
+        Document doc = this.dbFactory.parse(is);
         doc.getDocumentElement().normalize();
         NodeList nodes = doc.getElementsByTagName(PRODUCT_XML_DEMARCATING_TAG);
         List<ProductItem> productItems = new ArrayList<ProductItem>();
         for(int i = 0; i < nodes.getLength(); i++) {
-            productItems.add(createProductItem(nodes.item(i)));
+            ProductItem item = createProductItem(nodes.item(i));
+            if(item == null) {
+                throw new IllegalStateException("RSS Product Service API Feed Malformed");
+            }
+            productItems.add(item);
         }
         return productItems;
     }
@@ -76,7 +87,7 @@ public class ProductService extends RequestEmitter {
                     source = getProductXmlContent(element, PRODUCT_SOURCE);
             return new ProductItem(title, description, link, pubDate, casSource, source);
         }
-        return null;
+        return null; //this should never happen
     }
 
     private static String getProductXmlContent(Element el, String tagName) {
@@ -84,9 +95,7 @@ public class ProductService extends RequestEmitter {
     }
 
     public static void main(String[] args) {
-        ProductService productService = new ProductService();
-        List<ProductItem> products = productService.getAllRecentProducts();
-        for(ProductItem item: products) {
+        for(ProductItem item: new ProductService().getAllRecentProducts()) {
             System.out.println(item.toJson());
         }
     }

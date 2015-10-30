@@ -35,7 +35,7 @@ public class HomePage extends WebPage {
 				PageParameters pageParameters = new PageParameters();
 				pageParameters.add("path", path.getModelObject())
                         .add("query", query.getModelObject());
-				setResponsePage(DratMethod.class, pageParameters);
+				//setResponsePage(DratMethod.class, pageParameters);
 			}
 		};
 		form.setMultiPart(true);
