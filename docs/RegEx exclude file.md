@@ -22,5 +22,5 @@ $DRAT_HOME/bin/drat crawl --exclude "\\.svn" "path_to_your_repository"
 ```
 $DRAT_HOME/bin/drat go --exclude "\\.svn" "path_to_your_repository"
 ```
-
+ 
 The above regex will exclude all files which has ".svn" folder in its absolute path.
