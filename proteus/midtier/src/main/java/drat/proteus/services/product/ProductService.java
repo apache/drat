@@ -3,6 +3,7 @@ package drat.proteus.services.product;
 import drat.proteus.services.general.AbstractRestService;
 import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.constants.ProteusEndpointConstants;
+import drat.proteus.services.general.Item;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,16 +42,16 @@ public class ProductService extends AbstractRestService {
             pce.printStackTrace();
         }
     }
-    public List<ProductItem> getAllRecentProducts() {
+    public List<Item> getAllRecentProducts() {
         return getRecentProductsByType("ALL");
     }
 
-    public List<ProductItem> getRecentProductsByType(String type) {
+    public List<Item> getRecentProductsByType(String type) {
         Map<String, String> params = new HashMap<>();
         params.put(PRODUCT_PARAM, type);
         Response response = this.createRequest(ProteusEndpointConstants.FILE_MANAGER_PRODUCTS, params)
                 .getResponse(HttpMethodEnum.GET);
-        List<ProductItem> products = null;
+        List<Item> products = null;
         try {
             products = this.convertProductsFromXml(response.readEntity(String.class));
         }
@@ -60,12 +61,12 @@ public class ProductService extends AbstractRestService {
         return products;
     }
 
-    private List<ProductItem> convertProductsFromXml(String xmlDoc) throws Exception {
+    private List<Item> convertProductsFromXml(String xmlDoc) throws Exception {
         InputSource is = new InputSource(new StringReader(xmlDoc));
         Document doc = this.dbFactory.parse(is);
         doc.getDocumentElement().normalize();
         NodeList nodes = doc.getElementsByTagName(PRODUCT_XML_DEMARCATING_TAG);
-        List<ProductItem> productItems = new ArrayList<ProductItem>();
+        List<Item> productItems = new ArrayList<Item>();
         for(int i = 0; i < nodes.getLength(); i++) {
             ProductItem item = createProductItem(nodes.item(i));
             if(item == null) {
@@ -95,8 +96,8 @@ public class ProductService extends AbstractRestService {
     }
 
     public static void main(String[] args) {
-        for(ProductItem item: new ProductService().getAllRecentProducts()) {
-            System.out.println(item.toJson());
+        for(Item item: new ProductService().getAllRecentProducts()) {
+            System.out.println(((ProductItem)item).toJson());
         }
     }
 }

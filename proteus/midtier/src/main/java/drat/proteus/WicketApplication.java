@@ -1,6 +1,7 @@
 package drat.proteus;
 
 import drat.proteus.rest.DratRestResource;
+import drat.proteus.rest.ServicesRestResource;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.resource.IResource;
@@ -27,8 +28,15 @@ public class WicketApplication extends WebApplication
 	public void init()
 	{
 		super.init();
-        mountResource("/proteus", new ResourceReference("restReference") {
+        mountResource("/proteus/drat", new ResourceReference("restReference") {
             DratRestResource resource = new DratRestResource();
+            @Override
+            public IResource getResource() {
+                return resource;
+            }
+        });
+        mountResource("/proteus/service", new ResourceReference("restReference") {
+            ServicesRestResource resource = new ServicesRestResource();
             @Override
             public IResource getResource() {
                 return resource;

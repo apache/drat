@@ -26,37 +26,31 @@ public class DratRestResource extends GsonRestResource {
         dratWrapper = new ProcessDratWrapper();
     }
 
-    @MethodMapping(value = "/drat", httpMethod = HttpMethod.GET)
-    public List<ProductItem> getDratStatus() {
-        ProductService productService = new ProductService();
-        return productService.getAllRecentProducts();
-    }
-
-    @MethodMapping(value = "/drat/go", httpMethod = HttpMethod.POST)
+    @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
     public void go(@RequestBody DratRequestWrapper body) throws Exception {
         dratStartHelper(body.dirPath);
         dratWrapper.go();
     }
 
-    @MethodMapping(value = "/drat/index", httpMethod = HttpMethod.POST)
+    @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
     public void index(@RequestBody DratRequestWrapper body) throws Exception {
         dratStartHelper(body.dirPath);
         dratWrapper.index();
     }
 
-    @MethodMapping(value = "/drat/crawl", httpMethod = HttpMethod.POST)
+    @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
     public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
         dratStartHelper(body.dirPath);
         dratWrapper.crawl();
     }
 
-    @MethodMapping(value = "/drat/map", httpMethod = HttpMethod.POST)
+    @MethodMapping(value = "/map", httpMethod = HttpMethod.POST)
     public void map() throws Exception {
         startOodtIfNotRunning();
         dratWrapper.map();
     }
 
-    @MethodMapping(value = "/drat/reduce", httpMethod = HttpMethod.POST)
+    @MethodMapping(value = "/reduce", httpMethod = HttpMethod.POST)
     public void reduce() throws Exception {
         startOodtIfNotRunning();
         dratWrapper.reduce();

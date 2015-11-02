@@ -11,7 +11,6 @@ public class FileConstants {
     public static final String DRAT_DEPLOY_DIR = buildDratSubdirectoryPath("/deploy");
     public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
     public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
-    public static final String PROTEUS_PATH = buildDratSubdirectoryPath("/deploy/bin/proteus");
     public static final String DRAT_SRC = buildDratSubdirectoryPath("/src");
 
     private static String getDratDirectory() {

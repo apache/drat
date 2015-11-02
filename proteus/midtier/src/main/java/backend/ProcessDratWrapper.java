@@ -9,7 +9,6 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     private static final String DRAT = FileConstants.DRAT_PATH;
     private String path;
     private boolean isIndexedFlag = false;
-    private ProcessProteusWrapper proteusWrapper = new ProcessProteusWrapper();
     public ProcessDratWrapper() {
         super(DRAT);
         this.path = "";
@@ -21,13 +20,10 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     public void setIndexablePath(String canonicalPath) {
         isIndexedFlag = !this.path.equals(canonicalPath);
         this.path = canonicalPath;
-        proteusWrapper.setRepositoryPath(this.path);
+
     }
     public String getIndexablePath() {
         return this.path;
-    }
-    public int getNumberOfRatTasksRunning() throws IOException {
-        return proteusWrapper.getNumberOfRatTasksRunning();
     }
     public void crawl() throws IOException {
         super.createProcess("crawl", this.path, false);
@@ -57,6 +53,6 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     }
 
     public boolean isRunning() throws Exception {
-        return this.getNumberOfRatTasksRunning() > 0;
+        return true;
     }
 }
