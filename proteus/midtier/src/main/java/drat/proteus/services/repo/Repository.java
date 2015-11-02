@@ -34,7 +34,6 @@ public class Repository {
     private void getRepositoryFileInformation(String dirPath) {
         File f = new File(dirPath);
         File[] files = f.listFiles();
-
         if (files != null)
             for (int i = 0; i < files.length; i++) {
                 numberOfFiles++;

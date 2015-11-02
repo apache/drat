@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class ServicesRestResource extends GsonRestResource {
     private ProductService productService;
-    private Repository repositoryService;
     public ServicesRestResource() {
         productService = new ProductService();
     }

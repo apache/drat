@@ -6,7 +6,6 @@ package drat.proteus.services.constants;
 public class ProteusEndpointConstants {
     public static final String BASE_URL = "http://localhost:8080";
     public static final String FILE_MANAGER_PRODUCTS = "viewRecent";
-    public static final String FILE_MANAGER_DATASET = "dataset";
     public static final String HEALTH_STATUS_REPORT = "report";
 
     public static class Services {
