@@ -2,6 +2,7 @@ package drat.proteus.rest;
 
 import drat.proteus.services.general.Item;
 import drat.proteus.services.general.ServiceStatus;
+import drat.proteus.services.health.HealthMonitorService;
 import drat.proteus.services.product.ProductItem;
 import drat.proteus.services.product.ProductService;
 import drat.proteus.services.repo.Repository;
@@ -10,6 +11,7 @@ import org.wicketstuff.rest.annotations.parameters.RequestParam;
 import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +20,10 @@ import java.util.List;
  */
 public class ServicesRestResource extends GsonRestResource {
     private ProductService productService;
+    private HealthMonitorService healthMonitorService;
     public ServicesRestResource() {
         productService = new ProductService();
+        healthMonitorService = new HealthMonitorService();
     }
     @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
     public List<Item> getRecentProducts() {
@@ -57,18 +61,23 @@ public class ServicesRestResource extends GsonRestResource {
         return new ArrayList<>();
     }
 
-    @MethodMapping(value = "/status", httpMethod = HttpMethod.GET)
-    public ServiceStatus getRunningStatus(@RequestParam("type") String serviceType) {
-        switch(serviceType.toUpperCase()) {
+    @MethodMapping(value = "/status/{type}", httpMethod = HttpMethod.GET)
+    public ServiceStatus getRunningStatus(String type) {
+        switch(type.toUpperCase()) {
             case "DRAT": {
-                return ServiceStatus.getDratStatus();
+                return healthMonitorService.getDratStatus();
             }
             case "OODT": {
-                return ServiceStatus.getOodtStatus();
+                return healthMonitorService.getOodtStatus();
             }
             default: {
                 return null;
             }
         }
+    }
+
+    @MethodMapping(value = "/status/oodt/raw", httpMethod = HttpMethod.GET)
+    public Response getOodtRawHealthStatus() {
+        return healthMonitorService.rerouteHealthMonitorData();
     }
 }

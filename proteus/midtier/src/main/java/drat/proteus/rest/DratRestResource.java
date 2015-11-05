@@ -22,8 +22,8 @@ public class DratRestResource extends GsonRestResource {
     public AbstractOodtWrapper oodtWrapper;
     public AbstractDratWrapper dratWrapper;
     public DratRestResource() {
-        oodtWrapper = new ProcessOodtWrapper();
-        dratWrapper = new ProcessDratWrapper();
+        oodtWrapper = ProcessOodtWrapper.getInstance();
+        dratWrapper = ProcessDratWrapper.getInstance();
     }
 
     @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
@@ -42,6 +42,7 @@ public class DratRestResource extends GsonRestResource {
     public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
         dratStartHelper(body.dirPath);
         dratWrapper.crawl();
+        System.out.println(dratWrapper.getDratStatus().getCurrentState());
     }
 
     @MethodMapping(value = "/map", httpMethod = HttpMethod.POST)
@@ -58,7 +59,7 @@ public class DratRestResource extends GsonRestResource {
 
 
     private void startOodtIfNotRunning() throws IOException {
-        if(!oodtWrapper.isRunning()) {
+        if(false && !oodtWrapper.isRunning()) {
             oodtWrapper.reset();
             oodtWrapper.run();
         }

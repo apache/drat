@@ -6,30 +6,26 @@ import drat.proteus.rest.DratMethodType;
  * Created by stevenfrancus on 11/1/15.
  */
 public class DratServiceStatus extends ServiceStatus {
-    private double currentProgress;
-    private DratMethodType step;
+    public enum State {
+        INDEX, CRAWL, MAP, REDUCE, IDLE, INTERRUPTED
+    }
+    private State currentState;
 
-    private DratServiceStatus() {
-
+    public DratServiceStatus() {
+        super(false); //since the status is a static variable, DRAT hasn't started yet
+        this.currentState = State.IDLE;
     }
 
-    public DratServiceStatus getCurrentStatus() {
-        return new DratServiceStatus();
+    public State getCurrentState() {
+        return currentState;
+    }
+    public void setCurrentState(State status) {
+        this.currentState = status;
+        super.isRunning(currentState != State.IDLE && currentState != State.INTERRUPTED);
     }
 
-    public double getCurrentProgress() {
-        return currentProgress;
-    }
-
-    public void setCurrentProgress(double currentProgress) {
-        this.currentProgress = currentProgress;
-    }
-
-    public DratMethodType getStep() {
-        return step;
-    }
-
-    public void setStep(DratMethodType step) {
-        this.step = step;
+    @Override
+    public boolean isRunning() {
+        return super.isRunning();
     }
 }

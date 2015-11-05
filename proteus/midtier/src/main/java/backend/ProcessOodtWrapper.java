@@ -1,5 +1,7 @@
 package backend;
 
+import drat.proteus.services.health.HealthMonitorService;
+
 import java.io.IOException;
 
 /**
@@ -7,11 +9,19 @@ import java.io.IOException;
  */
 public class ProcessOodtWrapper extends GenericProcess implements AbstractOodtWrapper {
     private static final String OODT = FileConstants.OODT_PATH;
-    public ProcessOodtWrapper() {
-        super(OODT);
+    private HealthMonitorService healthMonitorService;
+    private static ProcessOodtWrapper singletonOodtWrapper = new ProcessOodtWrapper();
+
+    public static ProcessOodtWrapper getInstance() {
+        return singletonOodtWrapper;
     }
+    private ProcessOodtWrapper() {
+        super(OODT);
+        healthMonitorService = new HealthMonitorService();
+    }
+
     public void run() throws IOException {
-        super.createProcess("start", true);
+        super.createProcess("start");
     }
 
     public void reset() throws IOException {
@@ -27,11 +37,11 @@ public class ProcessOodtWrapper extends GenericProcess implements AbstractOodtWr
     }
 
     public void stop() throws IOException {
-        super.createProcess("stop", true);
+        super.createProcess("stop");
     }
 
     public boolean isRunning() {
-        return true;
+        return healthMonitorService.getOodtStatus().isRunning();
     }
 
     private void initResetProcess(String command, String path, String optionalParams) throws IOException {

@@ -7,8 +7,8 @@ import java.io.IOException;
  */
 public class Start {
     static int fileCount = 0;
-    private static AbstractDratWrapper dratWrapper = new ProcessDratWrapper();
-    private static AbstractOodtWrapper oodtWrapper = new ProcessOodtWrapper();
+    private static AbstractDratWrapper dratWrapper = ProcessDratWrapper.getInstance();
+    private static AbstractOodtWrapper oodtWrapper = ProcessOodtWrapper.getInstance();
     public static void main(String[] args) {
         dratWrapper.setIndexablePath(FileConstants.DRAT_SRC);
         try {
