@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
  
   <properties>
-    <tomcat.version>5.5.23</tomcat.version>
+    <tomcat.version>7.0.65</tomcat.version>
   </properties>
 
   <dependencies>
@@ -129,8 +129,8 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>tomcat</groupId>
-                  <artifactId>apache-tomcat</artifactId>
+                  <groupId>org.apache.tomcat</groupId>
+                  <artifactId>tomcat</artifactId>
                   <version>${tomcat.version}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
