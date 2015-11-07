@@ -46,7 +46,7 @@
 		<log4j.version>2.3</log4j.version>
 		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>2.7.9</cxf.version>
+        <cxf.version>3.0.0-milestone1</cxf.version>
         <!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>
@@ -194,20 +194,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>${jetty9.version}</version>
-				<configuration>
-					<systemProperties>
-						<systemProperty>
-							<name>maven.project.build.directory.test-classes</name>
-							<value>${project.build.directory}/test-classes</value>
-						</systemProperty>
-					</systemProperties>
-					<jettyXml>${project.basedir}/src/test/jetty/jetty.xml,${project.basedir}/src/test/jetty/jetty-ssl.xml,${project.basedir}/src/test/jetty/jetty-http.xml,${project.basedir}/src/test/jetty/jetty-https.xml</jettyXml>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
@@ -216,7 +202,29 @@
 					<wtpversion>${wtp.version}</wtpversion>
 				</configuration>
 			</plugin>
-		</plugins>
+        <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+                <port>8181</port>
+                <systemProperties>
+                    <CATALINA_OPTS>-Djava.awt.headless=true -Dfile.encoding=UTF-8
+                                    -server -Xms1536m -Xmx1536m
+                                    -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m
+                                    -XX:MaxPermSize=512m -XX:+DisableExplicitGC
+                                    -XX:+UseConcMarkSweepGC
+                                    -XX:+CMSIncrementalMode
+                                    -XX:+CMSIncrementalPacing
+                                    -XX:CMSIncrementalDutyCycleMin=0
+                                    -XX:-TraceClassUnloading
+                    </CATALINA_OPTS>
+                </systemProperties>
+                <contextFile>${basedir}/src/main/webapp/META-INF/context.xml</contextFile>
+                <path>/${project.build.finalName}</path>  
+            </configuration>        
+        </plugin>
+        </plugins>    
 	</build>
 
 	<repositories>
