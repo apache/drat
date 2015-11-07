@@ -46,7 +46,7 @@
 		<log4j.version>2.3</log4j.version>
 		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>2.2.3</cxf.version>
+        <cxf.version>2.7.9</cxf.version>
         <!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>

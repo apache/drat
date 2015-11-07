@@ -12,8 +12,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class Drat extends WebPage {
-    AbstractOodtWrapper oodtWrapper = new ProcessOodtWrapper();
-    AbstractDratWrapper dratWrapper = new ProcessDratWrapper();
+    AbstractOodtWrapper oodtWrapper = ProcessOodtWrapper.getInstance();
+    AbstractDratWrapper dratWrapper = ProcessDratWrapper.getInstance();;
     public Drat(final PageParameters params) {
         dratWrapper.setIndexablePath(params.get("path").toString());
         try {

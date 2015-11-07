@@ -7,13 +7,13 @@ import java.io.IOException;
  * by Proteus (it had to be separate from ProcessDratWrapper for OOP and bash reasons)
  */
 public class ProcessProteusWrapper extends GenericProcess {
-    private static final String PROTEUS = FileConstants.PROTEUS_PATH;
+    private static final String PROTEUS = FileConstants.buildDratSubdirectoryPath("proteus");
     private String path = "";
     public ProcessProteusWrapper() {
         super(PROTEUS);
     }
     public int getNumberOfRatTasksRunning() throws IOException {
-        super.createProcess("current_pges", true);
+        super.createProcess("current_pges");
         return 0;
     }
     public String getRepositoryPath() {

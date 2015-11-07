@@ -34,8 +34,8 @@ public class DratMethod extends GsonRestResource {
     private static final String DIR_PARAMS = "path";
     private String dratDirectoryPath;
     public DratMethod() {
-        oodtWrapper = new ProcessOodtWrapper();
-        dratWrapper = new ProcessDratWrapper();
+        oodtWrapper = ProcessOodtWrapper.getInstance();
+        dratWrapper = ProcessDratWrapper.getInstance();
     }
 
     @MethodMapping(value = "/drat", httpMethod = HttpMethod.GET)
