@@ -59,4 +59,15 @@ the License.
         <Parameter name="opsui.skin" value="cleanwhite"/>
         <Parameter name="opsui.homepage" value="org.apache.oodt.pcs.opsui.HomePage"/>
 
+  <!-- FM PROD -->
+  <Parameter name="filemgr.rdfconf.file"
+    value="[FMPROD_HOME]/rdfconf.xml" override="false"/>
+
+  <Parameter name="filemgr.rssconf.file"
+    value="[FMPROD_HOME]/rssconf.xml" override="false"/>
+
+  <Parameter name="filemgr.rss-transfer-conf.file"
+    value="[FMPROD_HOME]/rss-transfer-conf.xml" override="false"/>
+
+
 </Context>

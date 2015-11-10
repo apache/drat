@@ -14,6 +14,8 @@ See the wiki for more information on installing and running DRAT:
 * [How to re-run](https://github.com/chrismattmann/drat/wiki/Re-running-DRAT)  
 * [How to interact with DRAT](https://github.com/chrismattmann/drat/wiki/Interacting-with-DRAT)  
 * [Vagrant setup](https://github.com/chrismattmann/drat/wiki/Vagrant)
+* [Excluding files from analysis](https://github.com/chrismattmann/drat/wiki/RegEx-exclude-file)
+* [Running DRAT on multiple repositories](https://github.com/chrismattmann/drat/wiki/DRAT-Sequential)
 
 You can clone the wiki by running  
 `git clone https://github.com/chrismattmann/drat.wiki.git`
