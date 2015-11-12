@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.wicketstuff:wicketstuff-restannotations-json:6.10.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wicketstuff/wicketstuff-restannotations-json/6.10.0/wicketstuff-restannotations-json-6.10.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wicketstuff/wicketstuff-restannotations-json/6.10.0/wicketstuff-restannotations-json-6.10.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wicketstuff/wicketstuff-restannotations-json/6.10.0/wicketstuff-restannotations-json-6.10.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

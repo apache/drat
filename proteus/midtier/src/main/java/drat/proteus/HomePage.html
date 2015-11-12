@@ -1,0 +1,847 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:wicket="http://wicket.apache.org">-->
+	<!--<head>-->
+		<!--<meta charset="utf-8" />-->
+		<!--<title>Proteus</title>-->
+		<!--<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />-->
+		<!--<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />-->
+	<!--</head>-->
+
+	<!--<style>-->
+		<!--.feedbackPanelINFO {-->
+		<!--color: green;-->
+		<!--}-->
+		<!--.feedbackPanelERROR {-->
+		<!--color: red;-->
+		<!--}-->
+	<!--</style>-->
+
+	<!--<body>-->
+	<!--<div>-->
+		<!--<div wicket:id="feedback"></div> &lt;!&ndash; gives user warnings/messages &ndash;&gt;-->
+
+		<!--<form wicket:id="form">-->
+			<!--<p>-->
+				<!--<label>Enter directory:</label>-->
+				<!--<input wicket:id="path" type="text" size="20" />-->
+                <!--<input wicket:id="query" type="text" size="20" />-->
+                <!--<input type="submit" value="Upload"/>-->
+			<!--</p>-->
+		<!--</form>-->
+	<!--</div>-->
+
+
+
+	<!--<br><br><wicket:container wicket:id="version">1.5-SNAPSHOT</wicket:container>.-->
+
+	<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en" ng-app="drat" xmlns:wicket="http://wicket.apache.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PROTEUS</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://rawgit.com/novus/nvd3/v1.1.15-beta/nv.d3.min.css"/>
+	<!--<link rel="stylesheet" type="text/css" href="HomePage.css">-->
+	<style>
+		body {
+		font-family: "Helvetica Neue", "Helvetica Neue Light", Helvetica, Arial, "Lucida Grande", sans-serif;
+		margin: 0 auto; }
+
+		* {
+		font-weight: 300; }
+
+		.button {
+		width: 100%; }
+
+		.default-weight {
+		font-weight: 300; }
+
+		.proteus {
+		font-size: 60px;
+		font-weight: 300;
+		color: lightblue; }
+
+		.h4 {
+		color: #9C9C9C;
+		font-weight: 400;
+		margin-left: 100px;
+		font-size: 20px;
+		color: #cfcfcf; }
+
+		.box {
+		color: #9C9C9C;
+		text-align: center;
+		float: none;
+		display: block;
+		margin: 0 auto;
+		margin-top: 110px;
+		line-height: 1.8; }
+
+		label {
+		margin: 0; }
+
+		.input-height {
+		border-radius: 5px;
+		height: 40px;
+		width: 100%;
+		font-weight: 300; }
+
+		.weight {
+		font-weight: 800; }
+
+		.select-text {
+		font-size: 20px;
+		margin-bottom: 15px; }
+
+		.input-group .form-control:last-child {
+		border-radius: 5px; }
+
+		.input-group .form-control:not(:first-child):not(:last-child) {
+		border-radius: 5px; }
+
+		.grey-font {
+		color: #cfcfcf;
+		font-size: 20px;
+		margin-top: -10px;
+		font-weight: 300; }
+
+		.choose-text {
+		text-align: left;
+		font-style: italic;
+		font-size: 11px; }
+
+		.divider {
+		width: 20px;
+		height: auto;
+		display: inline-block; }
+
+		.down-drop-button {
+		width: 5px;
+		border-radius: 0 5px 5px 0; }
+
+		.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
+		border-radius: 0 5px 5px 0; }
+
+		.caret {
+		position: relative;
+		right: 5px; }
+
+		button.btn.btn-primary.default-weight.run-button {
+		width: 137px;
+		margin-left: 37px;
+		border-radius: 5px; }
+
+		.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+		border-radius: 5px 0px 0px 5px; }
+
+		button.go {
+		font-size: 11px;
+		height: 34px;
+		width: 132px;
+		border-radius: 5px 0 0 5px; }
+
+		.btn-file {
+		position: relative;
+		overflow: hidden; }
+
+		.file-input {
+		line-height: 1.8; }
+
+		.btn-file input[type=file] {
+		position: absolute;
+		top: 0;
+		right: 0;
+		min-width: 100%;
+		min-height: 100%;
+		font-size: 100px;
+		text-align: right;
+		filter: alpha(opacity=0);
+		opacity: 0;
+		background: red;
+		cursor: inherit;
+		display: block; }
+
+		input[readonly] {
+		background-color: white !important;
+		cursor: text !important; }
+
+		.folder-icon {
+		margin-right: 10px; }
+
+		#file-name {
+		text-align: left; }
+
+		.remove-icon {
+		position: relative;
+		top: 6px; }
+
+		.x-link, .x-link:active, .x-link:focus, .x-link:visited {
+		color: #9C9C9C;
+		text-decoration: none; }
+
+		@media screen and (max-width: 480px) {
+		button.btn.btn-primary.default-weight.run-button {
+		width: 100%;
+		border-radius: 5px;
+		margin: 0;
+		margin-top: 10px; }
+
+		button.go {
+		font-size: 11px;
+		height: 34px;
+		width: 91.8%; } }
+		#stats-right-section {
+		margin-top: 20px; }
+
+		.sections {
+		margin-top: 70px;
+		color: #4C4C4C;
+		font-weight: 100; }
+
+		.list-header {
+		border: none;
+		background: #F8F8F8;
+		font-weight: 800;
+		padding: 10px; }
+
+		.scanned-list li {
+		font-size: 11px;
+		height: 25px;
+		line-height: 0.5;
+		border-right: none;
+		border-left: none;
+		border-bottom: 1px solid #E8E8E8; }
+
+		.scanned-list li:nth-child(odd) {
+		background: #E8E8E8; }
+
+		.list-box {
+		height: 360px;
+		overflow-y: auto; }
+
+		#icon {
+		font-size: 22px;
+		margin-right: 10px; }
+
+		.sub-header {
+		position: relative;
+		top: -2px;
+		font-weight: 800; }
+
+		.mid-header-box h1 {
+		font-weight: 100;
+		margin: 0; }
+
+		.fontweight-800 {
+		font-weight: 800; }
+
+		.fontweight-600 {
+		font-weight: 600; }
+
+		.progress {
+		margin-top: 20px; }
+
+		.index-value {
+		font-size: 15px;
+		margin-top: -15px; }
+
+		.pie-chart {
+		margin-top: 10px;
+		margin-left: -15px; }
+
+		.stats-area {
+		margin-top: 20px; }
+
+		.stat-subheader {
+		margin-left: 10px;
+		font-weight: 600; }
+
+		.right {
+		padding-left: 100px; }
+
+		.right-s {
+		padding-left: 20px; }
+
+		.bars {
+		margin-left: 15px;
+		margin-top: 11px; }
+
+		@media screen and (max-width: 1200px) {
+		.logs.list-header {
+		margin: 15px 0 15px 0; }
+
+		.bars {
+		margin-left: -15px; }
+
+		td {
+		clear: both;
+		display: block; }
+
+		.rep-stats-table {
+		width: 100%; }
+		.rep-stats-table td:last-child {
+		width: 50%;
+		margin: 0;
+		float: right;
+		margin-top: -20px; } }
+		.table-responsive {
+		overflow-x: auto; }
+
+		.drat-stats-list {
+		list-style-type: none;
+		font-size: 19px;
+		padding-left: 10px;
+		margin-top: 5px; }
+		.drat-stats-list li {
+		padding: 4.5px; }
+
+		.logs {
+		margin-top: 35px; }
+		.logs p {
+		font-weight: 500; }
+		.logs a {
+		cursor: pointer;
+		text-decoration: none; }
+
+	</style>
+</head>
+<body ng-controller="switch">
+<div class="container" ng-show="!goSecondPage">
+	<div class="header">
+		<h1 class="proteus">PROTEUS</h1>
+		<span class="h4">'A GUI FOR DRAT'</span>
+	</div>
+	<!--ng-controller="switch"-->
+
+	<div class="col-md-5 box">
+		<form action="#">
+			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
+				<div class="input-group">
+					<div class="select-text">Select a repository to audit with <span class="weight">DRAT</span></div>
+					<input ng-model="dirPath"  placeholder="Enter a remote git/svn repository(e.g. Github, ...)" type="text" class="form-control input-height" id="remote_repository">
+					<label class="grey-font" style="font-size: 18px; margin: 5px 0">or</label> <br>
+
+                      <span class="file-input btn btn-block btn-info btn-file default-weight input-height">
+                          <span class="glyphicon glyphicon-folder-open folder-icon"></span>
+                          Choose a directory from your computer
+                          <input type="file"  id="files" name="attachment[]" multiple />
+                          <output id="list"></output>
+                      </span>
+					<div class="name" id="file-name">
+
+					</div>
+
+				</div>
+
+				<div class="btn-group" style="margin-top: 30px; width: 100%; ">
+					<div class="choose-text">Choose a command to run</div>
+
+					<button type="button" class="btn btn-info default-weight go" >Go! (runs all commands)</button>
+					<div class="btn-group">
+						<ul class="dropdown-menu">
+							<li><a href="#">Index</a></li>
+							<li><a href="#">Map</a></li>
+							<li><a href="#">Reduce</a></li>
+							<li><a href="#">Crawl</a></li>
+						</ul>
+						<button type="button" class="btn btn-info dropdown-toggle down-drop-button"
+								data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+
+					</div>
+					<!--ng-click="goToTwo()"-->
+					<button  ng-click="go(dirPath)"  type="button" value="Upload" class="btn btn-primary default-weight run-button">Run DRAT! </button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<!--secondPage-->
+
+<div class="container" ng-show="goSecondPage">
+	<div class="header">
+		<h1 class="proteus">PROTEUS</h1>
+		<span class="h4">'A GUI FOR DRAT'</span>
+	</div>
+
+	<div class="row sections"  ng-cloak>
+
+		<!-- ******* The left section is here ******* -->
+		<div id="left-section" class="col-lg-3">
+			<!-- List of scanned files start here -->
+			<div id="scanned-files" >
+				<!-- List of scanned files are inside of here -->
+				<div class = "list-header"><span class="glyphicon glyphicon-folder-close" id="icon"></span> <span class="sub-header">Files Recently Scanned</span></div>
+				<div class="list-box">
+					<ul class = "list-group scanned-list">
+						<li class = "list-group-item" ng-repeat="files in arrayOfScannedFiles">{{files.listName}}</li>
+
+					</ul>
+				</div>
+
+				</div>
+			<!-- List of scanned files end here -->
+
+			<!-- logs are here -->
+			<div class="logs list-header" >
+				<!-- logs contents are here -->
+			</div>
+			<!-- logs ended above -->
+		</div>
+		<!-- ******* The left section ends here ******* -->
+
+		<!-- ******* The middle section is here ******* -->
+		<div id="middle-section" class="col-lg-6">
+			<!-- progress bar area and header start here -->
+			<div class="mid-header-box">
+				<h1> Please wait while <span class="fontweight-600">DRAT</span> scans your repository...</h1>
+				<uib-progressbar max="max" value="dynamic" type="info">
+					<span style="color:white; white-space:nowrap;"></span>
+				</uib-progressbar>
+				<div class="index-value">
+					<span class="fontweight-600">{{ value }}%</span> is completed on step: <span class="fontweight-600"> {{ steps[0] }} </span>
+				</div>
+				<!-- progress bar area and header are inside of it -->
+			</div>
+			<!-- progress bar and header ends here -->
+
+			<!-- stats area -->
+			<div class="stats-area">
+				<!-- stats are inside of it -->
+				<div class="sub-header">
+					<h4 lass="fontweight-600"> <span class="glyphicon glyphicon-folder-open"> </span> <span class="stat-subheader">Repository Statistics</span></h4>
+				</div>
+				<div class="table-responsive num-stats">
+					<table class="table">
+						<tr>
+							<td>
+								<div class="in-memory-size">
+									<table class="rep-stats-table">
+										<tr>
+											<td class="left fontweight-600"> In-Memory Size </td>
+											<td class="right"> {{ memorySize |  number : fractionSize }} KB</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+							<td class="right-s">
+								<div class="number-of-files">
+									<table class="rep-stats-table">
+										<tr>
+											<td class="left fontweight-600"> Number of files </td>
+											<td class="right"> {{ memorySize |  number : fractionSize }}</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="pie-chart col-lg-6">
+
+					<!-- the tag below shows the pie-chart -->
+					<div class="fontweight-600">MIME Types Breakdown </div>
+					<div style="margih-right: 50px;">
+						<nvd3
+								data="data"
+								id="donutLabelsOutsideExample"
+								options="options"
+								>
+
+						</nvd3>
+					</div>
+					<!-- <nvd3 options="options" data="data"></nvd3> -->
+				</div>
+				<div class="bars col-lg-6">
+					<!-- the tag below shows the pie-chart -->
+					<div class="fontweight-600">License Types Breakdowns </div>
+					<nvd3 options="chartOptions" data="chartData"></nvd3>
+				</div>
+			</div>
+			<!-- stats area ends -->
+		</div>
+		<!-- ******* The middle section ends here ******* -->
+
+
+		<!-- ******* Section for the DRAT statistics. (left-section) ******* -->
+		<div id="stats-right-section" class="col-lg-3">
+			<!-- Contents of the Drat stats are here... -->
+			<div class="drat-stats">
+				<div class = "list-header">
+					<span class="glyphicon glyphicon-stats" id="icon"></span>
+					<span class="sub-header">DRAT Statistics</span>
+				</div>
+				<ul class="drat-stats-list">
+					<li><span class="fontweight-600">{{numOfRatRunning}}</span> RAT Instances <span class="fontweight-600">running</span> </li>
+					<li><span class="fontweight-600">{{numORatFinished}}</span> RAT Instances <span class="fontweight-600">finished</span> </li>
+					<li><span class="fontweight-600">{{numOfRatfailed}}</span> RAT Instances <span class="fontweight-600">failed</span> </li>
+				</ul>
+			</div>
+		</div>
+		<!-- ******* Left-side section ends here... ******* -->
+
+	</div> <!-- .sections div ends -->
+
+</div> <!-- .container div ends -->
+
+
+
+
+
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+<script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+<script src="https://rawgit.com/mbostock/d3/master/d3.min.js"></script>
+<script src="bower_components/nvd3/nv.d3.js"></script>
+<script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
+<!--<script src="HomePage.js"></script>-->
+<script type="text/javascript">
+  $("input[name='attachment[]']").change(function() {
+    var fileName = $(this).val();
+    $("#file-name").html("<strong>Path</strong>: " + fileName + "<a href='' class='x-link'><span class='glyphicon glyphicon-remove pull-right remove-icon'></span></a>");
+    $("#remote_repository").prop('disabled', true);
+  });
+  $(".x-link").click(function() {
+    $("#file-name").html('');
+    $("#remote_repository").removeAttr('disabled');
+  });
+
+
+  angular
+  .module('drat', [])
+  .controller('switch', ['$scope','$http', function($scope, $http){
+      $scope.goToTwo = function() {
+        console.log("goes");
+      }
+      $scope.max = 100;
+
+      $scope.generateProgress = function() {
+        $scope.value = 60;
+
+        $scope.dynamic = $scope.value;
+      }
+      $scope.generateProgress();
+
+      // this indicates which step the app is on
+      $scope.steps = ['Indexing', 'Finished'];
+
+      // scanned list array
+      $scope.arrayOfScannedFiles = [
+        {
+           listId: 1,
+           listName: '/foo/bar/feeb/manife'
+        },
+        {
+          listId: 2,
+          listName: '/foo/src/bar/baz/bim'
+        },
+        {
+          listId: 3,
+          listName: '2/foo/bar/blob/dj.wow'
+        },
+        {
+          listId: 4,
+          listName: '/foo/bar/baz/src.txt'
+        },
+        {
+          listId: 5,
+          listName: '/foo/bar/feeb/manife'
+        },
+        {
+          listId: 6,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 7,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 8,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 9,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 10,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 11,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 12,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 10,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 11,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 12,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 10,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 11,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 12,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 10,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 11,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 12,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 10,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 11,
+          listName: '/foo/bar/baz/keke.ke'
+        },
+        {
+          listId: 12,
+          listName: '/foo/bar/baz/keke.ke'
+        }
+      ]
+
+
+      // this will return true once the log is available
+      $scope.readOrNot = true;
+
+      var colorArray = ['#FFAD5C', '#4093E6', '#FF7373', '#58C658', '#33ADD6', '#B56C6C', '#B8B800'];
+        $scope.colorFunction = function() {
+        	return function(d, i) {
+            	return colorArray[i];
+            };
+      }
+
+      $scope.options = {
+          chart: {
+              type: 'pieChart',
+              height: 300,
+              x: function(d){return d.key;},
+              y: function(d){return d.y;},
+              showLabels: true,
+              transitionDuration: 500,
+              labelThreshold: 0.05,
+              donut: true,
+              donutRatio: 0.30,
+              showLabels: true,
+              color: $scope.colorFunction(),
+              labelType: "percent2digits",
+              donutLabelsOutside: true,
+              legend: {
+                  margin: {
+                      top: 5,
+                      right: 0,
+                      bottom: 0,
+                      left: 0
+                  }
+              }
+          }
+      };
+
+      $scope.data = [
+         {
+             key: "csv",
+             y: 72.5
+         },
+         {
+             key: "json",
+             y: 12
+         },
+         {
+             key: "text",
+             y: 17.5
+         }
+     ];
+
+       $scope.xFunction = function(){
+          return function(d) {
+              return d.key;
+          };
+        }
+      $scope.yFunction = function(){
+        	return function(d){
+        		return d.y;
+        	};
+      }
+
+      $scope.chartOptions = {
+            chart: {
+                type: 'discreteBarChart',
+                height: 250,
+                margin : {
+                    top: 5,
+                    right: 0,
+                    bottom: 15,
+                    left: 0
+                },
+                //xAxisTickFormat: $scope.yAxisFormatFunction(),
+                x: function(d){return d.label;},
+                y: function(d){return d.value;},
+                color: $scope.colorFunction(),
+                showValues: true,
+                valueFormat: function(d){
+                    return d3.format('.2f')(d) + '%';
+                },
+                transitionDuration: 500,
+                xAxis: {
+                    axisLabel: 'X Axis'
+                },
+                yAxis: {
+                    axisLabel: 'Y Axis',
+                    axisLabelDistance: 30
+                }
+            }
+        };
+
+        $scope.chartData = [
+            {
+                key: "Cumulative Return",
+                values: [
+                    {
+                        "label" : "GPL" ,
+                        "value" : 72.5
+                    } ,
+                    {
+                        "label" : "MIT" ,
+                        "value" : 12
+                    } ,
+                    {
+                        "label" : "Restricted" ,
+                        "value" : 17.5
+                    } ,
+                    {
+                        "label" : "Other" ,
+                        "value" : 17.5
+                    } ,
+                ]
+            }
+        ]
+
+        $scope.memorySize = 42641;
+        $scope.numOfRatRunning = 45;
+        $scope.numORatFinished = 24;
+        $scope.numOfRatfailed = 21;
+
+
+
+
+        $scope.go = function(path){
+		$scope.goSecondPage = true;
+         var go = {
+                      method: 'POST',
+                      url: '/proteus/drat/go',
+                      data: {
+                      dirPath: path
+                       }
+                     }
+			//run drat
+          $http(go).then(function(){});
+
+
+			setTimeout(function() {
+				crawlReport();
+               }, 5000);
+
+
+		var getSizePath = '/proteus/service/repository/size?dir=' + path;
+
+		var size = $http({
+                      method: "GET",
+                      url: getSizePath
+                  })
+                  .then(function(response) {
+
+				var dd = response;
+
+           });
+
+
+
+	};
+
+	    function crawlReport(){
+        		var recent = $http({
+                      method: "GET",
+                      url: '/proteus/service/products'
+
+
+                  })
+                  .then(function(response) {
+					//put it on $scope.arrayOfScannedFiles
+
+						   $http({
+							  method: "GET",
+							  url: '/proteus/service/status?type={OODT|DRAT}',
+							  data: {
+							  type: "drat"
+							  }
+						  })
+						  .then(function(response) {
+								// if status is still crawl
+								// crawlReport()
+								// if status is not crawl (index)
+								// indexReport()
+						  });
+
+                 });
+
+        };
+
+        function indexReport(){
+        		var recent = $http({
+                      method: "GET",
+                       url: '/proteus/service/status?type={OODT|DRAT}',
+                       data: {
+							  type: "drat"
+					   }
+                  })
+                  .then(function(response) {
+					//if status is still index
+					//indexReport()
+					//if status is not index (map)
+
+                 });
+        };
+
+
+  }])
+</script>
+
+</body>
+</html>
