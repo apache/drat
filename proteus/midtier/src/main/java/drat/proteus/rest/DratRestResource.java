@@ -28,45 +28,34 @@ public class DratRestResource extends GsonRestResource {
 
     @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
     public void go(@RequestBody DratRequestWrapper body) throws Exception {
-        dratStartHelper(body.dirPath);
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.go();
     }
 
     @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
     public void index(@RequestBody DratRequestWrapper body) throws Exception {
-        dratStartHelper(body.dirPath);
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.index();
     }
 
     @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
     public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-        dratStartHelper(body.dirPath);
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.crawl();
-        System.out.println(dratWrapper.getDratStatus().getCurrentState());
     }
 
     @MethodMapping(value = "/map", httpMethod = HttpMethod.POST)
     public void map() throws Exception {
-        startOodtIfNotRunning();
         dratWrapper.map();
     }
 
     @MethodMapping(value = "/reduce", httpMethod = HttpMethod.POST)
     public void reduce() throws Exception {
-        startOodtIfNotRunning();
         dratWrapper.reduce();
     }
 
-
-    private void startOodtIfNotRunning() throws IOException {
-        if(false && !oodtWrapper.isRunning()) {
-            oodtWrapper.reset();
-            oodtWrapper.run();
-        }
+    @MethodMapping(value = "/reset", httpMethod = HttpMethod.POST)
+    public void reset() throws Exception {
+        dratWrapper.reset();
     }
-    private void dratStartHelper(String dirPath) throws IOException {
-        dratWrapper.setIndexablePath(dirPath);
-        startOodtIfNotRunning();
-    }
-
 }

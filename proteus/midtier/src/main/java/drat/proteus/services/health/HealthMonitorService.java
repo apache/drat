@@ -7,7 +7,6 @@ import drat.proteus.services.general.AbstractRestService;
 import drat.proteus.services.general.DratServiceStatus;
 import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.general.OodtServiceStatus;
-import drat.proteus.services.rat.RatAggregateJobCountItem;
 
 import javax.ws.rs.core.Response;
 import java.net.ConnectException;
@@ -87,8 +86,8 @@ public class HealthMonitorService extends AbstractRestService {
         return getDaemonStatus(DAEMON_WORK_MGR);
     }
 
-    public List<RatAggregateJobCountItem> getAggregateJobCountForTypes(String... types) {
-        List<RatAggregateJobCountItem> aggregateJobCountItems = new ArrayList<>();
+    public List getAggregateJobCountForTypes(String... types) {
+        List aggregateJobCountItems = new ArrayList<>();
         Response response = rerouteHealthMonitorData();
         String jsonBody = response.readEntity(String.class);
         Map<String, Object> rawStatusOutput = new Gson().fromJson(jsonBody, Map.class);
@@ -99,9 +98,9 @@ public class HealthMonitorService extends AbstractRestService {
             String state = (String)jobAggData.get("state");
             for(String type: types) {
                 if(state.equals(type.toUpperCase())) {
-                    Double numJobs = (Double)jobAggData.get("numJobs");
+/*                    Double numJobs = (Double)jobAggData.get("numJobs");
                     RatAggregateJobCountItem jobCountItem = new RatAggregateJobCountItem(type, numJobs.intValue());
-                    aggregateJobCountItems.add(jobCountItem);
+                    aggregateJobCountItems.add(jobCountItem);*/
                     break;
                 }
             }

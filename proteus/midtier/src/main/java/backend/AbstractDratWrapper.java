@@ -12,6 +12,7 @@ public interface AbstractDratWrapper {
     public void map() throws Exception;
     public void reduce() throws Exception;
     public void go() throws Exception;
+    public void reset() throws Exception;
     public void setIndexablePath(String path);
     public String getIndexablePath();
     public DratServiceStatus getDratStatus();

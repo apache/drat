@@ -1,7 +1,10 @@
 package backend;
 
 import drat.proteus.services.general.DratServiceStatus;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProcessDratWrapper extends GenericProcess implements AbstractDratWrapper {
@@ -41,6 +44,18 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
 
     public void reduce() throws IOException, DratWrapperException {
         startAndMonitorDratProcess("reduce");
+    }
+
+    public void reset() throws Exception{
+       for(String dir: Utils.getResetDirectories()) {
+           File file = new File(dir);
+           try {
+               FileUtils.forceDelete(new File(dir));
+           }
+           catch(FileNotFoundException fnfe) {
+                //do nothing, since if the file isn't found... don't need to delete it
+           }
+       }
     }
 
     public void go() throws Exception {

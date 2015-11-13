@@ -51,6 +51,7 @@ public class ProductService extends AbstractRestService {
         params.put(PRODUCT_PARAM, type);
         Response response = this.createRequest(ProteusEndpointConstants.FILE_MANAGER_PRODUCTS, params)
                 .getResponse(HttpMethodEnum.GET);
+        System.out.println(response.getLocation());
         List<Item> products = null;
         try {
             products = this.convertProductsFromXml(response.readEntity(String.class));
@@ -93,11 +94,5 @@ public class ProductService extends AbstractRestService {
 
     private static String getProductXmlContent(Element el, String tagName) {
         return el.getElementsByTagName(tagName).item(0).getTextContent();
-    }
-
-    public static void main(String[] args) {
-        for(Item item: new ProductService().getAllRecentProducts()) {
-            System.out.println(((ProductItem)item).toJson());
-        }
     }
 }

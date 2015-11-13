@@ -9,5 +9,6 @@ import drat.proteus.services.general.AbstractRestService;
 public class RatInstanceService extends AbstractRestService {
     public RatInstanceService() {
         super(ProteusEndpointConstants.Services.RAT_INSTANCES_MONITOR);
+       // XmlRpcWorkf xmlRpcFileManagerClient
     }
 }

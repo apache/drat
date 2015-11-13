@@ -255,7 +255,7 @@
 		$scope.goSecondPage = true;
          var go = {
                       method: 'POST',
-                      url: '/proteus/drat/go',
+                      url: '/drat/go',
                       data: {
                       dirPath: path
                        }
@@ -269,7 +269,7 @@
                }, 5000);
 
 
-		var getSizePath = '/proteus/service/repository/size?dir=' + path;
+		var getSizePath = '/service/repo/size?dir=' + path;
 
 		var size = $http({
                       method: "GET",
@@ -288,7 +288,7 @@
 	    function crawlReport(){
         		var recent = $http({
                       method: "GET",
-                      url: '/proteus/service/products'
+                      url: '/service/products'
 
 
                   })
