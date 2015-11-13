@@ -28,14 +28,14 @@ public class WicketApplication extends WebApplication
 	public void init()
 	{
 		super.init();
-        mountResource("/proteus/drat", new ResourceReference("restReference") {
+        mountResource("/drat", new ResourceReference("restReference") {
             DratRestResource resource = new DratRestResource();
             @Override
             public IResource getResource() {
                 return resource;
             }
         });
-        mountResource("/proteus/service", new ResourceReference("restReference") {
+        mountResource("/service", new ResourceReference("restReference") {
             ServicesRestResource resource = new ServicesRestResource();
             @Override
             public IResource getResource() {

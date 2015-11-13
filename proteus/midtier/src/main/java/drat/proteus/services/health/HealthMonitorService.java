@@ -7,6 +7,7 @@ import drat.proteus.services.general.AbstractRestService;
 import drat.proteus.services.general.DratServiceStatus;
 import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.general.OodtServiceStatus;
+import drat.proteus.services.rat.RatAggregateJobCountItem;
 
 import javax.ws.rs.core.Response;
 import java.net.ConnectException;
@@ -84,6 +85,28 @@ public class HealthMonitorService extends AbstractRestService {
 
     public HealthMonitorItem getWorkflowManagerStatus() throws URISyntaxException {
         return getDaemonStatus(DAEMON_WORK_MGR);
+    }
+
+    public List<RatAggregateJobCountItem> getAggregateJobCountForTypes(String... types) {
+        List<RatAggregateJobCountItem> aggregateJobCountItems = new ArrayList<>();
+        Response response = rerouteHealthMonitorData();
+        String jsonBody = response.readEntity(String.class);
+        Map<String, Object> rawStatusOutput = new Gson().fromJson(jsonBody, Map.class);
+        Map<String, Object> report = (Map<String,Object>)rawStatusOutput.get("report");
+        List<Object> jobHealth = (List<Object>)report.get("jobHealth");
+        for(Object jobsAggregate: jobHealth) {
+            Map<String,Object> jobAggData = (Map<String, Object>)jobsAggregate;
+            String state = (String)jobAggData.get("state");
+            for(String type: types) {
+                if(state.equals(type.toUpperCase())) {
+                    Double numJobs = (Double)jobAggData.get("numJobs");
+                    RatAggregateJobCountItem jobCountItem = new RatAggregateJobCountItem(type, numJobs.intValue());
+                    aggregateJobCountItems.add(jobCountItem);
+                    break;
+                }
+            }
+        }
+        return aggregateJobCountItems;
     }
 
     private HealthMonitorItem getDaemonStatus(String daemonPath) throws URISyntaxException {
