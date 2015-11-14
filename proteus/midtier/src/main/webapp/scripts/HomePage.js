@@ -10,121 +10,22 @@
 
 
   angular
-  .module('drat', [])
+  .module('drat', ['ui.bootstrap'])
   .controller('switch', ['$scope','$http', function($scope, $http){
       $scope.goToTwo = function() {
         console.log("goes");
       }
       $scope.max = 100;
 
-      $scope.generateProgress = function() {
-        $scope.value = 60;
 
-        $scope.dynamic = $scope.value;
-      }
-      $scope.generateProgress();
 
       // this indicates which step the app is on
-      $scope.steps = ['Indexing', 'Finished'];
+      $scope.value = 0;
+      $scope.steps = ['Starting..'];
 
       // scanned list array
       $scope.arrayOfScannedFiles = [
-        {
-           listId: 1,
-           listName: '/foo/bar/feeb/manife'
-        },
-        {
-          listId: 2,
-          listName: '/foo/src/bar/baz/bim'
-        },
-        {
-          listId: 3,
-          listName: '2/foo/bar/blob/dj.wow'
-        },
-        {
-          listId: 4,
-          listName: '/foo/bar/baz/src.txt'
-        },
-        {
-          listId: 5,
-          listName: '/foo/bar/feeb/manife'
-        },
-        {
-          listId: 6,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 7,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 8,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 9,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 10,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 11,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 12,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 10,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 11,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 12,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 10,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 11,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 12,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 10,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 11,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 12,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 10,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 11,
-          listName: '/foo/bar/baz/keke.ke'
-        },
-        {
-          listId: 12,
-          listName: '/foo/bar/baz/keke.ke'
-        }
+
       ]
 
 
@@ -243,10 +144,11 @@
             }
         ]
 
-        $scope.memorySize = 42641;
-        $scope.numOfRatRunning = 45;
-        $scope.numORatFinished = 24;
-        $scope.numOfRatfailed = 21;
+        $scope.memorySize = 0;
+        $scope.numberOfFiles = 0;
+        $scope.numOfRatRunning = 0;
+        $scope.numORatFinished = 0;
+        $scope.numOfRatfailed = 0;
 
 
 
@@ -265,69 +167,106 @@
 
 
 			setTimeout(function() {
-				crawlReport();
-               }, 5000);
+				getHealthMonitorService();
+				checkingDratStatus();
+               }, 3000);
 
 
-		var getSizePath = '/service/repo/size?dir=' + path;
+        var checkingDrat;
 
-		var size = $http({
-                      method: "GET",
-                      url: getSizePath
-                  })
-                  .then(function(response) {
-
-				var dd = response;
-
-           });
-
-
+        var sizePayload = $http({
+            method: "GET",
+            url: "/service/repo/size?dir=" + path
+        }).success(function(response) {
+            $scope.memorySize = response.memorySize;
+            $scope.numberOfFiles = response.numberOfFiles;
+        });
 
 	};
 
-	    function crawlReport(){
+	    function getHealthMonitorService(){
         		var recent = $http({
                       method: "GET",
-                      url: '/service/products'
-
-
+                      url: '/service/status/oodt/raw'
                   })
                   .then(function(response) {
-					//put it on $scope.arrayOfScannedFiles
-
-						   $http({
-							  method: "GET",
-							  url: '/proteus/service/status?type={OODT|DRAT}',
-							  data: {
-							  type: "drat"
-							  }
-						  })
-						  .then(function(response) {
-								// if status is still crawl
-								// crawlReport()
-								// if status is not crawl (index)
-								// indexReport()
-						  });
-
+                        var temp = response.data.report.jobHealth;
+                                               for(var i = 0; i < temp.length; i++){
+                                                  if(temp[i].state == "PGE EXEC"){
+                                                   $scope.numOfRatRunning = temp[i].numJobs;
+                                                  }else if(temp[i].state == "FINISHED"){
+                                                   $scope.numORatFinished = temp[i].numJobs;
+                                                  }
+                                               }
                  });
 
         };
+        function checkingDratStatus(){
+                 checkingDrat =  setInterval(function() {
+                       getDratStatus();
+                       getHealthMonitorService();
+                       if($scope.steps[0] == "Crawling"){
+                          getRecentIngestedFiles();
+                       }
+                 }, 500);
 
-        function indexReport(){
-        		var recent = $http({
-                      method: "GET",
-                       url: '/proteus/service/status?type={OODT|DRAT}',
-                       data: {
-							  type: "drat"
-					   }
-                  })
-                  .then(function(response) {
-					//if status is still index
-					//indexReport()
-					//if status is not index (map)
+        };
+        function getDratStatus(){
 
-                 });
+
+                                                var recent = $http({
+                                                      method: "GET",
+                                                      url: '/service/status/drat'
+                                                   })
+                                           .then(function(response) {
+                                           var res = response
+
+                                           if(response.data.currentState == "CRAWL"){
+                                                  $scope.value = 0;
+                                                  $scope.steps[0] = "Crawling";
+                                           }else if(response.data.currentState == "INDEX"){
+                                                     $scope.value = 25;
+                                                     $scope.steps[0] = "Indexing";
+                                           }else if(response.data.currentState == "MAP"){
+                                                     $scope.value = 50;
+                                                     $scope.steps[0] = "Mapping";
+                                         }else if(response.data.currentState == "REDUCE"){
+                                                     $scope.value = 75;
+                                                     $scope.steps[0] = "Reducing";
+                                                     $scope.reduced = true;
+                                         }else if(response.data.currentState == "IDLE"){
+                                                   if($scope.reduced){
+                                                      $scope.value = 100;
+                                                      $scope.steps[0] = "Completed";
+                                                   }
+
+                                            }
+                                            $scope.dynamic = $scope.value;
+
+                                                            //if IDLE
+                                           //  clearInterval(checkingDrat);
+                                            });
+
+
+
         };
 
+        function getRecentIngestedFiles(){
+                      var recent = $http({
+                                method: "GET",
+                                 url: '/service/products'
+                                })
+                            .then(function(response) {
+                                $scope.arrayOfScannedFiles = [];
+                                for(var i = 0 ; i < response.data.length; i ++){
+                                    var payload = {
+                                        listId: i,
+                                        listName: response.data[i].title
+                                    };
+                                    $scope.arrayOfScannedFiles[i] = payload;
+                                }
+                            });
 
+
+        };
   }])
