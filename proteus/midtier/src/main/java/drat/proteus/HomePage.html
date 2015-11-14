@@ -66,7 +66,7 @@
                       <span class="file-input btn btn-block btn-info btn-file default-weight input-height">
                           <span class="glyphicon glyphicon-folder-open folder-icon"></span>
                           Choose a directory from your computer
-                          <input type="file"  id="files" name="attachment[]" multiple />
+                          <input type="file"  id="files" name="attachment[]" accept=".zip" multiple />
                           <output id="list"></output>
                       </span>
 					<div class="name" id="file-name">
@@ -93,7 +93,7 @@
 
 					</div>
 					<!--ng-click="goToTwo()"-->
-					<button  ng-click="go(dirPath)"  type="button" value="Upload" class="btn btn-primary default-weight run-button">Run DRAT! </button>
+					<button  ng-click="runDrat(cmd,file)"  type="button" value="Upload" class="btn btn-primary default-weight run-button">Run DRAT! </button>
 				</div>
 			</div>
 		</form>
@@ -219,7 +219,6 @@
 				<ul class="drat-stats-list">
 					<li><span class="fontweight-600">{{numOfRatRunning}}</span> RAT Instances <span class="fontweight-600">running</span> </li>
 					<li><span class="fontweight-600">{{numORatFinished}}</span> RAT Instances <span class="fontweight-600">finished</span> </li>
-					<li><span class="fontweight-600">{{numOfRatfailed}}</span> RAT Instances <span class="fontweight-600">failed</span> </li>
 				</ul>
 			</div>
 		</div>
