@@ -16,6 +16,13 @@
 -->
 <cas:conditions xmlns:cas="http://oodt.jpl.nasa.gov/1.0/cas">
 <!--
-  TODO: Add some examples
+   An example to check for prerequisite jobs while running DRAT using OODT Resource Manager
+
+   <condition id="urn:drat:CheckForPrerequisiteJob" name="Prerequisite Job Check" class="org.apache.oodt.cas.workflow.examples.ResmgrJobCondition">
+        <configuration>
+            <property name="JOBS" value="urn:drat:MimePartitioner,urn:drat:RatCodeAudit"/>
+	    <property name="RESMGR_URL" value="[RESMGR_URL]"/>
+        </configuration>
+    </condition>
 -->
 </cas:conditions>

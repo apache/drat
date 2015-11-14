@@ -55,9 +55,15 @@
 
   <task id="urn:drat:RatAggregator" name="RatAggregator" 
     class="org.apache.oodt.cas.pge.StdPGETaskInstance">
-        <conditions/>
+	<!--
+	An example to check for prerequisite jobs while running DRAT using OODT Resource Manager
+        <conditions>
+		<condition id="urn:drat:CheckForPrerequisiteJob" />
+	</conditions>
+	-->
+
         <configuration>
-          <property name="PGETask_Name" value="MimePartitioner"/>
+          <property name="PGETask_Name" value="RatAggregator"/>
           <property name="PGETask_ConfigFilePath" value="[DRAT_HOME]/pge/policy/PgeConfig_RatAggregator.xml" envReplace="true"/>
           <property name="PGETask_DumpMetadata" value="true"/>
           <property name="PCS_WorkflowManagerUrl" value="[WORKFLOW_URL]" envReplace="true" />
