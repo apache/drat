@@ -10,7 +10,7 @@
 
 
   angular
-  .module('drat', ['ui.bootstrap'])
+  .module('drat', ['ngAnimate', 'ui.bootstrap', 'nvd3', 'nvd3ChartDirectives'])
   .controller('switch', ['$scope','$http', function($scope, $http){
       $scope.goToTwo = function() {
         console.log("goes");
@@ -67,17 +67,46 @@
 
       $scope.data = [
          {
-             key: "csv",
-             y: 72.5
+             key: "application",
+             y:0
          },
          {
-             key: "json",
-             y: 12
+             key: "application/java-archive",
+             y: 0
          },
          {
+             key: "java-archive",
+             y: 0
+         },
+         {
+             key: "html",
+              y: 0
+                  },
+          {
+             key: "text/html",
+              y: 0
+           },
+           {
              key: "text",
-             y: 17.5
+             y: 0
+           },
+           {
+             key: "image",
+             y: 0
+           },
+           {
+              key: "application/java-vm",
+             y: 0
+           },
+           {
+              key: "java-vm",
+              y: 0
+          },
+          {
+               key: "image/png",
+               y: 0
          }
+
      ];
 
        $scope.xFunction = function(){
@@ -205,51 +234,81 @@
                  checkingDrat =  setInterval(function() {
                        getDratStatus();
                        getHealthMonitorService();
+                       getMIMEType();
                        if($scope.steps[0] == "Crawling"){
                           getRecentIngestedFiles();
                        }
                  }, 500);
 
         };
+
+        function getMIMEType(){
+                         var recent = $http({
+                                method: "GET",
+                                url: '/service/repo/breakdown/mime'
+                                })
+                               .then(function(response) {
+                                $scope.data = [];
+                                for(var i = 0 ; i < response.data.length ; i++){
+                                     if(response.data[i].numberOfFiles != null){
+                                      var payload = {
+                                            key: response.data[i].mimeType,
+                                            y: response.data[i].numberOfFiles,
+                                            };
+                                            $scope.data[i] = payload;
+                                            
+                                     }
+
+                                  }
+
+
+
+
+});
+
+
+
+                          };
         function getDratStatus(){
 
 
-                                                var recent = $http({
-                                                      method: "GET",
-                                                      url: '/service/status/drat'
-                                                   })
-                                           .then(function(response) {
-                                           var res = response
+                                                          var recent = $http({
+                                                                method: "GET",
+                                                                url: '/service/status/drat'
+                                                             })
+                                                     .then(function(response) {
+                                                     var res = response
 
-                                           if(response.data.currentState == "CRAWL"){
-                                                  $scope.value = 0;
-                                                  $scope.steps[0] = "Crawling";
-                                           }else if(response.data.currentState == "INDEX"){
-                                                     $scope.value = 25;
-                                                     $scope.steps[0] = "Indexing";
-                                           }else if(response.data.currentState == "MAP"){
-                                                     $scope.value = 50;
-                                                     $scope.steps[0] = "Mapping";
-                                         }else if(response.data.currentState == "REDUCE"){
-                                                     $scope.value = 75;
-                                                     $scope.steps[0] = "Reducing";
-                                                     $scope.reduced = true;
-                                         }else if(response.data.currentState == "IDLE"){
-                                                   if($scope.reduced){
-                                                      $scope.value = 100;
-                                                      $scope.steps[0] = "Completed";
-                                                   }
+                                                     if(response.data.currentState == "CRAWL"){
+                                                            $scope.value = 0;
+                                                            $scope.steps[0] = "Crawling";
+                                                     }else if(response.data.currentState == "INDEX"){
+                                                               $scope.value = 25;
+                                                               $scope.steps[0] = "Indexing";
+                                                     }else if(response.data.currentState == "MAP"){
+                                                               $scope.value = 50;
+                                                               $scope.steps[0] = "Mapping";
+                                                   }else if(response.data.currentState == "REDUCE"){
+                                                               $scope.value = 75;
+                                                               $scope.steps[0] = "Reducing";
+                                                               $scope.reduced = true;
+                                                   }else if(response.data.currentState == "IDLE"){
+                                                             if($scope.reduced){
+                                                                $scope.value = 100;
+                                                                $scope.steps[0] = "Completed";
+                                                             }
 
-                                            }
-                                            $scope.dynamic = $scope.value;
+                                                      }
+                                                      $scope.dynamic = $scope.value;
 
-                                                            //if IDLE
-                                           //  clearInterval(checkingDrat);
-                                            });
+                                                                      //if IDLE
+                                                     //  clearInterval(checkingDrat);
+                                                      });
 
 
 
-        };
+                  };
+
 
         function getRecentIngestedFiles(){
                       var recent = $http({

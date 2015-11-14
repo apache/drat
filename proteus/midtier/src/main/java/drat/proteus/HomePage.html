@@ -109,6 +109,7 @@
 		<span class="h4">'A GUI FOR DRAT'</span>
 	</div>
 
+
 	<div class="row sections"  ng-cloak>
 
 		<!-- ******* The left section is here ******* -->
@@ -188,6 +189,7 @@
 					<div class="fontweight-600">MIME Types Breakdown </div>
 					<div style="margih-right: 50px;">
 						<nvd3
+								transform="translate(20,50) rotate(40) scale(7)"
 								data="data"
 								id="donutLabelsOutsideExample"
 								options="options"
@@ -200,7 +202,7 @@
 				<div class="bars col-lg-6">
 					<!-- the tag below shows the pie-chart -->
 					<div class="fontweight-600">License Types Breakdowns </div>
-					<nvd3 options="chartOptions" data="chartData"></nvd3>
+					<nvd3 ng-if="goSecondPage" options="chartOptions" data="chartData"></nvd3>
 				</div>
 			</div>
 			<!-- stats area ends -->
@@ -232,6 +234,7 @@
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
 <script src="https://rawgit.com/mbostock/d3/master/d3.min.js"></script>
