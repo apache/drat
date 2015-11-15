@@ -4,6 +4,7 @@ import backend.ProcessDratWrapper;
 import com.google.gson.Gson;
 import drat.proteus.services.constants.ProteusEndpointConstants;
 import drat.proteus.services.general.*;
+import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
@@ -36,7 +37,7 @@ public class HealthMonitorService extends AbstractRestService {
         Response response;
         try {
             response = this.createRequest(ProteusEndpointConstants.HEALTH_STATUS_REPORT)
-                    .getResponse(HttpMethodEnum.GET);
+                    .getResponse(HttpMethod.GET);
         }
         catch(Exception e) {
             response = Response.serverError().build();
@@ -78,7 +79,7 @@ public class HealthMonitorService extends AbstractRestService {
     }
 
     private Item getDaemonStatus(String daemonPath) throws URISyntaxException {
-        Response response = this.createRequest(daemonPath).getResponse(HttpMethodEnum.GET);
+        Response response = this.createRequest(daemonPath).getResponse(HttpMethod.GET);
         String jsonBody = response.readEntity(String.class);
         Map<String, Object> daemonStatus = new Gson().fromJson(jsonBody, Map.class);
         return parseJsonMap(daemonStatus);

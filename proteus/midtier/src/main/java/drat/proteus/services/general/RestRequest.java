@@ -1,6 +1,7 @@
 package drat.proteus.services.general;
 
 import drat.proteus.services.constants.ProteusEndpointConstants;
+import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
@@ -29,7 +30,7 @@ public class RestRequest {
        return this;
     }
 
-    public Response getResponse(HttpMethodEnum method) {
+    public Response getResponse(HttpMethod method) {
         Invocation.Builder builder = this.target.request();
         switch(method) {
             case GET: {
@@ -46,7 +47,7 @@ public class RestRequest {
             }
         }
     }
-    public Response getResponse(HttpMethodEnum method, Entity entity) {
+    public Response getResponse(HttpMethod method, Entity entity) {
         Invocation.Builder builder = target.request();
         switch(method) {
             case PUT: {

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import drat.proteus.services.general.Item;
 import drat.proteus.services.general.ServiceStatus;
 import drat.proteus.services.health.HealthMonitorService;
-import drat.proteus.services.licensetype.LicenseTypeBreakdownService;
+import drat.proteus.services.licenses.RatInstanceService;
 import drat.proteus.services.mimetype.MimeTypeBreakdownService;
 import drat.proteus.services.product.RecentProductService;
 import drat.proteus.services.repo.Repository;
@@ -19,13 +19,20 @@ public class ServicesRestResource extends GsonRestResource {
     private RecentProductService productService;
     private HealthMonitorService healthMonitorService;
     private MimeTypeBreakdownService mimeTypeBreakdownService;
-    private LicenseTypeBreakdownService licenseTypeBreakdownService;
+    private RatInstanceService ratInstanceService;
     public ServicesRestResource() {
         productService = new RecentProductService();
         healthMonitorService = new HealthMonitorService();
         mimeTypeBreakdownService = new MimeTypeBreakdownService();
-        licenseTypeBreakdownService = new LicenseTypeBreakdownService();
+        ratInstanceService = new RatInstanceService();
     }
+
+    @MethodMapping(value = "/repo/licenses/unapproved", httpMethod = HttpMethod.GET)
+    public List<Item> getUnapprovedLicensesFromRatInstances() {
+        ratInstanceService.getRatLogs();
+        return ratInstanceService.getUnapprovedLicenses();
+    }
+
     @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
     public List<Item> getRecentProducts() {
         return productService.getAllRecentProducts();
@@ -41,7 +48,8 @@ public class ServicesRestResource extends GsonRestResource {
 
     @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
     public List<Item> getRepoLicenseTypeBreakdown() {
-        return licenseTypeBreakdownService.getLicenseTypes();
+        ratInstanceService.getRatLogs();
+        return ratInstanceService.getUnapprovedLicenses();
     }
 
     @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)

@@ -1,13 +1,13 @@
 package drat.proteus.services.product;
 
 import drat.proteus.services.general.AbstractRestService;
-import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.constants.ProteusEndpointConstants;
 import drat.proteus.services.general.Item;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.wicketstuff.rest.utils.http.HttpMethod;
 import org.xml.sax.InputSource;
 
 import javax.ws.rs.core.Response;
@@ -56,9 +56,13 @@ public class BaseProductService extends AbstractRestService {
 
     private List<Item> generateProducts(Map<String, String> params) {
         Response response = this.createRequest(ProteusEndpointConstants.FILE_MANAGER_PRODUCTS, params)
-                .getResponse(HttpMethodEnum.GET);
+                .getResponse(HttpMethod.GET);
         List<Item> products = null;
         try {
+            String responseBody = response.readEntity(String.class);
+            if(responseBody.length() == 0) { //handles the case when there's no products to analyze
+                return new ArrayList<Item>();
+            }
             products = this.convertProductsFromXml(response.readEntity(String.class));
         }
         catch(Exception ioe) {
@@ -75,7 +79,6 @@ public class BaseProductService extends AbstractRestService {
         List<Item> productItems = new ArrayList<Item>();
         for(int i = 0; i < nodes.getLength(); i++) {
             ProductItem item = createProductItem(nodes.item(i));
-            System.out.println();
             if(item == null) {
                 throw new IllegalStateException("RSS Product Service API Feed Malformed");
             }

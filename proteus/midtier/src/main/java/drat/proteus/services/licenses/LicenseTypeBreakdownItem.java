@@ -1,4 +1,4 @@
-package drat.proteus.services.licensetype;
+package drat.proteus.services.licenses;
 
 import drat.proteus.services.breakdown.BreakdownItem;
 

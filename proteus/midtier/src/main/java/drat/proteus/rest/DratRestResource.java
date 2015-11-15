@@ -55,4 +55,9 @@ public class DratRestResource extends GsonRestResource {
     public void reset() throws Exception {
         dratWrapper.reset();
     }
+
+    @MethodMapping(value = "/log", httpMethod = HttpMethod.GET)
+    public String getProcessLog() {
+        return "";
+    }
 }

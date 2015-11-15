@@ -1,4 +1,4 @@
-package drat.proteus.services.licensetype;
+package drat.proteus.services.licenses;
 
 import drat.proteus.services.general.Item;
 import drat.proteus.services.product.BaseProductService;
@@ -13,22 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LicenseTypeBreakdownService extends BaseProductService {
+public class RatInstanceService extends BaseProductService {
     private static final String CHANNEL = "RatLog";
     private static final String TYPE_ID = "urn:drat:RatLog";
-
+    private RatAggregator aggregator;
     private static Client client = ClientBuilder.newBuilder().newClient();
-    public LicenseTypeBreakdownService() {
-
+    public RatInstanceService() {
+        aggregator = new RatAggregator();
     }
 
-    public List<Item> getLicenseTypes() {
+    public void getRatLogs() {
+        aggregator.clear();
         List<Item> ratLogProducts = super.getRecentProductsByChannelAndTypeId(CHANNEL, TYPE_ID);
-        RatAggregator aggregator = new RatAggregator();
         for(Item item: ratLogProducts) {
             RatLog log = getLicenseTypesFromRatLog(((ProductItem) item).getLink());
             aggregator.add(log);
         }
+    }
+
+    public List<Item> getLicenseTypeBreakdown() {
         Map<String, Integer> aggregate = aggregator.getAggregatedLicenseTotal();
         List<Item> breakdownItems = new ArrayList<>();
         int totalLicensesInRepo = 0;
@@ -41,6 +44,10 @@ public class LicenseTypeBreakdownService extends BaseProductService {
             breakdownItems.add(breakdownItem);
         }
         return breakdownItems;
+    }
+
+    public List<Item> getUnapprovedLicenses() {
+        return aggregator.getRatUnapprovedLicenses();
     }
 
     private RatLog getLicenseTypesFromRatLog(String ratLogLink) {

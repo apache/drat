@@ -3,8 +3,8 @@ package drat.proteus.services.mimetype;
 import com.google.gson.Gson;
 import drat.proteus.services.constants.ProteusEndpointConstants;
 import drat.proteus.services.general.AbstractRestService;
-import drat.proteus.services.general.HttpMethodEnum;
 import drat.proteus.services.general.Item;
+import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MimeTypeBreakdownService extends AbstractRestService {
         queryParams.put(WT_PARAM, "json");
         queryParams.put(FACET_PARAM, "on");
         queryParams.put(FACET_FIELD_PARAM, "mimetype");
-        Response solrResponse = this.createRequest(ProteusEndpointConstants.MIME_TYPE_SELECT, queryParams).getResponse(HttpMethodEnum.GET);
+        Response solrResponse = this.createRequest(ProteusEndpointConstants.MIME_TYPE_SELECT, queryParams).getResponse(HttpMethod.GET);
         String jsonBody = solrResponse.readEntity(String.class);
         return parseJsonBodyForMimeTypeFacet(jsonBody, limit);
     }
