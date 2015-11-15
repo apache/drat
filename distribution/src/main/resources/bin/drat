@@ -23,14 +23,14 @@ function print_help {
     echo "Usage: drat [crawl, index, map, reduce] in order to analyze a repository." 
     echo "       Alternatively, call 'drat go' to run all four automatically."
     echo "       drat"
-    echo "            go <path to repo>     | start OODT and analyze the repository"
-    echo "            crawl <path to repo>  | crawl the repository files"
-    echo "            index <path to repo>  | index the crawled files"
-    echo "            map                   | fire off the MapReduce mapper"
-    echo "            reduce                | fire off the MapReduce reducer"
-    echo "            help                  | print this message"
-    echo "            reset                 | prepare to analyze an entirely new repo"
-    echo "                                  | CAUTION: will delete previous crawls!"
+    echo "            go [--exclude <file/directory name>] <path to repo> 	| start OODT and analyze the repository"
+    echo "            crawl [--exclude <file/directory name>] <path to repo>	| crawl the repository files"
+    echo "            index <path to repo>  					| index the crawled files"
+    echo "            map                   					| fire off the MapReduce mapper"
+    echo "            reduce                					| fire off the MapReduce reducer"
+    echo "            help                  					| print this message"
+    echo "            reset                 					| prepare to analyze an entirely new repo"
+    echo "                                  					| CAUTION: will delete previous crawls!"
 }
 
 function print_ui_info {
@@ -41,15 +41,28 @@ FILEMGR_URL=http://localhost:9000
 SOLR_URL=http://localhost:8080/solr/drat
 CLIENT_URL=http://localhost:9001
 
-# Crawl the given repository. Expects one argument -- the file path of the repo to be crawled.
+# Crawl the given repository. Expects one or three argument(s) -- the file path of the repo to be crawled and
+# --exclude file/directory name.
 function crawl {
     check_services_running
-    check_num_args "crawl" $# 1
+    if [ $1 = "--exclude" ]; then
+	check_num_args "crawl" $# 3
+	export DRAT_EXCLUDE=".*${2}.*"
+	PRODUCT_PATH=$3
+    else
+    	check_num_args "crawl" $# 1
+	export DRAT_EXCLUDE=""
+	PRODUCT_PATH=$1
+    fi
     pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
-    ./crawler_launcher --operation --metPC --metExtractorConfig \
-    $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
-    --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory --productPath $1
+    
+   ./crawler_launcher --operation --metPC --metExtractorConfig \
+   $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
+   --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory \
+   --preCondIds RegExExcludeComparator --productPath $PRODUCT_PATH
+
     popd >> $DRAT_HOME/logs/drat.log 2>&1
+    export DRAT_EXCLUDE=""
 }
 
 # Index the crawled files of the given repo. Expects one argument -- the file path of the repo to be indexed.
@@ -139,13 +152,19 @@ function check_services_running {
 # Attempt to automate crawling, indexing, mapping, and reducing. Expects 1 argument: the directory to analyze.
 function go {
     check_services_running
-    check_num_args "go" $# 1
-    echo "Crawling $2"
-    crawl $1
+    if [ $1 = "--exclude" ]; then
+        check_num_args "go" $# 3
+        PRODUCT_PATH=$3
+    else
+        check_num_args "go" $# 1
+        PRODUCT_PATH=$1
+    fi
+    echo "Crawling $PRODUCT_PATH"
+    crawl $1 $2 $3
     sleep 3
     echo
-    echo "Indexing $2"
-    index $1
+    echo "Indexing $PRODUCT_PATH"
+    index $PRODUCT_PATH
     sleep 3
     echo
     echo "Firing off the MapReduce mapper"
@@ -197,7 +216,7 @@ function reset {
 # Start parsing the arguments.
 case $1 in
     crawl)
-        crawl $2
+        crawl $2 $3 $4
     ;;
     index)
         index $2
@@ -209,7 +228,7 @@ case $1 in
         reduce
     ;;
     go)
-        go $2
+        go $2 $3 $4
     ;;
     reset)
         reset
