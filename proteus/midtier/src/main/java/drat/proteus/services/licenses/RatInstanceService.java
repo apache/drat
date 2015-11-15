@@ -25,6 +25,9 @@ public class RatInstanceService extends BaseProductService {
     public void getRatLogs() {
         aggregator.clear();
         List<Item> ratLogProducts = super.getRecentProductsByChannelAndTypeId(CHANNEL, TYPE_ID);
+        if(ratLogProducts == null) {
+            return;
+        }
         for(Item item: ratLogProducts) {
             RatLog log = getLicenseTypesFromRatLog(((ProductItem) item).getLink());
             aggregator.add(log);

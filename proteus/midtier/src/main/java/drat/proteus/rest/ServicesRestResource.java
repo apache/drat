@@ -49,7 +49,7 @@ public class ServicesRestResource extends GsonRestResource {
     @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
     public List<Item> getRepoLicenseTypeBreakdown() {
         ratInstanceService.getRatLogs();
-        return ratInstanceService.getUnapprovedLicenses();
+        return ratInstanceService.getLicenseTypeBreakdown();
     }
 
     @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)

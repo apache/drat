@@ -22,22 +22,25 @@ public class DratRestResource extends GsonRestResource {
 
     @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
     public void go(@RequestBody DratRequestWrapper body) throws Exception {
-        File tempDir = Unzipper.unzip(body.zipFile);
-        dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        //File tempDir = Unzipper.unzip(body.zipFile);
+        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.go();
     }
 
     @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
     public void index(@RequestBody DratRequestWrapper body) throws Exception {
-        File tempDir = Unzipper.unzip(body.zipFile);
-        dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        //File tempDir = Unzipper.unzip(body.zipFile);
+        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.index();
     }
 
     @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
     public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-        File tempDir = Unzipper.unzip(body.zipFile);
-        dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        //File tempDir = Unzipper.unzip(body.zipFile);
+        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
+        dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.crawl();
     }
 
