@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by stevenfrancus on 10/15/15.
- */
 public class GenericProcess {
     private final String path;
     public GenericProcess(String path) {

@@ -2,9 +2,6 @@ package drat.proteus.services.repo;
 
 import java.io.File;
 
-/**
- * Created by stevenfrancus on 11/1/15.
- */
 public class Repository {
     public class Size {
         public int numberOfFiles;

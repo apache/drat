@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by stevenfrancus on 11/12/15.
- */
 public class MimeTypeBreakdownService extends AbstractRestService {
     private static final String FACET_COUNTS_JSON_KEY = "facet_counts";
     private static final String FACET_FIELDS_JSON_KEY = "facet_fields";

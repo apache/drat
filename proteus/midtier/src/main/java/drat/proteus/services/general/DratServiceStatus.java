@@ -1,10 +1,5 @@
 package drat.proteus.services.general;
 
-import drat.proteus.rest.DratMethodType;
-
-/**
- * Created by stevenfrancus on 11/1/15.
- */
 public class DratServiceStatus extends ServiceStatus {
     public enum State {
         INDEX, CRAWL, MAP, REDUCE, IDLE, INTERRUPTED

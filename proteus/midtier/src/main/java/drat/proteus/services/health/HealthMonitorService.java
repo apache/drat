@@ -3,21 +3,12 @@ package drat.proteus.services.health;
 import backend.ProcessDratWrapper;
 import com.google.gson.Gson;
 import drat.proteus.services.constants.ProteusEndpointConstants;
-import drat.proteus.services.general.AbstractRestService;
-import drat.proteus.services.general.DratServiceStatus;
-import drat.proteus.services.general.HttpMethodEnum;
-import drat.proteus.services.general.OodtServiceStatus;
+import drat.proteus.services.general.*;
 
 import javax.ws.rs.core.Response;
-import java.net.ConnectException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Created by stevenfrancus on 10/29/15.
- */
 public class HealthMonitorService extends AbstractRestService {
     private static final String DAEMON = "daemon";
     private static final String DAEMON_OK_STATUS = "UP";
@@ -67,55 +58,33 @@ public class HealthMonitorService extends AbstractRestService {
         Map<String, Object> rawStatusOutput = new Gson().fromJson(jsonBody, Map.class);
         Map<String, Object> report = (Map<String,Object>)rawStatusOutput.get("report");
         Map<String, Object> daemonStatus = (Map<String,Object>)report.get("daemonStatus");
-        HealthMonitorItem fileManager = parseJsonMap((Map<String,Object>)daemonStatus.get(FILE_MGR_ABBR));
-        HealthMonitorItem resManager = parseJsonMap((Map<String,Object>)daemonStatus.get(RES_MGR_ABBR));
-        HealthMonitorItem workflowManager = parseJsonMap((Map<String,Object>)daemonStatus.get(WORK_MGR_ABBR));
+        HealthMonitorItem fileManager = (HealthMonitorItem)parseJsonMap((Map<String,Object>)daemonStatus.get(FILE_MGR_ABBR));
+        HealthMonitorItem resManager = (HealthMonitorItem)parseJsonMap((Map<String,Object>)daemonStatus.get(RES_MGR_ABBR));
+        HealthMonitorItem workflowManager = (HealthMonitorItem)parseJsonMap((Map<String,Object>)daemonStatus.get(WORK_MGR_ABBR));
         return new OodtServiceStatus(fileManager.isRunning() && resManager.isRunning() && workflowManager.isRunning());
     }
 
 
-    public HealthMonitorItem getFileManagerStatus() throws URISyntaxException {
+    public Item getFileManagerStatus() throws URISyntaxException {
         return getDaemonStatus(DAEMON_FILE_MGR);
     }
 
-    public HealthMonitorItem getResourceManagerStatus() throws URISyntaxException {
+    public Item getResourceManagerStatus() throws URISyntaxException {
         return getDaemonStatus(DAEMON_RES_MGR);
     }
 
-    public HealthMonitorItem getWorkflowManagerStatus() throws URISyntaxException {
+    public Item getWorkflowManagerStatus() throws URISyntaxException {
         return getDaemonStatus(DAEMON_WORK_MGR);
     }
 
-    public List getAggregateJobCountForTypes(String... types) {
-        List aggregateJobCountItems = new ArrayList<>();
-        Response response = rerouteHealthMonitorData();
-        String jsonBody = response.readEntity(String.class);
-        Map<String, Object> rawStatusOutput = new Gson().fromJson(jsonBody, Map.class);
-        Map<String, Object> report = (Map<String,Object>)rawStatusOutput.get("report");
-        List<Object> jobHealth = (List<Object>)report.get("jobHealth");
-        for(Object jobsAggregate: jobHealth) {
-            Map<String,Object> jobAggData = (Map<String, Object>)jobsAggregate;
-            String state = (String)jobAggData.get("state");
-            for(String type: types) {
-                if(state.equals(type.toUpperCase())) {
-/*                    Double numJobs = (Double)jobAggData.get("numJobs");
-                    RatAggregateJobCountItem jobCountItem = new RatAggregateJobCountItem(type, numJobs.intValue());
-                    aggregateJobCountItems.add(jobCountItem);*/
-                    break;
-                }
-            }
-        }
-        return aggregateJobCountItems;
-    }
-
-    private HealthMonitorItem getDaemonStatus(String daemonPath) throws URISyntaxException {
+    private Item getDaemonStatus(String daemonPath) throws URISyntaxException {
         Response response = this.createRequest(daemonPath).getResponse(HttpMethodEnum.GET);
         String jsonBody = response.readEntity(String.class);
         Map<String, Object> daemonStatus = new Gson().fromJson(jsonBody, Map.class);
         return parseJsonMap(daemonStatus);
     }
 
-    private HealthMonitorItem parseJsonMap(Map<String, Object> daemonStatus) {
+    private Item parseJsonMap(Map<String, Object> daemonStatus) {
         try {
             boolean isRunning = (((String) daemonStatus.get(STATUS)).toUpperCase().equals(DAEMON_OK_STATUS));
             return new HealthMonitorItem((String) daemonStatus.get(DAEMON), (String) daemonStatus.get(URL), isRunning);

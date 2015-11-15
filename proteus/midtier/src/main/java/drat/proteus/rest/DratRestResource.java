@@ -5,21 +5,13 @@ import backend.AbstractDratWrapper;
 import backend.AbstractOodtWrapper;
 import backend.ProcessDratWrapper;
 import backend.ProcessOodtWrapper;
-import drat.proteus.Unzipper;
-import drat.proteus.services.product.ProductItem;
-import drat.proteus.services.product.ProductService;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
 import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-/**
- * Created by stevenfrancus on 10/20/15.
- */
 public class DratRestResource extends GsonRestResource {
     public AbstractOodtWrapper oodtWrapper;
     public AbstractDratWrapper dratWrapper;

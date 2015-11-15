@@ -2,10 +2,7 @@ package backend;
 
 import drat.proteus.services.general.DratServiceStatus;
 
-/**
- * Created by stevenfrancus on 11/5/15.
- */
-class DratProcessMonitor implements Runnable {
+public class DratProcessMonitor implements Runnable {
     private DratServiceStatus status;
     private Process proc;
 

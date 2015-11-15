@@ -4,51 +4,44 @@ import com.google.gson.Gson;
 import drat.proteus.services.general.Item;
 import drat.proteus.services.general.ServiceStatus;
 import drat.proteus.services.health.HealthMonitorService;
+import drat.proteus.services.licensetype.LicenseTypeBreakdownService;
 import drat.proteus.services.mimetype.MimeTypeBreakdownService;
-import drat.proteus.services.product.ProductService;
+import drat.proteus.services.product.RecentProductService;
 import drat.proteus.services.repo.Repository;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestParam;
 import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by stevenfrancus on 10/30/15.
- */
 public class ServicesRestResource extends GsonRestResource {
-    private ProductService productService;
+    private RecentProductService productService;
     private HealthMonitorService healthMonitorService;
     private MimeTypeBreakdownService mimeTypeBreakdownService;
+    private LicenseTypeBreakdownService licenseTypeBreakdownService;
     public ServicesRestResource() {
-        productService = new ProductService();
+        productService = new RecentProductService();
         healthMonitorService = new HealthMonitorService();
         mimeTypeBreakdownService = new MimeTypeBreakdownService();
+        licenseTypeBreakdownService = new LicenseTypeBreakdownService();
     }
     @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
     public List<Item> getRecentProducts() {
         return productService.getAllRecentProducts();
     }
 
-    @MethodMapping(value = "/repo/breakdown/{type}", httpMethod = HttpMethod.GET)
-    public List<Item> getRepoTypeBreakdown(String type, @RequestParam(value = "limit", required = false) Integer limit) {
+    @MethodMapping(value = "/repo/breakdown/mime", httpMethod = HttpMethod.GET)
+    public List<Item> getRepoMimeTypeBreakdown(@RequestParam(value = "limit", required = false) Integer limit) {
         if(limit == null) {
             limit = 0;
         }
-        switch(type.toUpperCase()) {
-            case "LICENSE": {
-                return this.getLicenseTypeBreakdown(limit);
-            }
-            case "MIME": {
+        return mimeTypeBreakdownService.getMimeTypes(limit);
+    }
 
-                return this.getMimeTypeBreakdown(limit);
-            }
-            default: {
-                return null;
-            }
-        }
+    @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
+    public List<Item> getRepoLicenseTypeBreakdown() {
+        return licenseTypeBreakdownService.getLicenseTypes();
     }
 
     @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)
@@ -56,26 +49,14 @@ public class ServicesRestResource extends GsonRestResource {
         return new Repository(dirPath).getSize();
     }
 
-    private List<Item> getLicenseTypeBreakdown(int limit) {
-        return mimeTypeBreakdownService.getMimeTypes(limit);
-    }
-    private List<Item> getMimeTypeBreakdown(int limit) {
-        return mimeTypeBreakdownService.getMimeTypes(limit);
+    @MethodMapping(value = "/status/drat", httpMethod = HttpMethod.GET)
+    public ServiceStatus getDratRunningStatus() {
+        return healthMonitorService.getDratStatus();
     }
 
-    @MethodMapping(value = "/status/{type}", httpMethod = HttpMethod.GET)
-    public ServiceStatus getRunningStatus(String type) {
-        switch(type.toUpperCase()) {
-            case "DRAT": {
-                return healthMonitorService.getDratStatus();
-            }
-            case "OODT": {
-                return healthMonitorService.getOodtStatus();
-            }
-            default: {
-                return null;
-            }
-        }
+    @MethodMapping(value = "/status/oodt", httpMethod = HttpMethod.GET)
+    public ServiceStatus getOodtRunningStatus() {
+        return healthMonitorService.getOodtStatus();
     }
 
     @MethodMapping(value = "/status/oodt/raw", httpMethod = HttpMethod.GET)

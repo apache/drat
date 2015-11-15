@@ -4,9 +4,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import java.util.Map;
 
-/**
- * Created by stevenfrancus on 10/28/15.
- */
 public abstract class RequestEmitter {
     private static Client client = ClientBuilder.newBuilder().newClient();
     private String serviceName;

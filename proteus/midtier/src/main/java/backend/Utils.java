@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by stevenfrancus on 10/13/15.
- */
 public class Utils {
     private static Map<String, String> environment = new HashMap<String, String>();
     private static List<String> resetDratConstants = new ArrayList<String>();
@@ -16,11 +13,12 @@ public class Utils {
         environment.put("DRAT_HOME", FileConstants.buildDratSubdirectoryPath("/deploy"));
         environment.put("GANGLIA_URL", "http://zipper.jpl.nasa.gov/ganglia/");
 
-        resetDratConstants.add(environment.get("DRAT_HOME") + "/data/workflow");
-        resetDratConstants.add(environment.get("DRAT_HOME") + "/filemgr/catalog");
-        resetDratConstants.add(environment.get("DRAT_HOME") + "/solr/drat/data");
-        resetDratConstants.add(environment.get("DRAT_HOME") + "/data/archive/*");
-        resetDratConstants.add(environment.get("DRAT_HOME") + "/data/jobs/*");
+        String DRAT_HOME = environment.get("DRAT_HOME");
+        resetDratConstants.add(DRAT_HOME + "/data/workflow");
+        resetDratConstants.add(DRAT_HOME + "/filemgr/catalog");
+        resetDratConstants.add(DRAT_HOME + "/solr/drat/data");
+        resetDratConstants.add(DRAT_HOME + "/data/archive/*");
+        resetDratConstants.add(DRAT_HOME + "/data/jobs/*");
     }
     public static Map<String, String> getEnvironment() {
         return environment;

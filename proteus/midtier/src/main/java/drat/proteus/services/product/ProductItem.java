@@ -2,9 +2,6 @@ package drat.proteus.services.product;
 
 import drat.proteus.services.general.Item;
 
-/**
- * Created by stevenfrancus on 10/29/15.
- */
 public class ProductItem extends Item {
     private String title;
     private String description;

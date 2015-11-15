@@ -4,12 +4,7 @@ import drat.proteus.services.constants.ProteusEndpointConstants;
 
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.util.Map;
-
-/**
- * Created by stevenfrancus on 10/28/15.
- */
 
 public class RestRequest {
     private WebTarget target;

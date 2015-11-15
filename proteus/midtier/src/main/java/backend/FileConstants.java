@@ -8,10 +8,8 @@ import java.io.File;
 public class FileConstants {
     private static final String DRAT = "drat";
     public static final String DRAT_SUPER_DIR = getDratDirectory();
-    public static final String DRAT_DEPLOY_DIR = buildDratSubdirectoryPath("/deploy");
     public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
     public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
-    public static final String DRAT_SRC = buildDratSubdirectoryPath("/src");
     public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/data/staging/uploaded_repo");
 
     private static String getDratDirectory() {

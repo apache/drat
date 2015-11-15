@@ -5,9 +5,6 @@ import drat.proteus.services.general.Item;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * Created by stevenfrancus on 10/29/15.
- */
 public class HealthMonitorItem extends Item {
     private boolean isRunning;
     private String name;

@@ -1,9 +1,13 @@
 package drat.proteus.services.licensetype;
 
-import drat.proteus.services.general.Item;
+import drat.proteus.services.breakdown.BreakdownItem;
 
-/**
- * Created by stevenfrancus on 11/13/15.
- */
-public class LicenseTypeBreakdownItem extends Item {
+public class LicenseTypeBreakdownItem extends BreakdownItem {
+    public LicenseTypeBreakdownItem(String type, int numberOfFiles) {
+        super(type, numberOfFiles);
+    }
+
+    public LicenseTypeBreakdownItem(String type, int numberOfFiles, int repoSize) {
+        super(type, numberOfFiles, repoSize);
+    }
 }
