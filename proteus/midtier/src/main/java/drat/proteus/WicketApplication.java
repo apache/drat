@@ -42,5 +42,6 @@ public class WicketApplication extends WebApplication
                 return resource;
             }
         });
+        mountPage("/workflow", DratWorkflow.class);
 	}
 }

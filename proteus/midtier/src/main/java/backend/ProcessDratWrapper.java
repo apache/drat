@@ -10,9 +10,17 @@ import java.io.IOException;
 public class ProcessDratWrapper extends GenericProcess implements AbstractDratWrapper {
     private static final String DRAT = FileConstants.DRAT_PATH;
     private static final long DRAT_PROCESS_WAIT_DURATION = 3000;
+
+    private static final String GO_CMD = "go";
+    private static final String CRAWL_CMD = "crawl";
+    private static final String INDEX_CMD = "index";
+    private static final String MAP_CMD = "map";
+    private static final String REDUCE_CMD = "reduce";
+
     private String path;
     private DratServiceStatus status = new DratServiceStatus();
     private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
+
     public static ProcessDratWrapper getInstance() {
         return singletonDratWrapper;
     }
@@ -31,19 +39,19 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     }
 
     public void crawl() throws IOException, DratWrapperException {
-        startAndMonitorDratProcess("crawl");
+        startAndMonitorDratProcess(CRAWL_CMD);
     }
 
     public void index() throws IOException, DratWrapperException {
-        startAndMonitorDratProcess("index");
+        startAndMonitorDratProcess(INDEX_CMD);
     }
 
     public void map() throws IOException, DratWrapperException {
-        startAndMonitorDratProcess("map");
+        startAndMonitorDratProcess(MAP_CMD);
     }
 
     public void reduce() throws IOException, DratWrapperException {
-        startAndMonitorDratProcess("reduce");
+        startAndMonitorDratProcess(REDUCE_CMD);
     }
 
     public void reset() throws Exception{
@@ -59,13 +67,13 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
     }
 
     public void go() throws Exception {
-        startAndMonitorDratProcess("crawl").waitFor();
+        startAndMonitorDratProcess(CRAWL_CMD).waitFor();
         Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-        startAndMonitorDratProcess("index").waitFor();
+        startAndMonitorDratProcess(INDEX_CMD).waitFor();
         Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-        startAndMonitorDratProcess("map").waitFor();
+        startAndMonitorDratProcess(MAP_CMD).waitFor();
         Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-        startAndMonitorDratProcess("reduce").waitFor();
+        startAndMonitorDratProcess(REDUCE_CMD).waitFor();
     }
 
     private Process startAndMonitorDratProcess(String dratCmd) throws IOException, DratWrapperException {

@@ -11,6 +11,7 @@ public class FileConstants {
     public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
     public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
     public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/data/staging/uploaded_repo");
+    public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/data/drat_output.log");
 
     private static String getDratDirectory() {
         final File CURRENT_CLASS = new File(FileConstants.class.getProtectionDomain().getCodeSource().getLocation().getPath());

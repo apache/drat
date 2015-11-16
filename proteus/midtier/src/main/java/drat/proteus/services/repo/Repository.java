@@ -33,8 +33,10 @@ public class Repository {
         File[] files = f.listFiles();
         if (files != null) {
             for (File file: files) {
-                numberOfFiles++;
-                memorySize += file.length();
+                if(file.isFile()) {
+                    numberOfFiles++;
+                    memorySize += file.length();
+                }
                 if (file.isDirectory()) {
                     getRepositoryFileInformation(file.getAbsolutePath());
                 }

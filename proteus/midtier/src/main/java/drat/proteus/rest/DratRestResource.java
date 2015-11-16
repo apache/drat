@@ -1,16 +1,16 @@
 package drat.proteus.rest;
 
 
-import backend.AbstractDratWrapper;
-import backend.AbstractOodtWrapper;
-import backend.ProcessDratWrapper;
-import backend.ProcessOodtWrapper;
+import backend.*;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
 import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class DratRestResource extends GsonRestResource {
     public AbstractOodtWrapper oodtWrapper;
@@ -22,24 +22,18 @@ public class DratRestResource extends GsonRestResource {
 
     @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
     public void go(@RequestBody DratRequestWrapper body) throws Exception {
-        //File tempDir = Unzipper.unzip(body.zipFile);
-        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
         dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.go();
     }
 
     @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
     public void index(@RequestBody DratRequestWrapper body) throws Exception {
-        //File tempDir = Unzipper.unzip(body.zipFile);
-        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
         dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.index();
     }
 
     @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
     public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-        //File tempDir = Unzipper.unzip(body.zipFile);
-        //dratWrapper.setIndexablePath(tempDir.getCanonicalPath());
         dratWrapper.setIndexablePath(body.dirPath);
         dratWrapper.crawl();
     }
@@ -61,6 +55,21 @@ public class DratRestResource extends GsonRestResource {
 
     @MethodMapping(value = "/log", httpMethod = HttpMethod.GET)
     public String getProcessLog() {
-        return "";
+        File log = new File(FileConstants.DRAT_TEMP_LOG_OUTPUT);
+        if (log.exists())
+        {
+            try {
+                byte[] encoded = Files.readAllBytes(Paths.get(log.getAbsolutePath()));
+                return new String(encoded);
+            }
+            catch (IOException ioe)
+            {
+                return ioe.getMessage();
+            }
+        }
+        else
+        {
+            return "Log is empty!";
+        }
     }
 }

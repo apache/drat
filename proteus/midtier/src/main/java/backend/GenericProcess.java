@@ -1,9 +1,6 @@
 package backend;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class GenericProcess {
     private final String path;
@@ -21,12 +18,26 @@ public class GenericProcess {
     private Process spawnProcess(ProcessBuilder builder) throws IOException {
         builder.environment().putAll(Utils.getEnvironment());
         Process process = builder.redirectErrorStream(true).start();
-        InputStream is = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        pipeOutputToLogFile(process.getInputStream());
+        return process;
+    }
+
+    private void pipeOutputToLogFile(InputStream processInput) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(processInput));
+        final File dratLog = new File(FileConstants.DRAT_TEMP_LOG_OUTPUT);
+        if(!dratLog.exists()) {
+            dratLog.createNewFile();
+        }
+
+        FileWriter fw = new FileWriter(dratLog.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
         String line = null;
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
+            bw.write(line);
         }
-        return process;
+        bw.close();
+        fw.close();
+        reader.close();
     }
 }

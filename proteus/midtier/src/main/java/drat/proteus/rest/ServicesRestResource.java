@@ -1,5 +1,6 @@
 package drat.proteus.rest;
 
+import backend.FileConstants;
 import com.google.gson.Gson;
 import drat.proteus.services.general.Item;
 import drat.proteus.services.general.ServiceStatus;
@@ -53,8 +54,8 @@ public class ServicesRestResource extends GsonRestResource {
     }
 
     @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)
-    public Repository.Size getRepositorySize(@RequestParam("dir") String dirPath) {
-        return new Repository(dirPath).getSize();
+    public Repository.Size getRepositorySize() {
+        return new Repository(FileConstants.DRAT_TEMP_UNZIPPED_PATH).getSize();
     }
 
     @MethodMapping(value = "/status/drat", httpMethod = HttpMethod.GET)

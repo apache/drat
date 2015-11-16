@@ -56,7 +56,7 @@
 	<!--ng-controller="switch"-->
 
 	<div class="col-md-5 box">
-		<form action="#">
+		<form wicket:id="form" action="/workflow" method="POST">
 			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
 				<div class="input-group">
 					<div class="select-text">Select a repository to audit with <span class="weight">DRAT</span></div>
@@ -66,7 +66,7 @@
                       <span class="file-input btn btn-block btn-info btn-file default-weight input-height">
                           <span class="glyphicon glyphicon-folder-open folder-icon"></span>
                           Choose a directory from your computer
-                          <input type="file"  id="files" name="attachment[]" accept=".zip" multiple />
+                          <input wicket:id="fileUploader" type="file" id="files" name="attachment[]" accept=".zip" multiple />
                           <output id="list"></output>
                       </span>
 					<div class="name" id="file-name">
@@ -92,144 +92,12 @@
 						</button>
 
 					</div>
-					<!--ng-click="goToTwo()"-->
-					<button  ng-click="go(dirPath)"  type="button" value="Upload" class="btn btn-primary default-weight run-button">Run DRAT! </button>
+					<button type="submit" class="btn btn-primary default-weight run-button">Run DRAT! </button>
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
-
-
-<!--secondPage-->
-
-<div class="container" ng-show="goSecondPage">
-	<div class="header">
-		<h1 class="proteus">PROTEUS</h1>
-		<span class="h4">'A GUI FOR DRAT'</span>
-	</div>
-
-
-	<div class="row sections"  ng-cloak>
-
-		<!-- ******* The left section is here ******* -->
-		<div id="left-section" class="col-lg-3">
-			<!-- List of scanned files start here -->
-			<div id="scanned-files" >
-				<!-- List of scanned files are inside of here -->
-				<div class = "list-header"><span class="glyphicon glyphicon-folder-close" id="icon"></span> <span class="sub-header">Files Recently Scanned</span></div>
-				<div class="list-box">
-					<ul class = "list-group scanned-list">
-						<li class = "list-group-item" ng-repeat="files in arrayOfScannedFiles">{{files.listName}}</li>
-
-					</ul>
-				</div>
-
-				</div>
-			<!-- List of scanned files end here -->
-
-			<!-- logs are here -->
-			<div class="logs list-header" >
-				<!-- logs contents are here -->
-			</div>
-			<!-- logs ended above -->
-		</div>
-		<!-- ******* The left section ends here ******* -->
-
-		<!-- ******* The middle section is here ******* -->
-		<div id="middle-section" class="col-lg-6">
-			<!-- progress bar area and header start here -->
-			<div class="mid-header-box">
-				<h1> Please wait while <span class="fontweight-600">DRAT</span> scans your repository...</h1>
-				<uib-progressbar max="max" value="dynamic" type="info">
-					<span style="color:white; white-space:nowrap;"></span>
-				</uib-progressbar>
-				<div class="index-value">
-					<span class="fontweight-600">{{ value }}%</span> is completed on step: <span class="fontweight-600"> {{ steps[0] }} </span>
-				</div>
-				<!-- progress bar area and header are inside of it -->
-			</div>
-			<!-- progress bar and header ends here -->
-
-			<!-- stats area -->
-			<div class="stats-area">
-				<!-- stats are inside of it -->
-				<div class="sub-header">
-					<h4 lass="fontweight-600"> <span class="glyphicon glyphicon-folder-open"> </span> <span class="stat-subheader">Repository Statistics</span></h4>
-				</div>
-				<div class="table-responsive num-stats">
-					<table class="table">
-						<tr>
-							<td>
-								<div class="in-memory-size">
-									<table class="rep-stats-table">
-										<tr>
-											<td class="left fontweight-600"> In-Memory Size </td>
-											<td class="right"> {{ memorySize |  number : fractionSize }} KB</td>
-										</tr>
-									</table>
-								</div>
-							</td>
-							<td class="right-s">
-								<div class="number-of-files">
-									<table class="rep-stats-table">
-										<tr>
-											<td class="left fontweight-600"> Number of files </td>
-											<td class="right"> {{ numberOfFiles |  number : fractionSize }}</td>
-										</tr>
-									</table>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="pie-chart col-lg-6">
-
-					<!-- the tag below shows the pie-chart -->
-					<div class="fontweight-600">MIME Types Breakdown </div>
-					<div style="margih-right: 50px;">
-						<nvd3
-								transform="translate(20,50) rotate(40) scale(7)"
-								data="data"
-								id="donutLabelsOutsideExample"
-								options="options"
-								>
-
-						</nvd3>
-					</div>
-					<!-- <nvd3 options="options" data="data"></nvd3> -->
-				</div>
-				<div class="bars col-lg-6">
-					<!-- the tag below shows the pie-chart -->
-					<div class="fontweight-600">License Types Breakdowns </div>
-					<nvd3 ng-if="goSecondPage" options="chartOptions" data="chartData"></nvd3>
-				</div>
-			</div>
-			<!-- stats area ends -->
-		</div>
-		<!-- ******* The middle section ends here ******* -->
-
-
-		<!-- ******* Section for the DRAT statistics. (left-section) ******* -->
-		<div id="stats-right-section" class="col-lg-3">
-			<!-- Contents of the Drat stats are here... -->
-			<div class="drat-stats">
-				<div class = "list-header">
-					<span class="glyphicon glyphicon-stats" id="icon"></span>
-					<span class="sub-header">DRAT Statistics</span>
-				</div>
-				<ul class="drat-stats-list">
-					<li><span class="fontweight-600">{{numOfRatRunning}}</span> RAT Instances <span class="fontweight-600">running</span> </li>
-					<li><span class="fontweight-600">{{numORatFinished}}</span> RAT Instances <span class="fontweight-600">finished</span> </li>
-				</ul>
-			</div>
-		</div>
-		<!-- ******* Left-side section ends here... ******* -->
-
-	</div> <!-- .sections div ends -->
-
-</div> <!-- .container div ends -->
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
@@ -240,6 +108,6 @@
 <script src="bower_components/nvd3/nv.d3.js"></script>
 <script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
 <script src="scripts/HomePage.js"></script>
-
 </body>
+
 </html>
