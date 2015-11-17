@@ -1,40 +1,40 @@
 <!--<!DOCTYPE html>-->
 <!--<html xmlns:wicket="http://wicket.apache.org">-->
-	<!--<head>-->
-		<!--<meta charset="utf-8" />-->
-		<!--<title>Proteus</title>-->
-		<!--<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />-->
-		<!--<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />-->
-	<!--</head>-->
+<!--<head>-->
+<!--<meta charset="utf-8" />-->
+<!--<title>Proteus</title>-->
+<!--<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />-->
+<!--<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />-->
+<!--</head>-->
 
-	<!--<style>-->
-		<!--.feedbackPanelINFO {-->
-		<!--color: green;-->
-		<!--}-->
-		<!--.feedbackPanelERROR {-->
-		<!--color: red;-->
-		<!--}-->
-	<!--</style>-->
+<!--<style>-->
+<!--.feedbackPanelINFO {-->
+<!--color: green;-->
+<!--}-->
+<!--.feedbackPanelERROR {-->
+<!--color: red;-->
+<!--}-->
+<!--</style>-->
 
-	<!--<body>-->
-	<!--<div>-->
-		<!--<div wicket:id="feedback"></div> &lt;!&ndash; gives user warnings/messages &ndash;&gt;-->
+<!--<body>-->
+<!--<div>-->
+<!--<div wicket:id="feedback"></div> &lt;!&ndash; gives user warnings/messages &ndash;&gt;-->
 
-		<!--<form wicket:id="form">-->
-			<!--<p>-->
-				<!--<label>Enter directory:</label>-->
-				<!--<input wicket:id="path" type="text" size="20" />-->
-                <!--<input wicket:id="query" type="text" size="20" />-->
-                <!--<input type="submit" value="Upload"/>-->
-			<!--</p>-->
-		<!--</form>-->
-	<!--</div>-->
+<!--<form wicket:id="form">-->
+<!--<p>-->
+<!--<label>Enter directory:</label>-->
+<!--<input wicket:id="path" type="text" size="20" />-->
+<!--<input wicket:id="query" type="text" size="20" />-->
+<!--<input type="submit" value="Upload"/>-->
+<!--</p>-->
+<!--</form>-->
+<!--</div>-->
 
 
 
-	<!--<br><br><wicket:container wicket:id="version">1.5-SNAPSHOT</wicket:container>.-->
+<!--<br><br><wicket:container wicket:id="version">1.5-SNAPSHOT</wicket:container>.-->
 
-	<!--</body>-->
+<!--</body>-->
 <!--</html>-->
 
 <!DOCTYPE html>
@@ -78,13 +78,14 @@
 				<div class="btn-group" style="margin-top: 30px; width: 100%; ">
 					<div class="choose-text">Choose a command to run</div>
 
-					<button type="button" class="btn btn-info default-weight go" >Go! (runs all commands)</button>
+					<button type="button"  class="btn btn-info default-weight go">
+						{{ listOfAvailableCommands[0].name }}! (runs all commands)
+					</button>
 					<div class="btn-group">
 						<ul class="dropdown-menu">
-							<li><a href="#">Index</a></li>
-							<li><a href="#">Map</a></li>
-							<li><a href="#">Reduce</a></li>
-							<li><a href="#">Crawl</a></li>
+							<li ng-repeat="list in listOfAvailableCommands.slice(1,listOfAvailableCommands.length)">
+								<a href="#" ng-click="setId(list.id)" id="list.id"> {{ list.name }} </a>
+							</li>
 						</ul>
 						<button type="button" class="btn btn-info dropdown-toggle down-drop-button"
 								data-toggle="dropdown">
@@ -92,21 +93,25 @@
 						</button>
 
 					</div>
-					<button type="submit" class="btn btn-primary default-weight run-button">Run DRAT! </button>
+					<!--ng-click="goToTwo()"-->
+					<button  type="submit" value="Upload" class="btn btn-primary default-weight run-button">
+						Run DRAT!
+					</button>
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
 <script src="https://rawgit.com/mbostock/d3/master/d3.min.js"></script>
-<script src="bower_components/nvd3/nv.d3.js"></script>
-<script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
 <script src="scripts/HomePage.js"></script>
 </body>
 

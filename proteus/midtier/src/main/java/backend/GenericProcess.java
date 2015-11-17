@@ -25,6 +25,7 @@ public class GenericProcess {
     private void pipeOutputToLogFile(InputStream processInput) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(processInput));
         final File dratLog = new File(FileConstants.DRAT_TEMP_LOG_OUTPUT);
+        System.out.println(FileConstants.DRAT_TEMP_LOG_OUTPUT);
         if(!dratLog.exists()) {
             dratLog.createNewFile();
         }

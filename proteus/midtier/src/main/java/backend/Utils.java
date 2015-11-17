@@ -9,9 +9,9 @@ public class Utils {
     private static Map<String, String> environment = new HashMap<String, String>();
     private static List<String> resetDratConstants = new ArrayList<String>();
     static {
-        environment.put("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home");
-        environment.put("DRAT_HOME", FileConstants.buildDratSubdirectoryPath("/deploy"));
-        environment.put("GANGLIA_URL", "http://zipper.jpl.nasa.gov/ganglia/");
+        environment.put("JAVA_HOME", System.getenv("JAVA_HOME"));
+        environment.put("DRAT_HOME", System.getenv("DRAT_HOME"));
+        environment.put("GANGLIA_URL", System.getenv("GANGLIA_URL"));
 
         String DRAT_HOME = environment.get("DRAT_HOME");
         resetDratConstants.add(DRAT_HOME + "/data/workflow");

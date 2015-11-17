@@ -4,13 +4,19 @@ import backend.ProcessDratWrapper;
 import com.google.gson.Gson;
 import drat.proteus.services.constants.ProteusEndpointConstants;
 import drat.proteus.services.general.*;
+//import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import javax.ws.rs.core.Response;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
 public class HealthMonitorService extends AbstractRestService {
+    private static final String FM_URL = "http://localhost:9000";
+    private static final String FM_GENERIC_FILE = "GenericFile";
+
     private static final String DAEMON = "daemon";
     private static final String DAEMON_OK_STATUS = "UP";
     private static final String URL = "url";
@@ -25,11 +31,19 @@ public class HealthMonitorService extends AbstractRestService {
     private static final String DAEMON_WORK_MGR = SPECIFIC_DAEMON_STATUS + WORK_MGR_ABBR;
     private static final String DAEMON_RES_MGR = SPECIFIC_DAEMON_STATUS + RES_MGR_ABBR;
 
+    //private XmlRpcFileManagerClient fmClient;
+
     private ProcessDratWrapper dratWrapper;
 
     public HealthMonitorService() {
         super(ProteusEndpointConstants.Services.HEALTH_MONITOR);
         dratWrapper = ProcessDratWrapper.getInstance();
+        /*try {
+            fmClient = new XmlRpcFileManagerClient(new java.net.URL(FM_URL));
+        }
+        catch(Exception mue) {
+            mue.printStackTrace();
+        }*/
     }
 
     //Simple function to make a JAX-RS call to the OODT PCS-Health service and route it to /proteus/service/health instead
@@ -47,7 +61,10 @@ public class HealthMonitorService extends AbstractRestService {
     }
 
     public DratServiceStatus getDratStatus() {
-        return dratWrapper.getDratStatus();
+        DratServiceStatus currentState = dratWrapper.getDratStatus();
+        int stageProgress = getCurrentProgress(currentState.getCurrentState());
+        currentState.setProgress(stageProgress);
+        return currentState;
     }
 
     public OodtServiceStatus getOodtStatus() {
@@ -96,5 +113,39 @@ public class HealthMonitorService extends AbstractRestService {
         }
     }
 
+    private int getCurrentProgress(DratServiceStatus.State state) {
+        switch(state) {
+            case CRAWL: {
+                return getGenericFilesCrawled();
+            }
+            case INDEX: {
+                return getSolrFileCount();
+            }
+            case MAP: {
+                return 0;
+            }
+            case REDUCE: {
+                return 0;
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
+
+    private int getGenericFilesCrawled() {
+        int numIngestedFiles = 0;
+        /*try {
+         //   numIngestedFiles = fmClient.getNumProducts(fmClient.getProductTypeByName(FM_GENERIC_FILE));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }*/
+        return numIngestedFiles;
+    }
+
+    private int getSolrFileCount() {
+        return 0;
+    }
 
 }
