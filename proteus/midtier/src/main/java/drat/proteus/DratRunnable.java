@@ -3,6 +3,8 @@ package drat.proteus;
 import backend.DratWrapperException;
 import backend.ProcessDratWrapper;
 
+import java.io.File;
+
 class DratRunnable implements Runnable {
     private final String filePath;
     private final String command;
@@ -42,9 +44,14 @@ class DratRunnable implements Runnable {
                     throw new DratWrapperException("No matching step found for selection: " + command);
                 }
             }
+            deleteTempDratDirectory(filePath);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteTempDratDirectory(String filePath) {
+        new File(filePath).delete();
     }
 }
