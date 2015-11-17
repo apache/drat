@@ -26,8 +26,9 @@
                 <div class = "list-header"><span class="glyphicon glyphicon-folder-close" id="icon"></span> <span class="sub-header">{{scanStatus}}</span></div>
                 <div class="list-box">
                     <ul class = "list-group scanned-list">
-                        <!--<li class = "list-group-item" ng-repeat="files in arrayOfScannedFiles">{{files.listName}}</li>-->
-                        <li class = "list-group-item" ng-repeat="rat in ratInstances">
+                        <li ng-if="!scanComplete" class = "list-group-item" ng-repeat="files in arrayOfScannedFiles">{{files.listName}}</li>
+
+                        <li ng-if="scanComplete" class = "list-group-item" ng-repeat="rat in ratInstances">
                             <a href="#" data-toggle="modal" data-target="#logs" ng-click="openModal(rat.ratId)"> RAT {{rat.ratId}} </a>
                         </li>
                     </ul>
@@ -110,7 +111,7 @@
                 <div class="bars col-lg-6">
                     <!-- the tag below shows the pie-chart -->
                     <div class="fontweight-600">License Types Breakdowns </div>
-                    <nvd3 ng-if="goSecondPage" options="chartOptions" data="chartData"></nvd3>
+                    <nvd3 options="chartOptions" data="chartData"></nvd3>
                 </div>
             </div>
             <!-- stats area ends -->
@@ -162,6 +163,33 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="logs"  role="dialog">
+        <!--<div class="modal fade" id="showLogsDiv" ng-show="showLogsBox" role="dialog">-->
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">RAT {{ modalObject.ratId }}  Statistics </h4>
+                </div>
+                <div class="modal-body">
+                    <div class = "list-header"><span class="sub-header">Unapproved Licenses</span></div>
+                    <div class="list-box">
+                        <ul class = "list-group scanned-list">
+                            <li class = "list-group-item" ng-repeat="file in modalObject.unapprovedFiles">
+                                <a href="#"> {{file}} </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
 </div> <!-- container div ends -->
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -174,6 +202,5 @@
 <script src="bower_components/nvd3/nv.d3.js"></script>
 <script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
 <script src="scripts/Workflow.js"></script>
-
 </body>
 </html>

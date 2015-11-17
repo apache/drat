@@ -30,15 +30,9 @@ public class BaseProductService extends AbstractRestService {
     private static final String PRODUCT_SOURCE = "source";
     private static final String PRODUCT_CHANNEL_PARAM = "channel";
     private static final String PRODUCT_TYPE_ID_PARAM = "id";
-    private DocumentBuilder dbFactory;
     public BaseProductService() {
         super(ProteusEndpointConstants.Services.FILE_MANAGER_PRODUCT);
-        try {
-            dbFactory = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        }
-        catch(ParserConfigurationException pce) {
-            pce.printStackTrace();
-        }
+
     }
 
     protected List<Item> getRecentProductsByChannel(String channel) {
@@ -73,7 +67,14 @@ public class BaseProductService extends AbstractRestService {
 
     private List<Item> convertProductsFromXml(String xmlDoc) throws Exception {
         InputSource is = new InputSource(new StringReader(xmlDoc));
-        Document doc = this.dbFactory.parse(is);
+        DocumentBuilder dbFactory = null;
+        try {
+            dbFactory = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        }
+        catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+        }
+        Document doc = dbFactory.parse(is);
         doc.getDocumentElement().normalize();
         NodeList nodes = doc.getElementsByTagName(PRODUCT_XML_DEMARCATING_TAG);
         List<Item> productItems = new ArrayList<Item>();

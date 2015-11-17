@@ -1,19 +1,3 @@
-var file = null;
-var stateOfTextArea = false;
-  $("input[name='attachment[]']").change(function() {
-      var fileName = $(this).val();
-      $("#file-name").html("<strong>Path</strong>: " + fileName + "<a href='' class='x-link'><span class='glyphicon glyphicon-remove pull-right remove-icon'></span></a>");
-       file = event.target.files[0]; 
-
-      $("#remote_repository").prop('disabled', true);
-      stateOfTextArea = $("#remote_repository").prop('disabled');
-  });
-  $(".x-link").click(function() {
-      $("#file-name").html('');
-      $("#remote_repository").removeAttr('disabled');
-  });
-
-
 angular
     .module('drat', ['ngAnimate', 'ui.bootstrap', 'nvd3', 'nvd3ChartDirectives'])
     .controller('switch', ['$scope', '$http', function($scope, $http) {
@@ -26,7 +10,10 @@ angular
         $scope.steps = ['Starting..'];
         $scope.showLogsBox = false; // shows logs
         $scope.scanStatus = "Scanned Files";
-
+        $scope.goSecondPage = false;
+        $scope.showFirst = true;
+        $scope.goSecond = false;
+        $scope.scanComplete = false;
 
         // scanned list array
         $scope.arrayOfScannedFiles = [];
@@ -152,6 +139,20 @@ angular
             }
         };
 
+
+
+         // sets the data in the Modal depending on the user's choice of the rat instance
+         $scope.modalObject = null;
+         var rightIndex = 0;
+         $scope.openModal = function(id) {
+            for(var i = 1; i <= $scope.ratInstances.length; i++) {
+                if(id === i) {
+                    rightIndex = i - 1;
+                     $scope.modalObject = $scope.ratInstances[rightIndex];
+
+                }
+            }
+         }
         $scope.chartData = []
 
         $scope.memorySize = 0;
@@ -160,7 +161,41 @@ angular
         $scope.numORatFinished = 0;
         $scope.numOfRatfailed = 0;
 
-//        $scope.runDrat = function() {
+        $scope.goToSecond = function() {
+            $scope.goSecond = true;
+        }
+
+        $scope.runDrat = function() {
+            $scope.showFirst = true;
+
+            setTimeout(function() {
+                checkingDratStatus();
+            }, 3000);
+
+
+            var checkingDrat;
+
+            var sizePayload = $http({
+                method: "GET",
+                url: "/service/repo/size"
+            }).success(function(response) {
+                $scope.memorySize = response.memorySize;
+                $scope.numberOfFiles = response.numberOfFiles;
+                getUnapprovedList();
+            });
+
+        };
+
+        function setNgShow() {
+            $scope.goSecondPage = true;
+        }
+
+        var cmd = idOfCommand;
+
+//         $scope.runDrat = function() {
+//            var run = null;
+//            var path = "";
+//
 //            setTimeout(function() {
 //
 //                checkingDratStatus();
@@ -169,80 +204,59 @@ angular
 //
 //            var checkingDrat;
 //
-//            var sizePayload = $http({
-//                method: "GET",
-//                url: "/service/repo/size"
-//            }).success(function(response) {
-//                $scope.memorySize = response.memorySize;
-//                $scope.numberOfFiles = response.numberOfFiles;
-//            });
+//            if ($scope.dirPath === null) {
+//                 setNgShow();
+//                 zipFile = file;
+//                 console.log(cmd + " ---> command");
+//                 console.log(zipFile);
 //
-//        };
-         $scope.runDrat = function(cmd, zipFile) {
-            var run = null;
-            var path = "";
-
-            setTimeout(function() {
-
-                checkingDratStatus();
-            }, 3000);
-
-
-            if(stateOfTextArea === true) {
-                   setNgShow();
-                   zipFile = file;
-                   console.log(cmd + " ---> command");
-                   console.log(zipFile);
-
-
-                   var run = {
-                              method: 'POST',
-                              url: '/drat/' + cmd,
-                              data: {
-                                 zipFile: zipFile //dir path
-                              }
-                   }
-            }
-            else if(stateOfTextArea === false) {
-                   setNgShow();
-                   path = $('input').val();
-                   console.log(path);
-                   console.log(cmd);
-
-                   $scope.goSecondPage = true;
-                   var run = {
-                          method: 'POST',
-                          url: '/drat/' + cmd,
-                          data: {
-                               dirPath: path //dir path
-                          }
-                   }
-
-            }
-
-
-              $http(run).then(function() {});
-
-              setTimeout(function() {
-                  getHealthMonitorService();
-                  checkingDratStatus();
-              }, 2000);
-
-
-              // get the list of unapproved list
-              getUnapprovedList();
-
-              var checkingDrat;
-
-              var sizePayload = $http({
-                  method: "GET",
-                  url: "/service/repo/size"
-              }).success(function(response) {
-                  $scope.memorySize = response.memorySize;
-                  $scope.numberOfFiles = response.numberOfFiles;
-              });
-
-          };
+//                 var run = {
+//                     method: 'POST',
+//                     url: '/drat/' + cmd,
+//                     data: {
+//                          zipFile: zipFile //dir path
+//                     }
+//                 }
+//            }
+//            else {
+//                   setNgShow();
+//                   path = $scope.dirPath; // get the path from the input
+//                   console.log(cmd);
+//
+//                   $scope.goSecondPage = true;
+//                   var run = {
+//                          method: 'POST',
+//                          url: '/drat/' + cmd,
+//                          data: {
+//                               dirPath: path //dir path
+//                          }
+//                   }
+//
+//            }
+//
+//
+//              $http(run).then(function() {});
+//
+//              setTimeout(function() {
+//                  getHealthMonitorService();
+//                  checkingDratStatus();
+//              }, 3000);
+//
+//
+//              // get the list of unapproved list
+//              getUnapprovedList();
+//
+//              var checkingDrat;
+//
+//              var sizePayload = $http({
+//                  method: "GET",
+//                  url: "/service/repo/size"
+//              }).success(function(response) {
+//                  $scope.memorySize = response.memorySize;
+//                  $scope.numberOfFiles = response.numberOfFiles;
+//              });
+//
+//          };
 
 
           $scope.ratInstances = null;
@@ -279,14 +293,14 @@ angular
         };
 
         function checkingDratStatus() {
-            checkingDrat = setInterval(function() {
+            var checkingDrat = setInterval(function() {
                 getDratStatus();
                 getMIMEType();
                 getLicenseType();
                 getHealthMonitorService();
-                if ($scope.steps[0] == "Crawling") {
+                //if ($scope.steps[0] === "Crawling") {
                     getRecentIngestedFiles();
-                }
+                //}
             }, 500);
 
         };
@@ -306,7 +320,7 @@ angular
                     var res = response
 
                     if (response.data.currentState == "CRAWL") {
-                        $scope.value = response.data.progress/$scope.numberOfFiles;
+                        $scope.value = 0;
                         $scope.steps[0] = "Crawling";
                     } else if (response.data.currentState == "INDEX") {
                         $scope.value = 25;
@@ -323,6 +337,7 @@ angular
                             $scope.value = 100;
                             $scope.steps[0] = "Completed";
                             setTimeout(showLogsDiv, 2000);
+                            $scope.scanComplete = true;
                             $scope.scanStatus = "Failed RAT Instances";
                         }
 
@@ -382,12 +397,16 @@ angular
                                                        "value": response.data[i].weight * 100
                                                 };
                                                 temp[0].values[j] = payload;
+
                                                 j++;
+
 
                                             }
 
                                         }
                                         for (var i = 0 ; i < response.data.length; i ++){
+                                            console.log(temp[0].values[i]);
+                                            //console.log(temp[0].values[i].weight);
                                             if($scope.chartData.length == 0){
                                                     $scope.chartData = temp;
                                                      break;
@@ -411,8 +430,10 @@ angular
                             listId: i,
                             listName: response.data[i].title
                         };
+
                         $scope.arrayOfScannedFiles[i] = payload;
                     }
+                    console.log($scope.arrayOfScannedFiles);
                 });
         };
     }])

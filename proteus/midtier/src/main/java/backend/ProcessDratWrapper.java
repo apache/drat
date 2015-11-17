@@ -72,7 +72,7 @@ public class ProcessDratWrapper extends GenericProcess implements AbstractDratWr
         startAndMonitorDratProcess(INDEX_CMD).waitFor();
         Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
         startAndMonitorDratProcess(MAP_CMD).waitFor();
-        Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
+        Thread.sleep(10000);
         startAndMonitorDratProcess(REDUCE_CMD).waitFor();
     }
 
