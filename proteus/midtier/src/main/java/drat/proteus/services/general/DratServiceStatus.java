@@ -5,6 +5,7 @@ public class DratServiceStatus extends ServiceStatus {
         INDEX, CRAWL, MAP, REDUCE, IDLE, INTERRUPTED
     }
     private State currentState;
+    private int progress;
 
     public DratServiceStatus() {
         super(false); //since the status is a static variable, DRAT hasn't started yet
@@ -17,6 +18,14 @@ public class DratServiceStatus extends ServiceStatus {
     public void setCurrentState(State status) {
         this.currentState = status;
         super.isRunning(currentState != State.IDLE && currentState != State.INTERRUPTED);
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     @Override

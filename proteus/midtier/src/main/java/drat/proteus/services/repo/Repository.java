@@ -22,9 +22,16 @@ public class Repository {
 
     public Size getSize() {
         if (numberOfFiles == SIZE_UNKNOWN) {
+            numberOfFiles = 0;
+            memorySize = 0;
             getRepositoryFileInformation(this.dir);
         }
         return new Size(this.numberOfFiles, this.memorySize);
+    }
+
+    public void reset() {
+        numberOfFiles = SIZE_UNKNOWN;
+        memorySize = SIZE_UNKNOWN;
     }
 
 

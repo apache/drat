@@ -1,7 +1,17 @@
-$(".x-link").click(function() {
-    $("#file-name").html('');
-    $("#remote_repository").removeAttr('disabled');
-});
+var file = null;
+var stateOfTextArea = false;
+  $("input[name='attachment[]']").change(function() {
+      var fileName = $(this).val();
+      $("#file-name").html("<strong>Path</strong>: " + fileName + "<a href='' class='x-link'><span class='glyphicon glyphicon-remove pull-right remove-icon'></span></a>");
+       file = event.target.files[0]; 
+
+      $("#remote_repository").prop('disabled', true);
+      stateOfTextArea = $("#remote_repository").prop('disabled');
+  });
+  $(".x-link").click(function() {
+      $("#file-name").html('');
+      $("#remote_repository").removeAttr('disabled');
+  });
 
 
 angular
@@ -14,6 +24,9 @@ angular
         // this indicates which step the app is on
         $scope.value = 0;
         $scope.steps = ['Starting..'];
+        $scope.showLogsBox = false; // shows logs
+        $scope.scanStatus = "Scanned Files";
+
 
         // scanned list array
         $scope.arrayOfScannedFiles = [];
@@ -26,6 +39,41 @@ angular
                 return colorArray[i];
             };
         }
+
+            var  idOfCommand ='go';
+
+            $scope.setId = function(id) {
+                idOfCommand = id;
+            }
+
+            $scope.getId = function() {
+                return idOfCommand;
+            }
+
+            $scope.listOfAvailableCommands = [
+                {
+                    id: 'go',
+                    name: 'Go'
+                },
+                {
+                    id: 'index',
+                    name: 'Index'
+                },
+                {
+                     id: 'map',
+                     name: 'Map'
+                },
+                {
+                    id: 'reduce',
+                    name: 'Reduce'
+                },
+                {
+                    id: 'crawl',
+                    name: 'Crawl'
+                }
+            ]
+
+
 
         $scope.options = {
             chart: {
@@ -112,24 +160,105 @@ angular
         $scope.numORatFinished = 0;
         $scope.numOfRatfailed = 0;
 
-        $scope.runDrat = function() {
+//        $scope.runDrat = function() {
+//            setTimeout(function() {
+//
+//                checkingDratStatus();
+//            }, 3000);
+//
+//
+//            var checkingDrat;
+//
+//            var sizePayload = $http({
+//                method: "GET",
+//                url: "/service/repo/size"
+//            }).success(function(response) {
+//                $scope.memorySize = response.memorySize;
+//                $scope.numberOfFiles = response.numberOfFiles;
+//            });
+//
+//        };
+         $scope.runDrat = function(cmd, zipFile) {
+            var run = null;
+            var path = "";
+
             setTimeout(function() {
 
                 checkingDratStatus();
             }, 3000);
 
 
-            var checkingDrat;
+            if(stateOfTextArea === true) {
+                   setNgShow();
+                   zipFile = file;
+                   console.log(cmd + " ---> command");
+                   console.log(zipFile);
 
-            var sizePayload = $http({
-                method: "GET",
-                url: "/service/repo/size"
-            }).success(function(response) {
-                $scope.memorySize = response.memorySize;
-                $scope.numberOfFiles = response.numberOfFiles;
-            });
 
-        };
+                   var run = {
+                              method: 'POST',
+                              url: '/drat/' + cmd,
+                              data: {
+                                 zipFile: zipFile //dir path
+                              }
+                   }
+            }
+            else if(stateOfTextArea === false) {
+                   setNgShow();
+                   path = $('input').val();
+                   console.log(path);
+                   console.log(cmd);
+
+                   $scope.goSecondPage = true;
+                   var run = {
+                          method: 'POST',
+                          url: '/drat/' + cmd,
+                          data: {
+                               dirPath: path //dir path
+                          }
+                   }
+
+            }
+
+
+              $http(run).then(function() {});
+
+              setTimeout(function() {
+                  getHealthMonitorService();
+                  checkingDratStatus();
+              }, 2000);
+
+
+              // get the list of unapproved list
+              getUnapprovedList();
+
+              var checkingDrat;
+
+              var sizePayload = $http({
+                  method: "GET",
+                  url: "/service/repo/size"
+              }).success(function(response) {
+                  $scope.memorySize = response.memorySize;
+                  $scope.numberOfFiles = response.numberOfFiles;
+              });
+
+          };
+
+
+          $scope.ratInstances = null;
+
+          // get the list of logs
+          function getUnapprovedList () {
+                var recent = $http({
+                     method: "GET",
+                     url: 'service/repo/licenses/unapproved'
+                })
+                .then(function(response) {
+                    console.log(response.data);
+                    $scope.ratInstances = response.data;
+                });
+          };
+
 
         function getHealthMonitorService() {
             var recent = $http({
@@ -162,6 +291,10 @@ angular
 
         };
 
+        function showLogsDiv () {
+            $scope.showLogsBox = true;
+          }
+
         function getDratStatus() {
 
 
@@ -173,7 +306,7 @@ angular
                     var res = response
 
                     if (response.data.currentState == "CRAWL") {
-                        $scope.value = 0;
+                        $scope.value = response.data.progress/$scope.numberOfFiles;
                         $scope.steps[0] = "Crawling";
                     } else if (response.data.currentState == "INDEX") {
                         $scope.value = 25;
@@ -189,6 +322,8 @@ angular
                         if ($scope.reduced) {
                             $scope.value = 100;
                             $scope.steps[0] = "Completed";
+                            setTimeout(showLogsDiv, 2000);
+                            $scope.scanStatus = "Failed RAT Instances";
                         }
 
                     }
