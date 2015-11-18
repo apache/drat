@@ -257,3 +257,12 @@ body {
 		.logs a {
 		cursor: pointer;
 		text-decoration: none; }
+		
+		.spinner {
+	        	float: none;
+	        	display: block;
+	        	margin-left: 60px;
+	        	margin-top: 30px;
+	        	width: 90px;
+	        	height: 90px;
+		}
