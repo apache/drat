@@ -266,3 +266,26 @@ body {
 	        	width: 90px;
 	        	height: 90px;
 		}
+
+		 /* CSS for the left toolbar/menu-bar */
+        #menu-bar {
+        	display: inline-flex;
+        	margin-top: 8px;
+        }
+        .top-left {
+        	margin-right: 10px;
+        	text-decoration: none;
+        	color: lightblue;
+
+        }
+        .active-bar {
+			text-decoration: none;
+			color: #cfcfcf;
+        }
+        a.active-bar {
+        	text-decoration: none;
+        	pointer-events: none;
+            cursor: default;
+        }
+
+		

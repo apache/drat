@@ -14,8 +14,15 @@
 		<h1 class="proteus">PROTEUS</h1>
 		<span class="h4">'A GUI FOR DRAT'</span>
 	</div>
-	<!--ng-controller="switch"-->
+	
+	<!-- The toolbar that shows up in the top left corner -->
+    <div id="menu-bar">
+        <a href="/" class="top-left"> Home  </a>
+         <div class="top-left"> >  </div>
+        <a href="" class="top-left active-bar">  Workflow </a>
+    </div>
 
+    <!-- drat's beauty stats visualizations starts here -->
 	<div class="col-md-5 box">
 		<form wicket:id="form" action="/workflow" method="POST">
 			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
