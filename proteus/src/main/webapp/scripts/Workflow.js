@@ -1,9 +1,13 @@
 angular
     .module('drat', ['ngAnimate', 'ui.bootstrap', 'nvd3', 'nvd3ChartDirectives'])
     .controller('switch', ['$scope', '$http', function($scope, $http) {
-        $scope.goToTwo = function() {
-            console.log("goes");
-        }
+     
+        //using jquery for displaying the spinner instead of 'No Data Available'
+        $(document).ready(function() {
+            $('.nv-noData').html(" ");
+            $(".spinner").show("slow").delay(4300).hide("slow");
+        });
+        
         $scope.max = 100;
         // this indicates which step the app is on
         $scope.value = 0;
