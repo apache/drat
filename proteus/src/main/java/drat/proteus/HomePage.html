@@ -1,42 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:wicket="http://wicket.apache.org">-->
-<!--<head>-->
-<!--<meta charset="utf-8" />-->
-<!--<title>Proteus</title>-->
-<!--<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />-->
-<!--<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />-->
-<!--</head>-->
-
-<!--<style>-->
-<!--.feedbackPanelINFO {-->
-<!--color: green;-->
-<!--}-->
-<!--.feedbackPanelERROR {-->
-<!--color: red;-->
-<!--}-->
-<!--</style>-->
-
-<!--<body>-->
-<!--<div>-->
-<!--<div wicket:id="feedback"></div> &lt;!&ndash; gives user warnings/messages &ndash;&gt;-->
-
-<!--<form wicket:id="form">-->
-<!--<p>-->
-<!--<label>Enter directory:</label>-->
-<!--<input wicket:id="path" type="text" size="20" />-->
-<!--<input wicket:id="query" type="text" size="20" />-->
-<!--<input type="submit" value="Upload"/>-->
-<!--</p>-->
-<!--</form>-->
-<!--</div>-->
-
-
-
-<!--<br><br><wicket:container wicket:id="version">1.5-SNAPSHOT</wicket:container>.-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en" ng-app="drat" xmlns:wicket="http://wicket.apache.org">
 <head>
@@ -60,7 +21,7 @@
 			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
 				<div class="input-group">
 					<div class="select-text">Select a repository to audit with <span class="weight">DRAT</span></div>
-					<input ng-model="dirPath"  placeholder="Enter a remote git/svn repository(e.g. Github, ...)" type="text" class="form-control input-height" id="remote_repository">
+					<input wicket:id="path"  placeholder="Enter a remote git/svn repository or a canonical path on your computer." type="text" class="form-control input-height" id="remote_repository">
 					<label class="grey-font" style="font-size: 18px; margin: 5px 0">or</label> <br>
 
                       <span class="file-input btn btn-block btn-info btn-file default-weight input-height">

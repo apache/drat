@@ -1,5 +1,7 @@
 package backend;
 
+import org.apache.oodt.cas.metadata.util.PathUtils;
+
 import java.io.File;
 
 /**
@@ -14,9 +16,8 @@ public class FileConstants {
     public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
 
     private static String getDratDirectory() {
-        final File CURRENT_CLASS = new File(FileConstants.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        String classPath = CURRENT_CLASS.getAbsolutePath();
-        return classPath.substring(0, classPath.lastIndexOf(DRAT)+DRAT.length());
+        final String DRAT_HOME = PathUtils.replaceEnvVariables("[DRAT_HOME]");
+        return DRAT_HOME.substring(0, DRAT_HOME.lastIndexOf(DRAT)+DRAT.length());
     }
 
     public static String buildDratSubdirectoryPath(String additionalPath) {
