@@ -288,4 +288,18 @@ body {
             cursor: default;
         }
 
+        
+       /* home page loader css */
+        #loader {
+        	border: 0;
+        	float: none;
+        	display: block;
+        	margin: 0 auto;
+			margin-top: -20px;
+        }
+        #loader img {
+        	width: 80px;
+        	height: 50px;
+        }
+
 		
