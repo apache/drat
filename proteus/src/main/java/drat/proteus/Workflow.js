@@ -181,7 +181,7 @@ angular
 
             var sizePayload = $http({
                 method: "GET",
-                url: "/service/repo/size"
+                url: "./service/repo/size"
             }).success(function(response) {
                 $scope.memorySize = response.memorySize;
                 $scope.numberOfFiles = response.numberOfFiles;
@@ -254,7 +254,7 @@ angular
 //
 //              var sizePayload = $http({
 //                  method: "GET",
-//                  url: "/service/repo/size"
+//                  url: "./service/repo/size"
 //              }).success(function(response) {
 //                  $scope.memorySize = response.memorySize;
 //                  $scope.numberOfFiles = response.numberOfFiles;
@@ -281,7 +281,7 @@ angular
         function getHealthMonitorService() {
             var recent = $http({
                     method: "GET",
-                    url: '/service/status/oodt/raw'
+                    url: './service/status/oodt/raw'
                 })
                 .then(function(response) {
                     var temp = response.data.report.jobHealth;
@@ -318,7 +318,7 @@ angular
 
             var recent = $http({
                     method: "GET",
-                    url: '/service/status/drat'
+                    url: './service/status/drat'
                 })
                 .then(function(response) {
                     var res = response
@@ -360,7 +360,7 @@ angular
         function getMIMEType() {
                       var recent = $http({
                               method: "GET",
-                              url: '/service/repo/breakdown/mime?limit=5'
+                              url: './service/repo/breakdown/mime?limit=5'
 
                           })
                           .then(function(response) {
@@ -385,7 +385,7 @@ angular
         function getLicenseType() {
                                 var recent = $http({
                                         method: "GET",
-                                        url: '/service/repo/breakdown/license'
+                                        url: './service/repo/breakdown/license'
                                     })
                                     .then(function(response) {
 
@@ -425,7 +425,7 @@ angular
         function getRecentIngestedFiles() {
             var recent = $http({
                     method: "GET",
-                    url: '/service/products'
+                    url: './service/products'
                 })
                 .then(function(response) {
                     $scope.arrayOfScannedFiles = [];

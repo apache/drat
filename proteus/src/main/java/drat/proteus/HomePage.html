@@ -4,9 +4,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>PROTEUS</title>
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://rawgit.com/novus/nvd3/v1.1.15-beta/nv.d3.min.css"/>
-	<link rel="stylesheet" type="text/css" href="styles/HomePage.css">
+	<wicket:link>
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="nv.d3.min.css"/>	
+		<link rel="stylesheet" type="text/css" href="HomePage.css">
+	</wicket:link>
 </head>
 <body ng-controller="switch">
 <div class="container" ng-show="!goSecondPage">
@@ -70,17 +72,18 @@
 		</form>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
-<script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
-<script src="https://rawgit.com/mbostock/d3/master/d3.min.js"></script>
-<script src="scripts/HomePage.js"></script>
+<wicket:link>
+	<script src="jquery-2.1.4.min.js"></script>
+	<script src="angular.min.js"></script>
+	<script src="ui-bootstrap-tpls-0.14.3.js"></script>
+	<script src="jquery-2.1.4.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	
+	<script src="angular-animate.js"></script>
+	<script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+	<script src="d3.min.js"></script>
+	<script src="HomePage.js"></script>
+</wicket:link>
 </body>
 
 </html>
