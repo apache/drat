@@ -28,6 +28,11 @@
 	<div class="col-md-5 box">
 		<form wicket:id="form" action="/workflow" method="POST">
 			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
+				<!-- loader -->
+				<div id="loader">
+					<img src="../img/spinner.gif">
+				</div>
+				
 				<div class="input-group">
 					<div class="select-text">Select a repository to audit with <span class="weight">DRAT</span></div>
 					<input wicket:id="path"  placeholder="Enter a remote git/svn repository or a canonical path on your computer." type="text" class="form-control input-height" id="remote_repository">

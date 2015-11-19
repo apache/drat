@@ -15,6 +15,12 @@ angular
     .module('drat', [])
     .controller('switch', ['$scope', function($scope) {
         var  idOfCommand ='go';
+        
+        // home page loader
+        $('#loader').css({'visibility': 'hidden'});
+         $scope.load = function() {
+              $('#loader').css({'visibility': 'show'});
+         }
 
                     $scope.setId = function(id) {
                         idOfCommand = id;
