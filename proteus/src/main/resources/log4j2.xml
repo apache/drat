@@ -9,7 +9,7 @@
   	<logger name="org.apache.wicket" level="INFO" additivity="false">
   		<AppenderRef ref="CONSOLE"/>
   	</logger>
-    <Root level="WARN">
+    <Root level="INFO">
       <AppenderRef ref="CONSOLE"/>
     </Root>
   </Loggers>
