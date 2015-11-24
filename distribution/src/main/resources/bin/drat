@@ -18,6 +18,9 @@
 # Stop on first error.
 set -e
 
+# Hostname where OODT services are deployed
+OODT_HOST=localhost
+
 # Print out usage information for this script.
 function print_help {
     echo "Usage: drat [crawl, index, map, reduce] in order to analyze a repository." 
@@ -34,12 +37,13 @@ function print_help {
 }
 
 function print_ui_info {
-    echo "Navigate to http://localhost:8080/opsui/ to view the OODT browser and http://localhost:8080/solr to view the Solr catalog."
+    echo "Navigate to http://${OODT_HOST}:8080/opsui/ to view the OODT browser and http://${OODT_HOST}:8080/solr to view the Solr catalog."
 }
 
-FILEMGR_URL=http://localhost:9000
-SOLR_URL=http://localhost:8080/solr/drat
-CLIENT_URL=http://localhost:9001
+FILEMGR_URL=http://${OODT_HOST}:9000
+SOLR_URL=http://${OODT_HOST}:8080/solr/drat
+CLIENT_URL=http://${OODT_HOST}:9001
+OPSUI_URL=http://${OODT_HOST}:8080/opsui
 
 # Crawl the given repository. Expects one or three argument(s) -- the file path of the repo to be crawled and
 # --exclude file/directory name.
@@ -89,7 +93,7 @@ function map {
 function current_pges {
     STATUS="PGE%20EXEC"
     tika="java -jar $DRAT_HOME/lib/tika-app-1.5.jar"
-    echo $($tika "http://localhost:8080/opsui/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit)
+    echo $($tika "${OPSUI_URL}/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit)
 }
 
 # Fire off the MapReduce reducer. Expects no arguments.
@@ -129,7 +133,16 @@ function check_num_args {
 # Return a list of what is running on a the given port. Expects 1 argument: the port number.
 function check_port {
     check_num_args "check port" $# 1
-    lsof -i tcp:$1
+
+#   Commented 'lsof' - Using 'nc' which helps to check port on Remote server as well 
+#   lsof -i tcp:$1
+
+    nc -z ${OODT_HOST} $1 &> /dev/null
+    if [ $? == 0 ]; then
+	echo 0
+    else
+	echo ""
+    fi
 }
 
 # Check the Solr and OODT ports. If no arguments are passed, ensure the ports are all busy.
