@@ -16,6 +16,7 @@ See the wiki for more information on installing and running DRAT:
 * [Vagrant setup](https://github.com/chrismattmann/drat/wiki/Vagrant)
 * [Excluding files from analysis](https://github.com/chrismattmann/drat/wiki/RegEx-exclude-file)
 * [Running DRAT on multiple repositories](https://github.com/chrismattmann/drat/wiki/DRAT-Sequential)
+* [Running the DRAT Proteus GUI](https://github.com/chrismattmann/drat/wiki/Proteus---A-GUI-for-DRAT)
 
 You can clone the wiki by running  
 `git clone https://github.com/chrismattmann/drat.wiki.git`
