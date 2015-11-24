@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="drat" xmlns:wicket="http://wicket.apache.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PROTEUS</title>
+	<!-- Latest compiled and minified CSS -->
+	<wicket:link>
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="nv.d3.min.css"/>	
+		<link rel="stylesheet" type="text/css" href="HomePage.css">
+	</wicket:link>
+</head>
+<body ng-controller="switch">
+<div class="container" ng-show="!goSecondPage">
+	<div class="header">
+		<h1 class="proteus">PROTEUS</h1>
+		<span class="h4">'A GUI FOR DRAT'</span>
+	</div>
+	
+	<!-- The toolbar that shows up in the top left corner -->
+    <div id="menu-bar">
+        <a href="/" class="top-left"> Home  </a>
+         <div class="top-left"> >  </div>
+        <a href="" class="top-left active-bar">  Workflow </a>
+    </div>
+
+    <!-- drat's beauty stats visualizations starts here -->
+	<div class="col-md-5 box">
+		<form wicket:id="form" action="/workflow" method="POST">
+			<div class="col-lg-10 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-2">
+				<!-- loader -->
+				<div id="loader">
+				  <wicket:link>
+					<img src="spinner.gif">
+				  </wicket:link>
+				</div>
+				
+				<div class="input-group">
+					<div class="select-text">Select a repository to audit with <span class="weight">DRAT</span></div>
+					<input wicket:id="path"  placeholder="Enter a remote git/svn repository or a canonical path on your computer." type="text" class="form-control input-height" id="remote_repository">
+					<label class="grey-font" style="font-size: 18px; margin: 5px 0">or</label> <br>
+
+                      <span class="file-input btn btn-block btn-info btn-file default-weight input-height">
+                          <span class="glyphicon glyphicon-folder-open folder-icon"></span>
+                          Choose a directory from your computer
+                          <input wicket:id="fileUploader" type="file" id="files" name="attachment[]" accept=".zip" multiple />
+                          <output id="list"></output>
+                      </span>
+					<div class="name" id="file-name">
+
+					</div>
+
+				</div>
+
+				<div class="btn-group" style="margin-top: 30px; width: 100%; ">
+					<div class="choose-text">Choose a command to run</div>
+
+					<button type="button"  class="btn btn-info default-weight go">
+						{{ listOfAvailableCommands[0].name }}! (runs all commands)
+					</button>
+					<div class="btn-group">
+						<ul class="dropdown-menu">
+							<li ng-repeat="list in listOfAvailableCommands.slice(1,listOfAvailableCommands.length)">
+								<a href="#" ng-click="setId(list.id)" id="list.id"> {{ list.name }} </a>
+							</li>
+						</ul>
+						<button type="button" class="btn btn-info dropdown-toggle down-drop-button"
+								data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+
+					</div>
+					<!--ng-click="goToTwo()"-->
+					<button  type="submit" value="Upload" class="btn btn-primary default-weight run-button">
+						Run DRAT!
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<wicket:link>
+	<script src="jquery-2.1.4.min.js"></script>
+	<script src="angular.min.js"></script>
+	<script src="ui-bootstrap-tpls-0.14.3.js"></script>
+	<script src="jquery-2.1.4.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	
+	<script src="angular-animate.js"></script>
+	<script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+	<script src="d3.min.js"></script>
+	<script src="HomePage.js"></script>
+</wicket:link>
+</body>
+
+</html>
