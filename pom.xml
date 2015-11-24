@@ -118,5 +118,6 @@
     <module>solr</module>
     <module>distribution</module>
     <module>webapps</module>
+    <module>proteus</module>
   </modules>
 </project>
