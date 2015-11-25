@@ -65,6 +65,7 @@ public class DratStartForm extends Form {
         File unzippedFile = Unzipper.unzip(file);
         file.delete();
         startDrat(unzippedFile.getCanonicalPath(), "GO");
+        setResponsePage(DratWorkflow.class);
       }
       if (pathValue.startsWith("http://")) {
         parseAsVersionControlledRepo(pathValue);
