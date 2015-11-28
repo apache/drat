@@ -9,6 +9,19 @@
 		<link rel="stylesheet" type="text/css" href="nv.d3.min.css"/>	
 		<link rel="stylesheet" type="text/css" href="HomePage.css">
 	</wicket:link>
+	<wicket:remove>
+	  <style type="text/css">
+	   .dropdown-menu>wicket\:remove>li>a {
+		    display: block;
+		    padding: 3px 20px;
+		    clear: both;
+		    font-weight: 400;
+		    line-height: 1.42857143;
+		    color: #333;
+		    white-space: nowrap;
+		}
+	  </style>
+	</wicket:remove>
 </head>
 <body ng-controller="switch">
 <div class="container" ng-show="!goSecondPage">
@@ -60,20 +73,17 @@
                     <div class="btn-group">
                         <ul class="dropdown-menu">
                             <li class="ng-scope" wicket:id="cmd">
-                                <a href="#" class="ng-binding" wicket:id="cmd_link"><span wicket:id="cmd_item_label">[pick a command]</span></a>
+                                <a href="#" class="ng-binding" wicket:id="cmd_link"><span wicket:id="cmd_item_label" class="ng-binding">Index</span></a>
                             </li>
-                            <wicket:remove>
-                                <li class="ng-scope">
-                                    <a href="#" class="ng-binding">Index</a>
-                                </li>                            
+                            <wicket:remove>  
 	                            <li class="ng-scope">
-	                                <a href="#" class="ng-binding">Crawl</a>
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Crawl</span></a>
 	                            </li>
 	                            <li class="ng-scope">
-	                                <a href="#" class="ng-binding">Map</a>
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Map</span></a>
 	                            </li>
 	                            <li class="ng-scope">
-	                                <a href="#" class="ng-binding">Reduce</a>
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Reduce</span></a>
 	                            </li>  
 	                        </wicket:remove>                                                      
                         </ul>
