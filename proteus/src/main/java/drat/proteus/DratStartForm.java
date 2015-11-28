@@ -22,15 +22,22 @@ import drat.proteus.rest.Unzipper;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.cxf.helpers.FileUtils;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 
 import backend.GenericProcess;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,14 +49,38 @@ public class DratStartForm extends Form {
       .getName());
   private FileUploadField fileUploadField;
   private TextField<String> pathField;
+  private ListView<String> cmdSelect;
 
   public DratStartForm(String name, FileUploadField fileUploader,
       TextField<String> path) {
     super(name);
     fileUploadField = fileUploader;
     pathField = path;
+    String[] cmdArray = {"Crawl", "Index", "Map", "Reduce", "Go"};
+    List<String> commands = (List<String>)Arrays.asList(cmdArray);
+    cmdSelect = new ListView<String>("cmd", commands) {
+      @Override
+      protected void populateItem(final ListItem<String> item) {
+        final String cmdItemLabel = item.getModelObject();
+        Link<String> link = new Link<String>("cmd_link") {
+          @Override
+          public void onClick() {
+            String theCmd = cmdItemLabel;
+            String thePath = pathField.getModelObject();
+            LOG.info("Running DRAT: ["+theCmd+"] on path: ["+thePath+"]");
+            startDrat(thePath, theCmd.toUpperCase(Locale.getDefault()));
+            setResponsePage(DratWorkflow.class);
+          }
+        };
+
+        link.add(new Label("cmd_item_label", cmdItemLabel));
+        item.add(link);
+        
+      }
+    };    
     this.add(fileUploadField);
     this.add(path);
+    this.add(cmdSelect);
   }
 
   @Override
