@@ -93,7 +93,18 @@ function map {
 function current_pges {
     STATUS="PGE%20EXEC"
     tika="java -jar $DRAT_HOME/lib/tika-app-1.5.jar"
-    echo $($tika "${OPSUI_URL}/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit)
+
+    # Added workaround to catch the intermitent 500 error (very unlikely) and let the script continue
+    # The workaround shall not be required once we solve OODT-920 issue
+    status=$(($tika "${OPSUI_URL}/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit) 2>&1)
+    if echo "$status" | grep -q "Server returned HTTP response code: 500"; then
+	echo "500 Error occurred but continue";	 
+    else
+	echo $status;
+    fi
+
+    # Commented old code
+    #echo $($tika "${OPSUI_URL}/instances/${STATUS}/1" | grep -v FINISHED | grep RatCodeAudit)
 }
 
 # Fire off the MapReduce reducer. Expects no arguments.
@@ -188,7 +199,7 @@ function go {
     while [[ -n $(current_pges) ]]; do
         for (( i = 0; i < 10; i++ )); do
             printf "."
-            sleep .5
+            sleep 5
         done
     done
     echo
