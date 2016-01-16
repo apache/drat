@@ -18,61 +18,106 @@
 package drat.proteus;
 
 import drat.proteus.rest.Unzipper;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.cxf.helpers.FileUtils;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-
-import backend.GenericProcess;
-
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by stevenfrancus on 11/16/15.
+ * Sets up a DRAT run based on the Proteus start form.
+ *
  */
 public class DratStartForm extends Form {
   private static final Logger LOG = Logger.getLogger(DratStartForm.class
       .getName());
   private FileUploadField fileUploadField;
   private TextField<String> pathField;
+  private ListView<String> cmdSelect;
+  private String theCommand = null;
 
   public DratStartForm(String name, FileUploadField fileUploader,
       TextField<String> path) {
     super(name);
     fileUploadField = fileUploader;
     pathField = path;
+    String[] cmdArray = { "Crawl", "Index", "Map", "Reduce", "Go" };
+    List<String> commands = (List<String>) Arrays.asList(cmdArray);
+    cmdSelect = new ListView<String>("cmd", commands) {
+      @Override
+      protected void populateItem(final ListItem<String> item) {
+        final String cmdItemLabel = item.getModelObject();
+        SubmitLink link = new SubmitLink("cmd_link") {
+          @Override
+          public void onSubmit() {
+            theCommand = cmdItemLabel;
+          }
+        };
+
+        link.add(new Label("cmd_item_label", cmdItemLabel));
+        item.add(link);
+
+      }
+    };
     this.add(fileUploadField);
     this.add(path);
+    this.add(cmdSelect);
   }
 
   @Override
   protected void onSubmit() {
     super.onSubmit();
+    if (theCommand != null) {
+      handleSubmit(theCommand);
+    } else
+      handleSubmit("GO");
+  }
+
+  private void handleSubmit(String command) {
     FileUpload fileUpload = fileUploadField.getFileUpload();
+    boolean downloadPhase = command.toUpperCase().equals("GO") || 
+        command.toUpperCase().equals("CRAWL");
     try {
       String pathValue = pathField.getModelObject();
+      LOG.info("Running DRAT: [" + command + "] on path: [" + pathValue + "]");
+
       if (pathValue == null || pathValue.isEmpty()) {
         File file = new File(System.getProperty("java.io.tmpdir")
             + File.separator + fileUpload.getClientFileName());
-        fileUpload.writeTo(file);
-        File unzippedFile = Unzipper.unzip(file);
-        file.delete();
-        startDrat(unzippedFile.getCanonicalPath(), "GO");
+        if (downloadPhase) {
+          fileUpload.writeTo(file);
+          File unzippedFile = Unzipper.unzip(file);
+          file.delete();
+          startDrat(unzippedFile.getCanonicalPath(), command);
+          setResponsePage(DratWorkflow.class);
+          return;
+        }
+        else{
+          LOG.info("Omitting uploading of zip: current phase: ["+command+"]");
+          startDrat(file.getAbsolutePath(), command);
+          setResponsePage(DratWorkflow.class);
+          return;
+        }
       }
+      
       if (pathValue.startsWith("http://")) {
-        parseAsVersionControlledRepo(pathValue);
+        parseAsVersionControlledRepo(pathValue, command, downloadPhase);
       } else {
         try {
           File file = new File(pathValue);
           if (file.exists()) {
-            startDrat(pathValue, "GO");
+            startDrat(pathValue, command);
           } else {
             setResponsePage(HomePage.class);
             return;
@@ -80,11 +125,13 @@ public class DratStartForm extends Form {
         } catch (Exception e) {
           e.printStackTrace();
           setResponsePage(HomePage.class);
+          return;
         }
       }
       setResponsePage(DratWorkflow.class);
     } catch (Exception e) {
       e.printStackTrace();
+      setResponsePage(HomePage.class);
     }
   }
 
@@ -93,7 +140,13 @@ public class DratStartForm extends Form {
     dratStarterRunnable.start();
   }
 
-  private void parseAsVersionControlledRepo(String path) throws IOException {
+  private void parseAsVersionControlledRepo(String path, String command,
+      boolean downloadPhase) throws IOException {
+    if (!downloadPhase) {
+      startDrat(path, command);
+      return;
+    }
+
     String projectName = null;
     boolean git = path.endsWith(".git");
     File tmpDir = new File(System.getProperty("java.io.tmpdir"));
@@ -106,7 +159,7 @@ public class DratStartForm extends Form {
     } else {
       projectName = path.substring(path.lastIndexOf("/") + 1);
       line = "svn export " + path;
-    }    
+    }
     String clonePath = tmpDirPath + File.separator + projectName;
     File cloneDir = new File(clonePath);
     if (cloneDir.isDirectory() && cloneDir.exists()) {
@@ -116,7 +169,6 @@ public class DratStartForm extends Form {
     }
     LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
         + path + "] into " + tmpDirPath);
-
 
     CommandLine cmdLine = CommandLine.parse(line);
     DefaultExecutor executor = new DefaultExecutor();
@@ -130,7 +182,7 @@ public class DratStartForm extends Form {
       FileUtils.removeDir(gitHiddenDir);
     }
 
-    startDrat(clonePath, "GO");
+    startDrat(clonePath, command);
 
   }
 }

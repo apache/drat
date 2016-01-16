@@ -1,0 +1,322 @@
+FORMAT: 1A
+HOST: http://drat.dyndns.org:8080/
+
+# API for Proteus
+
+Proteus is a GUI representation of DRAT. 
+
+## DRAT API [/proteus]
+
+### Starts the “go” operation on DRAT given a directory [POST]
+
++ Request (application/json)
+
+            + Headers
+
+            Location: /drat/go
+            
+    + Body
+    
+        {
+            "dirPath": $_DIRPATH 
+        } 
+            
+### Starts the “index” operation on DRAT given a directory. [POST]
+
++ Request (application/json)
+
+            + Headers
+            
+            Location: /drat/index
+
+    + Body
+    
+    { 
+        "dirPath": $_DIRPATH 
+    }
+
+### Starts the "crawl" operation on DRAT given a directory. [POST]
+
++ Request (application/json)
+
+            + Headers
+            
+            Location: /drat/crawl
+
+    + Body
+    { 
+        “dirPath”: $_DIRPATH  
+    }
+    
+### Starts the “map” operation on DRAT given a directory. [POST]
+
++ Request (application/json)
+
+            + Headers
+            
+            Location: /drat/map
+
+    + Body
+    { 
+         
+    }
+
+    
+### Starts the “reduce” operation on DRAT given a directory. [POST]
+
++ Request (application/json)
+
+            + Headers
+            
+            Location: /drat/reduce
+
+    + Body
+    { 
+         
+    }
+    
+### Request parameters. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/products?topn=? 
+
+    + Body
+
+            
+                [
+                    {
+                        "title": "String",
+                        "pubDate": "String",
+                        "casSource": "String",
+                        "source": "String",
+                        "link": "String"
+                    }
+                ]
+                
+### Returns OODT status. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/products?topn=? 
+
+    + Body
+
+            {
+                isRunning: boolean
+            }
+            
+### Returns DRAT status. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/status/drat 
+
+    + Body
+
+            {
+                currentState: String/Enum,
+                progress: double, 
+                isRunning: boolean
+            }
+            
+### Returns the raw JSON data from Oodt’s Health Monitor Service. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/status/oodt/raw 
+
+    + Body
+
+         {
+            "report": {
+                "crawlerStatus": [
+                    {
+                        "crawlerName": "Crawler1", 
+                        "crawlerPort": "9020", 
+                        "status": "UP", 
+                        "url": "localhost"
+                    }
+                ], 
+                "daemonStatus": {
+                    "stubs": [
+                        {
+                            "daemon": "batch stub", 
+                            "status": "UP", 
+                            "url": "http://localhost:2001"
+                        }
+                    ], 
+                    "fm": {
+                        "daemon": "File Manager", 
+                        "status": "UP", 
+                        "url": "http://localhost:9000"
+                    }, 
+                    "rm": {
+                        "daemon": "Resource Manager", 
+                        "status": "UP", 
+                        "url": "http://localhost:9002"
+                    }, 
+                    "wm": {
+                        "daemon": "Workflow Manager", 
+                        "status": "UP", 
+                        "url": "http://localhost:9001"
+                    }
+                }, 
+                "generated": "2011-02-15T06:57:07.591-0800", 
+                "ingestHealth": [
+                    {
+                        "avgCrawlTime": 132.78640211640212, 
+                        "crawler": "Crawler1", 
+                        "numCrawls": 189
+                    }
+                ], 
+                "jobHealth": [
+                    {
+                        "numJobs": 0, 
+                        "state": "QUEUED"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "RSUBMIT"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "BUILDING CONFIG FILE"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "PGE EXEC"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "CRAWLING"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "STAGING INPUT"
+                    }, 
+                    {
+                        "numJobs": 7, 
+                        "state": "FINISHED"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "STARTED"
+                    }, 
+                    {
+                        "numJobs": 0, 
+                        "state": "PAUSED"
+                    }
+                ], 
+                "latestFiles": {
+                    "files": [
+                        {
+                            "filepath": "/Users/mattmann/files/foo.bar/foo.bar", 
+                            "receivedTime": "2011-01-22T15:19:21.126-08:00"
+                        }, 
+                        {
+                            "filepath": "/Users/mattmann/files/foo.bar/foo.bar", 
+                            "receivedTime": "2011-01-22T15:08:10.198-08:00"
+                        }, 
+                        {
+                            "filepath": "/Users/mattmann/files/foo.bar/foo.bar", 
+                            "receivedTime": "2011-01-22T15:06:03.659-08:00"
+                        }, 
+                        {
+                            "filepath": "/Users/mattmann/files/blah.txt/blah.txt", 
+                            "receivedTime": "2011-01-21T21:56:03.922-08:00"
+                        }
+                    ], 
+                    "topN": 20
+                }
+            }
+        }
+        
+### Request breakdown parameters - MIME type. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/repo/breakdown/mime?limit=?
+
+    + Body
+
+              [
+                    {
+                        type: String,
+                        numberOfObjects: Number,
+                        weight: Number
+                    }
+             ]
+             
+### Request breakdown parameters - License. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/repo/breakdown/license?limit=?
+
+    + Body
+
+              [
+                    {
+                        type: String,
+                        numberOfObjects: Number,
+                        weight: Number
+                    }
+             ] 
+
+### Request breakdown parameters - Repo Size. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/repo/size?dir=?
+
+    + Body
+
+              
+             {
+                 numberOfFiles: Number,
+                 memorySize: Number 
+             }
+
+### Request breakdown parameters - Unapproved Licenses. [GET]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /service/repo/licenses/unapproved
+
+    + Body
+
+        [              
+             {
+                 ratId: Number,
+                 unapprovedFiles: Array 
+             }
+        ]
+                           
+                
+
+            
+
+            
+
+    
+    
+    
+    
+    

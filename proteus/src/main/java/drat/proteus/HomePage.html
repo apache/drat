@@ -9,6 +9,19 @@
 		<link rel="stylesheet" type="text/css" href="nv.d3.min.css"/>	
 		<link rel="stylesheet" type="text/css" href="HomePage.css">
 	</wicket:link>
+	<wicket:remove>
+	  <style type="text/css">
+	   .dropdown-menu>wicket\:remove>li>a {
+		    display: block;
+		    padding: 3px 20px;
+		    clear: both;
+		    font-weight: 400;
+		    line-height: 1.42857143;
+		    color: #333;
+		    white-space: nowrap;
+		}
+	  </style>
+	</wicket:remove>
 </head>
 <body ng-controller="switch">
 <div class="container" ng-show="!goSecondPage">
@@ -54,23 +67,31 @@
 
 				<div class="btn-group" style="margin-top: 30px; width: 100%; ">
 					<div class="choose-text">Choose a command to run</div>
+                    <button type="button" class="btn btn-info default-weight go ng-binding">
+                        Go! (runs all commands)
+                    </button>					
+                    <div class="btn-group">
+                        <ul class="dropdown-menu">
+                            <li class="ng-scope" wicket:id="cmd">
+                                <a href="#" class="ng-binding" wicket:id="cmd_link"><span wicket:id="cmd_item_label" class="ng-binding">Index</span></a>
+                            </li>
+                            <wicket:remove>  
+	                            <li class="ng-scope">
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Crawl</span></a>
+	                            </li>
+	                            <li class="ng-scope">
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Map</span></a>
+	                            </li>
+	                            <li class="ng-scope">
+	                                <a href="#" class="ng-binding"><span class="ng-binding">Reduce</span></a>
+	                            </li>  
+	                        </wicket:remove>                                                      
+                        </ul>
+                        <button type="button" class="btn btn-info dropdown-toggle down-drop-button" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                        </button>
 
-					<button type="button"  class="btn btn-info default-weight go">
-						{{ listOfAvailableCommands[0].name }}! (runs all commands)
-					</button>
-					<div class="btn-group">
-						<ul class="dropdown-menu">
-							<li ng-repeat="list in listOfAvailableCommands.slice(1,listOfAvailableCommands.length)">
-								<a href="#" ng-click="setId(list.id)" id="list.id"> {{ list.name }} </a>
-							</li>
-						</ul>
-						<button type="button" class="btn btn-info dropdown-toggle down-drop-button"
-								data-toggle="dropdown">
-							<span class="caret"></span>
-						</button>
-
-					</div>
-					<!--ng-click="goToTwo()"-->
+                    </div>
 					<button  type="submit" value="Upload" class="btn btn-primary default-weight run-button">
 						Run DRAT!
 					</button>
