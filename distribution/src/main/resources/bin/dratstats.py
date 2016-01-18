@@ -64,6 +64,17 @@ def normalize_path(repository):
 	return tmp
 
 
+# Count the number of files in a directory recursively
+# Leverages a basic utility to exclude some files as well
+def count_num_files(path, exclude):
+	count = 0
+	for root, dirs, files in os.walk(path):
+		for filename in files:
+			if exclude not in os.path.join(root, filename):
+				count += 1
+	return count
+
+
 # Prints usage of this script
 def help():
 	print >>sys.stderr, "\n\nUsage: python dratstats.py <path to list of repository URLs> <path to output directory>\n"
@@ -228,6 +239,9 @@ def run(repos_list, output_dir):
 						if mime_count[i].split("/")[0] not in neg_mimetype:
 							stats["mime_" + mime_count[i]] = mime_count[i + 1]
 
+
+					# Count the number of files
+					stats["files"] = count_num_files(repository, ".svn")
 
 					# Write data into Solr
 					stats_data = []

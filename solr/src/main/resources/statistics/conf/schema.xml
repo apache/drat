@@ -504,6 +504,7 @@
    <field name="map_end" type="date" indexed="true" stored="true" />
    <field name="reduce_start" type="date" indexed="true" stored="true" />
    <field name="reduce_end" type="date" indexed="true" stored="true" />
+   <field name="files" type="long" indexed="true" stored="true" />
    <dynamicField name="license_*" type="long" indexed="true" stored="true" />
    <dynamicField name="mime_*" type="long" indexed="true" stored="true" />
    
