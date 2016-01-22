@@ -29,6 +29,7 @@ import csv
 import urllib2
 import json
 import xmlrpclib
+import getopt
 
 # Check for environment variables
 def check_env_var():
@@ -80,6 +81,44 @@ def help():
 	print >>sys.stderr, "\n\nUsage: python dratstats.py <path to list of repository URLs> <path to output directory>\n"
 
 
+# Printing out on Console
+def printnow(string):
+	print string
+	sys.stdout.flush()
+
+
+# Parsing RAT log files
+def parseFile(filepath):
+   f = open(filepath, 'r')
+   lines = f.readlines()
+   notes = 0
+   binaries = 0
+   archives = 0
+   standards = 0
+   apachelicensed = 0
+   generated = 0
+   unknown = 0
+
+   for line in lines:
+      if line.startswith('Notes:'):
+         notes = notes + int(line.split(':')[1].strip())
+      if line.startswith('Binaries:'):
+         binaries = binaries + int(line.split(':')[1].strip())
+      if line.startswith('Archives:'):
+         archives = archives + int(line.split(':')[1].strip())
+      if line.startswith('Standards:'):
+         standards = standards + int(line.split(':')[1].strip())
+      if line.startswith('Apache Licensed:'):
+         apachelicensed = apachelicensed + int(line.split(':')[1].strip())
+      if line.startswith('Generated:'):
+         generated = generated + int(line.split(':')[1].strip())
+      if line.find('Unknown Licenses') != -1:
+         unknown = unknown + int(line.split(' ')[0].strip())
+         return (notes, binaries,archives,standards,apachelicensed,generated,unknown)
+         
+   return (-1,-1,-1,-1,-1,-1,-1)
+
+
 # OODT Process (start, stop)
 def oodt_process(command):
 	try:
@@ -103,7 +142,7 @@ def drat_process(command, repository):
 		if command == "crawl" or command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
-			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command, shell=True)
+			retcode = subprocess.call("nohup ${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
 		if retcode < 0:
 			print >>sys.stderr, "DRAT " + command + " process was terminated by signal", -retcode, ". Aborting..."
 			retval = False
@@ -118,16 +157,16 @@ def drat_process(command, repository):
 
 # Reset DRAT
 def drat_reset():
-	print "Removing  " + os.getenv("DRAT_HOME") + "/data/workflow"
+	printnow ("Removing  " + os.getenv("DRAT_HOME") + "/data/workflow")
 	shutil.rmtree(os.getenv("DRAT_HOME") + "/data/workflow")
-	print "Removing  " + os.getenv("DRAT_HOME") + "/filemgr/catalog"
+	printnow ("Removing  " + os.getenv("DRAT_HOME") + "/filemgr/catalog")
 	shutil.rmtree(os.getenv("DRAT_HOME") + "/filemgr/catalog")
-	print "Removing  " + os.getenv("DRAT_HOME") + "/solr/drat/data"
+	printnow ("Removing  " + os.getenv("DRAT_HOME") + "/solr/drat/data")
 	shutil.rmtree(os.getenv("DRAT_HOME") + "/solr/drat/data")
-	print "Removing  " + os.getenv("DRAT_HOME") + "/data/archive"
+	printnow ("Removing  " + os.getenv("DRAT_HOME") + "/data/archive")
 	shutil.rmtree(os.getenv("DRAT_HOME") + "/data/archive")
 	os.mkdir(os.getenv("DRAT_HOME") + "/data/archive")
-	print "Removing  " + os.getenv("DRAT_HOME") + "/data/jobs"
+	printnow ("Removing  " + os.getenv("DRAT_HOME") + "/data/jobs")
 	shutil.rmtree(os.getenv("DRAT_HOME") + "/data/jobs")
 	os.mkdir(os.getenv("DRAT_HOME") + "/data/jobs")
 
@@ -160,18 +199,18 @@ def run(repos_list, output_dir):
 	with open(repos_list) as repositories:
 		for repository in repositories:
 			repository = repository.strip()
-			print "\nVerifying repository path...\n"
+			printnow ("\nVerifying repository path...\n")
 			if not os.path.exists(repository):
-				print "\nPath " + repository + "is not valid. Skipping and moving on...\n"
+				printnow ("\nPath " + repository + "is not valid. Skipping and moving on...\n")
 				continue
-			print "\nRepository Path: OK\n"
+			printnow ("\nRepository Path: OK\n")
 
-			print "\nStarting OODT...\n"
+			printnow ("\nStarting OODT...\n")
 			oodt_process("start")
 			time.sleep(20)
-			print "\nOODT Started: OK\n"
+			printnow ("\nOODT Started: OK\n")
 
-			print "\nRunning DRAT on " + repository + " ...\n"
+			printnow ("\nRunning DRAT on " + repository + " ...\n")
 			
 			retval = True
 			stats = {}
@@ -191,7 +230,7 @@ def run(repos_list, output_dir):
 					time.sleep(5)
 					stats['map_start'] = current_datetime()
 					retval = drat_process("map", None)
-					time.sleep(5)
+					time.sleep(10)
 					wait_for_job("urn:drat:MimePartitioner")
 					wait_for_job("urn:drat:RatCodeAudit")
 					stats['map_end'] = current_datetime()
@@ -199,9 +238,39 @@ def run(repos_list, output_dir):
 					if retval:
 						time.sleep(5)
 						stats['reduce_start'] = current_datetime()
-						drat_process("reduce", None)
-						time.sleep(5)
-						wait_for_job("urn:drat:RatAggregator")
+						
+						# Extract data from RatAggregate File
+						totalNotes = 0
+						totalBinaries = 0
+						totalArchives = 0
+						totalStandards = 0
+						totalApache = 0
+						totalGenerated = 0
+						totalUnknown = 0
+
+						rat_dir = os.getenv("DRAT_HOME") + "/data/archive/rat"
+
+						# Iterate over all RAT log files 
+						for root, dirs, files in os.walk(rat_dir):
+							for filename in files:
+								if filename.endswith(".log"):
+									(notes, binaries, archives,standards,apachelicensed,generated,unknown) = parseFile(os.path.join(root, filename))
+									totalNotes = totalNotes + notes
+									totalBinaries = totalBinaries + binaries
+									totalArchives = totalArchives + archives
+									totalStandards = totalStandards + standards
+									totalApache = totalApache + apachelicensed
+									totalGenerated = totalGenerated + generated
+									totalUnknown = totalUnknown + unknown
+
+						stats["license_Notes"] = totalNotes
+						stats["license_Binaries"] = totalBinaries
+						stats["license_Archives"] = totalArchives
+						stats["license_Standards"] = totalStandards
+						stats["license_Apache"] = totalApache
+						stats["license_Generated"] = totalGenerated
+						stats["license_Unknown"] = totalUnknown
+
 						stats['reduce_end'] = current_datetime()
 						print "\nDRAT Scan Completed: OK\n"
 
@@ -209,73 +278,52 @@ def run(repos_list, output_dir):
 
 			if retval:
 				# Copy Data with datetime variables above, extract output from RatAggregate file, extract data from Solr Core
-				print "\nCopying data to Solr and Output Directory...\n"
-				
-				# Extract data from RatAggregate File
-				aggregate_dir = os.getenv("DRAT_HOME") + "/data/archive/rataggregate"
-				for cur_file in os.listdir(aggregate_dir):
-					rat_aggregate = cur_file
-					break
+				printnow ("\nCopying data to Solr and Output Directory...\n")
 
-				if rat_aggregate != None and os.path.isfile(aggregate_dir + "/" + rat_aggregate):
-					with open(aggregate_dir + "/" + rat_aggregate) as input:
-						reader = csv.reader(input)
-						content = list(reader)
+				# Extract data from Solr
+				neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
+				connection = urllib2.urlopen(os.getenv("SOLR_URL") + "/drat/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
+				response = eval(connection.read())
+				mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
 
-					header = content[0]
-					license_count = content[1]
-
-					for i in range(0, len(header)):
-						stats["license_" + header[i]] = license_count[i]
+				for i in range(0, len(mime_count), 2):
+					if mime_count[i].split("/")[0] not in neg_mimetype:
+						stats["mime_" + mime_count[i]] = mime_count[i + 1]
 
 
-					# Extract data from Solr
-					neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
-					connection = urllib2.urlopen(os.getenv("SOLR_URL") + "/drat/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
-					response = eval(connection.read())
-					mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
+				# Count the number of files
+				stats["files"] = count_num_files(repository, ".svn")
 
-					for i in range(0, len(mime_count), 2):
-						if mime_count[i].split("/")[0] not in neg_mimetype:
-							stats["mime_" + mime_count[i]] = mime_count[i + 1]
+				# Write data into Solr
+				stats_data = []
+				stats_data.append(stats)
+				json_data = json.dumps(stats_data)
+				printnow (json_data)
+				request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
+				request.add_header('Content-type', 'application/json')
+				urllib2.urlopen(request, json_data)
 
-
-					# Count the number of files
-					stats["files"] = count_num_files(repository, ".svn")
-
-					# Write data into Solr
-					stats_data = []
-					stats_data.append(stats)
-					json_data = json.dumps(stats_data)
-					print json_data
-					request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
-					request.add_header('Content-type', 'application/json')
-					urllib2.urlopen(request, json_data)
-
-					# Copying data to Output Directory
-					repos_out = output_dir + "/" + normalize_path(repository)
-					shutil.copytree(os.getenv("DRAT_HOME") + "/data", repos_out)
-					print "\nData copied to Solr and Output Directory: OK\n"
-
-				else:
-					print "\nRatAggregate file is not present. No data was copied\n"
+				# Copying data to Output Directory
+				repos_out = output_dir + "/" + normalize_path(repository)
+				shutil.copytree(os.getenv("DRAT_HOME") + "/data", repos_out)
+				printnow ("\nData copied to Solr and Output Directory: OK\n")
 
 			else:
-				print "\nDRAT Scan Completed: Resulted in Error\n"
+				printnow ("\nDRAT Scan Completed: Resulted in Error\n")
 
 
 			time.sleep(5)
-			print "\nStopping OODT...\n"
+			printnow ("\nStopping OODT...\n")
 			oodt_process("stop")
 			time.sleep(20)
-			print "\nOODT Stopped: OK\n"
+			printnow ("\nOODT Stopped: OK\n")
 
-			print "\nReseting DRAT...\n"
+			printnow ("\nReseting DRAT...\n")
 			drat_reset()
 			time.sleep(5)
-			print "\nDRAT Reset: OK\n"
+			printnow ("\nDRAT Reset: OK\n")
 
-	print "\nDRAT SCAN COMPLETED!!!\n"
+	printnow ("\nDRAT SCAN COMPLETED!!!\n")
 
 
 # This is where it all begins
