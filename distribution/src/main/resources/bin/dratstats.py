@@ -139,7 +139,9 @@ def drat_process(command, repository):
 	retval = True
 	try:
 		retcode = 0
-		if command == "crawl" or command == "index":
+		if command == "crawl":
+			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " --exclude \\.git " + repository, shell=True)
+		elif command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
 			retcode = subprocess.call("nohup ${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
@@ -292,7 +294,7 @@ def run(repos_list, output_dir):
 
 
 				# Count the number of files
-				stats["files"] = count_num_files(repository, ".svn")
+				stats["files"] = count_num_files(repository, ".git")
 
 				# Write data into Solr
 				stats_data = []
