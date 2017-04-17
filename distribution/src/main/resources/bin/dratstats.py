@@ -89,34 +89,34 @@ def printnow(string):
 
 # Parsing RAT log files
 def parseFile(filepath):
-   f = open(filepath, 'r')
-   lines = f.readlines()
-   notes = 0
-   binaries = 0
-   archives = 0
-   standards = 0
-   apachelicensed = 0
-   generated = 0
-   unknown = 0
+	f = open(filepath, 'r')
+	lines = f.readlines()
+	notes = 0
+	binaries = 0
+	archives = 0
+	standards = 0
+	apachelicensed = 0
+	generated = 0
+	unknown = 0
 
-   for line in lines:
-      if line.startswith('Notes:'):
-         notes = notes + int(line.split(':')[1].strip())
-      if line.startswith('Binaries:'):
-         binaries = binaries + int(line.split(':')[1].strip())
-      if line.startswith('Archives:'):
-         archives = archives + int(line.split(':')[1].strip())
-      if line.startswith('Standards:'):
-         standards = standards + int(line.split(':')[1].strip())
-      if line.startswith('Apache Licensed:'):
-         apachelicensed = apachelicensed + int(line.split(':')[1].strip())
-      if line.startswith('Generated:'):
-         generated = generated + int(line.split(':')[1].strip())
-      if line.find('Unknown Licenses') != -1:
-         unknown = unknown + int(line.split(' ')[0].strip())
-         return (notes, binaries,archives,standards,apachelicensed,generated,unknown)
-         
-   return (-1,-1,-1,-1,-1,-1,-1)
+	for line in lines:
+		if line.startswith('Notes:'):
+			notes = notes + int(line.split(':')[1].strip())
+		if line.startswith('Binaries:'):
+			binaries = binaries + int(line.split(':')[1].strip())
+		if line.startswith('Archives:'):
+			archives = archives + int(line.split(':')[1].strip())
+		if line.startswith('Standards:'):
+			standards = standards + int(line.split(':')[1].strip())
+		if line.startswith('Apache Licensed:'):
+			apachelicensed = apachelicensed + int(line.split(':')[1].strip())
+		if line.startswith('Generated:'):
+			generated = generated + int(line.split(':')[1].strip())
+		if line.find('Unknown Licenses') != -1:
+			unknown = unknown + int(line.split(' ')[0].strip())
+			return (notes, binaries,archives,standards,apachelicensed,generated,unknown)
+
+	return (-1,-1,-1,-1,-1,-1,-1)
 
 
 # OODT Process (start, stop)
