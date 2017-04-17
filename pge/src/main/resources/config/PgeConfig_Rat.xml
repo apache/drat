@@ -12,7 +12,7 @@
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
      <cmd>FILELIST=`python -c "print ' '.join('[InputFiles]'.split(','))"`</cmd>
      <cmd>for file in $FILELIST; do</cmd>
-     <cmd>newFile=`echo $file | sed 's/\//_/g'`</cmd>
+     <cmd>newFile=`echo $file | sed 's/\//_|_/g'`</cmd>
      <cmd>rsync -av --backup --suffix=_`date +"%m%d%Y_%H%M"` $file [JobInputDir]/${newFile}</cmd>
      <cmd>done</cmd>
      <cmd>echo "Running Apache RAT on [JobInputDir]"</cmd>
