@@ -206,7 +206,7 @@ def parse_license(s):
 		print('LICENSE TYPE NOT FOUND. PLEASE ADD.')
 	else:
 		li = li_dict[li]
-	return ['/' + arr[1].strip(), li]
+	return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
 
 
 # Index into Solr
@@ -349,7 +349,7 @@ def run(repos_list, output_dir):
 								if '=====================================================' in line or '== File:' in line:
 									h += 1
 								if h == 2:
-									cur_file = '/' + line.split("/", 1)[1].strip()
+									cur_file = line.split("/")[-1].strip().replace("_|_", "/")
 								if h == 3:
 									cur_header += line
 								if h == 4:
@@ -362,7 +362,7 @@ def run(repos_list, output_dir):
 
 				# Index RAT logs into Solr
 				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
-											 "/drat/select?q=*%3A*&fl=filename%2Cmimetype&wt=python&rows="
+											 "/drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
 											 + str(stats["files"]) +"&indent=true")
 				response = eval(connection.read())
 				docs = response['response']['docs']
@@ -371,7 +371,7 @@ def run(repos_list, output_dir):
 				dc = 0
 				for doc in docs:
 					fdata = {}
-					fdata['id'] = doc['filename'][0].replace('_|_', '/')
+					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
 					fdata['parent'] = repository
 					fdata['mimetype'] = doc['mimetype'][0]
 					fdata['license'] = rat_license[fdata['id']]
