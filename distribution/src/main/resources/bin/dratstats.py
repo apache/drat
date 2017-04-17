@@ -140,7 +140,7 @@ def drat_process(command, repository):
 	try:
 		retcode = 0
 		if command == "crawl":
-			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " --exclude \\.git " + repository, shell=True)
+			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " --exclude \"\\.git\" " + repository, shell=True)
 		elif command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
