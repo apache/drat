@@ -507,6 +507,11 @@
    <field name="files" type="long" indexed="true" stored="true" />
    <dynamicField name="license_*" type="long" indexed="true" stored="true" />
    <dynamicField name="mime_*" type="long" indexed="true" stored="true" />
+
+   <field name="parent" type="string" indexed="true" stored="true" />
+   <field name="mimetype" type="string" indexed="true" stored="true" />
+   <field name="license" type="string" indexed="true" stored="true" />
+   <field name="header" type="text_general" indexed="true" stored="true" />
    
    <!-- <field name="text" type="text_general" indexed="true" stored="true" required="false" multiValued="true"/> -->
 

@@ -362,8 +362,8 @@ def run(repos_list, output_dir):
 
 				# Index RAT logs into Solr
 				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
-											 "drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
-											 + stats["files"] +"&indent=true")
+											 "/drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
+											 + str(stats["files"]) +"&indent=true")
 				response = eval(connection.read())
 				docs = response['response']['docs']
 				file_data = []
@@ -373,7 +373,7 @@ def run(repos_list, output_dir):
 					fdata = {}
 					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
 					fdata['parent'] = repository
-					fdata['mime_type'] = doc['mimetype'][0]
+					fdata['mimetype'] = doc['mimetype'][0]
 					fdata['license'] = rat_license[fdata['id']]
 					if fdata['id'] in rat_header:
 						fdata['header'] = rat_header[fdata['id']]
