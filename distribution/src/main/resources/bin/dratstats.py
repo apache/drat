@@ -318,6 +318,7 @@ def run(repos_list, output_dir):
 				stats["files"] = count_num_files(repository, ".git")
 
 				# Write data into Solr
+				stats["type"] = 'software'
 				stats_data = []
 				stats_data.append(stats)
 				json_data = json.dumps(stats_data)
@@ -372,6 +373,7 @@ def run(repos_list, output_dir):
 				for doc in docs:
 					fdata = {}
 					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
+					fdata["type"] = 'file'
 					fdata['parent'] = repository
 					fdata['mimetype'] = doc['mimetype'][0]
 					fdata['license'] = rat_license[fdata['id']]

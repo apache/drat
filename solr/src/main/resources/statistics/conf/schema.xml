@@ -496,6 +496,7 @@
 
    <!-- core CAS product attributes -->
    <field name="id" type="string" indexed="true" stored="true" required="true" /> 
+   <field name="type" type="string" indexed="true" stored="true" />
    <field name="crawl_start" type="date" indexed="true" stored="true" />
    <field name="crawl_end" type="date" indexed="true" stored="true" />
    <field name="index_start" type="date" indexed="true" stored="true" />
