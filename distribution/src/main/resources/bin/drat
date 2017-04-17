@@ -148,7 +148,8 @@ function check_port {
 #   Commented 'lsof' - Using 'nc' which helps to check port on Remote server as well 
 #   lsof -i tcp:$1
 
-    nc -z ${OODT_HOST} $1 &> /dev/null
+    #nc -z ${OODT_HOST} $1 &> /dev/null
+    netstat -nlp | grep $1 &> /dev/null
     if [ $? == 0 ]; then
 	echo 0
     else
