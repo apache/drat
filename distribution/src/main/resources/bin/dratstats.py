@@ -30,6 +30,7 @@ import urllib2
 import json
 import xmlrpclib
 import getopt
+import glob
 
 # Check for environment variables
 def check_env_var():
@@ -196,6 +197,26 @@ def wait_for_job(job_name):
 			time.sleep(2)
 
 
+# Parse license from RAT
+def parse_license(s):
+	li_dict = {'N': 'Notes', 'B': 'Binaries', 'A': 'Archives', 'AL': 'Apache', '!?????': 'Unknown'}
+	arr = s.split("/", 1)
+	li = arr[0].strip()
+	if arr[0].strip() not in li_dict:
+		print('LICENSE TYPE NOT FOUND. PLEASE ADD.')
+	else:
+		li = li_dict[li]
+	return ['/' + arr[1].strip(), li]
+
+
+# Index into Solr
+def index_solr(json_data):
+	printnow(json_data)
+	request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
+	request.add_header('Content-type', 'application/json')
+	urllib2.urlopen(request, json_data)
+
+
 # Run DRAT and collect statistics
 def run(repos_list, output_dir):
 	with open(repos_list) as repositories:
@@ -300,10 +321,71 @@ def run(repos_list, output_dir):
 				stats_data = []
 				stats_data.append(stats)
 				json_data = json.dumps(stats_data)
-				printnow (json_data)
-				request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
-				request.add_header('Content-type', 'application/json')
-				urllib2.urlopen(request, json_data)
+				index_solr(json_data)
+
+				# Parse RAT logs
+				rat_logs_dir = os.getenv("DRAT_HOME") + "/data/jobs/rat/*/output/*.log"
+				rat_license = {}
+				rat_header = {}
+				for filename in glob.glob(rat_logs_dir):
+					#print('=' * 20)
+					section = 0
+					l = 0
+					h = 0
+					cur_file = ''
+					cur_header = ''
+					with open(filename, 'rb') as f:
+						for line in f:
+							if '*****************************************************' in line:
+								section += 1
+							if section == 4:
+								l += 1
+								if l > 5:
+									line = line.strip()
+									if line:
+										li = parse_license(line)
+										rat_license[li[0]] = li[1]
+							if section == 5:
+								if '=====================================================' in line or '== File:' in line:
+									h += 1
+								if h == 2:
+									cur_file = '/' + line.split("/", 1)[1].strip()
+								if h == 3:
+									cur_header += line
+								if h == 4:
+									rat_header[cur_file] = cur_header.split("\n", 1)[1]
+									cur_file = ''
+									cur_header = ''
+									h = 1
+					if h == 3:
+						rat_header[cur_file] = cur_header.split("\n", 1)[1]
+
+				# Index RAT logs into Solr
+				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
+											 "drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
+											 + stats["files"] +"&indent=true")
+				response = eval(connection.read())
+				docs = response['response']['docs']
+				file_data = []
+				batch = 100
+				dc = 0
+				for doc in docs:
+					fdata = {}
+					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
+					fdata['parent'] = repository
+					fdata['mime_type'] = doc['mimetype'][0]
+					fdata['license'] = rat_license[fdata['id']]
+					if fdata['id'] in rat_header:
+						fdata['header'] = rat_header[fdata['id']]
+					file_data.append(fdata)
+					dc += 1
+					if dc % batch == 0:
+						json_data = json.dumps(file_data)
+						index_solr(json_data)
+						file_data = []
+				if dc % batch != 0:
+					json_data = json.dumps(file_data)
+					index_solr(json_data)
 
 				# Copying data to Output Directory
 				repos_out = output_dir + "/" + normalize_path(repository)
