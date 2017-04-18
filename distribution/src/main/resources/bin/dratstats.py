@@ -220,6 +220,9 @@ def run(repos_list, output_dir):
 	with open(repos_list) as repositories:
 		for repository in repositories:
 			repository = repository.strip()
+			if repository.startswith('#'):
+				print('\nSkipping Repository: ' + repository[1:])
+				continue
 			printnow ("\nVerifying repository path...\n")
 			if not os.path.exists(repository):
 				printnow ("\nPath " + repository + "is not valid. Skipping and moving on...\n")
