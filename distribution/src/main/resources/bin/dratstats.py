@@ -203,7 +203,7 @@ def parse_license(s):
 	arr = s.split("/", 1)
 	li = arr[0].strip()
 	if arr[0].strip() not in li_dict:
-		print('LICENSE TYPE NOT FOUND. PLEASE ADD.')
+		print('LICENSE TYPE NOT FOUND. PLEASE ADD: ' + arr[0])
 	else:
 		li = li_dict[li]
 	return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
