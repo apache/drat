@@ -347,7 +347,7 @@ def run(repos_list, output_dir):
 								if l > 4:
 									line = line.strip()
 									if line:
-										li = self.parse_license(line)
+										li = parse_license(line)
 										rat_license[li[0]] = li[1]
 									# print(li)
 							if cur_section == 'headers':
