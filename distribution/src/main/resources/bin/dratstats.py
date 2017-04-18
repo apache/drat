@@ -202,9 +202,7 @@ def parse_license(s):
 	li_dict = {'N': 'Notes', 'B': 'Binaries', 'A': 'Archives', 'AL': 'Apache', '!?????': 'Unknown'}
 	arr = s.split("/", 1)
 	li = arr[0].strip()
-	if arr[0].strip() not in li_dict:
-		print('LICENSE TYPE NOT FOUND. PLEASE ADD: ' + arr[0])
-	else:
+	if li in li_dict:
 		li = li_dict[li]
 	return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
 
@@ -325,7 +323,7 @@ def run(repos_list, output_dir):
 				index_solr(json_data)
 
 				# Parse RAT logs
-				rat_logs_dir = os.getenv("DRAT_HOME") + "/data/jobs/rat/*/output/*.log"
+				rat_logs_dir = os.getenv("DRAT_HOME") + "/data/archive/rat/*/*.log"
 				rat_license = {}
 				rat_header = {}
 				for filename in glob.glob(rat_logs_dir):
