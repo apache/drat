@@ -331,7 +331,6 @@ def run(repos_list, output_dir):
 				rat_header = {}
 				for filename in glob.glob(rat_logs_dir):
 					#print('=' * 20)
-					section = 0
 					l = 0
 					h = 0
 					cur_file = ''
