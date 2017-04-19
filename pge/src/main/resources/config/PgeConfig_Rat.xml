@@ -11,8 +11,8 @@
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
      <cmd>FILELIST="[InputFiles]"</cmd>
-     <cmd>IFS=','</cmd>
-     <cmd>for file in $FILELIST; do</cmd>
+     <cmd>FSEP="_|_"</cmd>
+     <cmd>for file in `printf '%s\n' "${FILELIST//$FSEP/$'\n'}"`; do</cmd>
      <cmd>newFile=`echo $file | sed 's/\//_|_/g'`</cmd>
      <cmd>rsync -av --backup --suffix=_`date +"%m%d%Y_%H%M"` ${file} [JobInputDir]/${newFile}</cmd>
      <cmd>done</cmd>

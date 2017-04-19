@@ -74,6 +74,7 @@ def executeRatJobs(url, num, type, workflowUrl, taskIds):
             if "InputFiles" not in metadata:
                 metadata["InputFiles"] = []
             metadata["InputFiles"].append(fullpath)
+        metadata["InputFiles"] = "_|_".join(str(item) for item in metadata["InputFiles"])
         print "Metadata is "+str(metadata)
         wm.workflowmgr.executeDynamicWorkflow([taskIds], metadata)
         
