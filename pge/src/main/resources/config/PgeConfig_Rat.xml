@@ -10,7 +10,7 @@
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
-     <cmd>FILELIST='[InputFiles]'</cmd>
+     <cmd>FILELIST="[InputFiles]"</cmd>
      <cmd>IFS=','</cmd>
      <cmd>for file in $FILELIST; do</cmd>
      <cmd>newFile=`echo $file | sed 's/\//_|_/g'`</cmd>
