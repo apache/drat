@@ -6,7 +6,7 @@
   <exe dir="[JobDir]" shell="/bin/bash">
      <cmd>export PATH=$HOME/bin/:${PATH}</cmd>
      <cmd>shopt -s expand_aliases</cmd>
-     <cmd>alias rat="java -jar [DRAT_HOME]/rat/lib/apache-rat-0.11.jar"</cmd>
+     <cmd>alias rat="java -jar [DRAT_HOME]/rat/lib/apache-rat-0.12.jar"</cmd>
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
