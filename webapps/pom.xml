@@ -16,6 +16,5 @@
     <module>pcs-services</module>
     <module>fmprod</module>
     <module>solr-webapp</module>
-    <module>viz</module>
   </modules>
 </project>
