@@ -1,0 +1,29 @@
+.nav-pills>li>a{
+    color:black;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus{
+    background-color: rgb(147, 2, 1);
+    color: white;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+th, td{
+  padding: 15px;
+}
+
+.animate-hide{
+    transition: all linear 0.5s;
+}
+
+.ng-hide{
+    left: -100%;
+}
+
+.panel-info>.panel-heading {
+  background-color:  rgb(147, 2, 1);
+  color: #FFCC00;
+}

@@ -74,9 +74,22 @@ def executeRatJobs(url, num, type, workflowUrl, taskIds):
             if "InputFiles" not in metadata:
                 metadata["InputFiles"] = []
             metadata["InputFiles"].append(fullpath)
+        metadata["InputFiles"] = "_|_".join(str(item) for item in metadata["InputFiles"])
         print "Metadata is "+str(metadata)
         wm.workflowmgr.executeDynamicWorkflow([taskIds], metadata)
         
+
+def get_mime_types(solrUrl):
+    neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
+    connection = urllib2.urlopen(solrUrl + "/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
+    response = eval(connection.read())
+    mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
+    stats = {}
+    for i in range(0, len(mime_count), 2):
+        if mime_count[i].split("/")[0] not in neg_mimetype:
+            stats[mime_count[i]] = mime_count[i + 1]
+    return stats.keys()
+
 
 def main(argv):
    solrUrl=''
@@ -109,9 +122,11 @@ def main(argv):
 
 
    print "Configured SOLR url: ["+solrUrl+"]"
-   mimeTypes = ["x-java-source", "x-c", "javascript", "xml", "html", "css", \
-   "x-json", "x-sh", "x-fortran", "csv" "tab-separated-values", "x-tex", \
-   "x-asm", "x-diff", "x-python", "x-matlab"]
+   mimeTypes = get_mime_types(solrUrl)
+   #mimeTypes = ["x-java-source", "x-c", "javascript", "xml", "html", "css", \
+   #"x-json", "x-sh", "x-fortran", "csv" "tab-separated-values", "x-tex", \
+   #"x-asm", "x-diff", "x-python", "x-matlab"]
+
    for type in mimeTypes:
        print "Executing RAT for MIME: ["+type+"]: num files per job: ["+str(numFilesPerJob)+"]"
        executeRatJobs(solrUrl, numFilesPerJob, type, workflowUrl, ratTaskId)

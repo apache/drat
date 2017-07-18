@@ -30,6 +30,7 @@ import urllib2
 import json
 import xmlrpclib
 import getopt
+import glob
 
 # Check for environment variables
 def check_env_var():
@@ -89,34 +90,34 @@ def printnow(string):
 
 # Parsing RAT log files
 def parseFile(filepath):
-   f = open(filepath, 'r')
-   lines = f.readlines()
-   notes = 0
-   binaries = 0
-   archives = 0
-   standards = 0
-   apachelicensed = 0
-   generated = 0
-   unknown = 0
+	f = open(filepath, 'r')
+	lines = f.readlines()
+	notes = 0
+	binaries = 0
+	archives = 0
+	standards = 0
+	apachelicensed = 0
+	generated = 0
+	unknown = 0
 
-   for line in lines:
-      if line.startswith('Notes:'):
-         notes = notes + int(line.split(':')[1].strip())
-      if line.startswith('Binaries:'):
-         binaries = binaries + int(line.split(':')[1].strip())
-      if line.startswith('Archives:'):
-         archives = archives + int(line.split(':')[1].strip())
-      if line.startswith('Standards:'):
-         standards = standards + int(line.split(':')[1].strip())
-      if line.startswith('Apache Licensed:'):
-         apachelicensed = apachelicensed + int(line.split(':')[1].strip())
-      if line.startswith('Generated:'):
-         generated = generated + int(line.split(':')[1].strip())
-      if line.find('Unknown Licenses') != -1:
-         unknown = unknown + int(line.split(' ')[0].strip())
-         return (notes, binaries,archives,standards,apachelicensed,generated,unknown)
-         
-   return (-1,-1,-1,-1,-1,-1,-1)
+	for line in lines:
+		if line.startswith('Notes:'):
+			notes = notes + int(line.split(':')[1].strip())
+		if line.startswith('Binaries:'):
+			binaries = binaries + int(line.split(':')[1].strip())
+		if line.startswith('Archives:'):
+			archives = archives + int(line.split(':')[1].strip())
+		if line.startswith('Standards:'):
+			standards = standards + int(line.split(':')[1].strip())
+		if line.startswith('Apache Licensed:'):
+			apachelicensed = apachelicensed + int(line.split(':')[1].strip())
+		if line.startswith('Generated:'):
+			generated = generated + int(line.split(':')[1].strip())
+		if line.find('Unknown Licenses') != -1:
+			unknown = unknown + int(line.split(' ')[0].strip())
+			return (notes, binaries,archives,standards,apachelicensed,generated,unknown)
+
+	return (-1,-1,-1,-1,-1,-1,-1)
 
 
 # OODT Process (start, stop)
@@ -139,7 +140,9 @@ def drat_process(command, repository):
 	retval = True
 	try:
 		retcode = 0
-		if command == "crawl" or command == "index":
+		if command == "crawl":
+			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " --exclude \"\\.git\" " + repository, shell=True)
+		elif command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
 			retcode = subprocess.call("nohup ${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
@@ -194,11 +197,32 @@ def wait_for_job(job_name):
 			time.sleep(2)
 
 
+# Parse license from RAT
+def parse_license(s):
+	li_dict = {'N': 'Notes', 'B': 'Binaries', 'A': 'Archives', 'AL': 'Apache', '!?????': 'Unknown'}
+	arr = s.split("/", 1)
+	li = arr[0].strip()
+	if li in li_dict:
+		li = li_dict[li]
+	return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
+
+
+# Index into Solr
+def index_solr(json_data):
+	printnow(json_data)
+	request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
+	request.add_header('Content-type', 'application/json')
+	urllib2.urlopen(request, json_data)
+
+
 # Run DRAT and collect statistics
 def run(repos_list, output_dir):
 	with open(repos_list) as repositories:
 		for repository in repositories:
 			repository = repository.strip()
+			if repository.startswith('#'):
+				print('\nSkipping Repository: ' + repository[1:])
+				continue
 			printnow ("\nVerifying repository path...\n")
 			if not os.path.exists(repository):
 				printnow ("\nPath " + repository + "is not valid. Skipping and moving on...\n")
@@ -292,16 +316,89 @@ def run(repos_list, output_dir):
 
 
 				# Count the number of files
-				stats["files"] = count_num_files(repository, ".svn")
+				stats["files"] = count_num_files(repository, ".git")
 
 				# Write data into Solr
+				stats["type"] = 'software'
 				stats_data = []
 				stats_data.append(stats)
 				json_data = json.dumps(stats_data)
-				printnow (json_data)
-				request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
-				request.add_header('Content-type', 'application/json')
-				urllib2.urlopen(request, json_data)
+				index_solr(json_data)
+
+				# Parse RAT logs
+				rat_logs_dir = os.getenv("DRAT_HOME") + "/data/archive/rat/*/*.log"
+				rat_license = {}
+				rat_header = {}
+				for filename in glob.glob(rat_logs_dir):
+					#print('=' * 20)
+					l = 0
+					h = 0
+					cur_file = ''
+					cur_header = ''
+					cur_section = ''
+					with open(filename, 'rb') as f:
+						for line in f:
+							if '*****************************************************' in line:
+								l = 0
+								h = 0
+								cur_file = ''
+								cur_header = ''
+								cur_section = ''
+							if line.startswith('  Files with Apache'):
+								cur_section = 'licenses'
+							if line.startswith(' Printing headers for '):
+								cur_section = 'headers'
+							if cur_section == 'licenses':
+								l += 1
+								if l > 4:
+									line = line.strip()
+									if line:
+										# print("File: %s with License Line: %s" % (filename, line))
+										li = parse_license(line)
+										rat_license[li[0]] = li[1]
+									# print(li)
+							if cur_section == 'headers':
+								if '=====================================================' in line or '== File:' in line:
+									h += 1
+								if h == 2:
+									cur_file = line.split("/")[-1].strip().replace("_|_", "/")
+								if h == 3:
+									cur_header += line
+								if h == 4:
+									rat_header[cur_file] = cur_header.split("\n", 1)[1]
+									cur_file = ''
+									cur_header = ''
+									h = 1
+					if h == 3:
+						rat_header[cur_file] = cur_header.split("\n", 1)[1]
+
+				# Index RAT logs into Solr
+				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
+											 "/drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
+											 + str(stats["files"]) +"&indent=true")
+				response = eval(connection.read())
+				docs = response['response']['docs']
+				file_data = []
+				batch = 100
+				dc = 0
+				for doc in docs:
+					fdata = {}
+					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
+					fdata["type"] = 'file'
+					fdata['parent'] = repository
+					fdata['mimetype'] = doc['mimetype'][0]
+					fdata['license'] = rat_license[fdata['id']]
+					if fdata['id'] in rat_header:
+						fdata['header'] = rat_header[fdata['id']]
+					file_data.append(fdata)
+					dc += 1
+					if dc % batch == 0:
+						json_data = json.dumps(file_data)
+						index_solr(json_data)
+						file_data = []
+				if dc % batch != 0:
+					json_data = json.dumps(file_data)
+					index_solr(json_data)
 
 				# Copying data to Output Directory
 				repos_out = output_dir + "/" + normalize_path(repository)

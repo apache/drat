@@ -496,6 +496,7 @@
 
    <!-- core CAS product attributes -->
    <field name="id" type="string" indexed="true" stored="true" required="true" /> 
+   <field name="type" type="string" indexed="true" stored="true" />
    <field name="crawl_start" type="date" indexed="true" stored="true" />
    <field name="crawl_end" type="date" indexed="true" stored="true" />
    <field name="index_start" type="date" indexed="true" stored="true" />
@@ -507,8 +508,19 @@
    <field name="files" type="long" indexed="true" stored="true" />
    <dynamicField name="license_*" type="long" indexed="true" stored="true" />
    <dynamicField name="mime_*" type="long" indexed="true" stored="true" />
-   
-   <!-- <field name="text" type="text_general" indexed="true" stored="true" required="false" multiValued="true"/> -->
+
+   <field name="parent" type="string" indexed="true" stored="true" />
+   <field name="mimetype" type="string" indexed="true" stored="true" />
+   <field name="license" type="string" indexed="true" stored="true" />
+   <field name="header" type="text_general" indexed="true" stored="true" />
+
+   <field name="name" type="text_general" indexed="true" stored="true" />
+   <field name="description" type="text_general" indexed="true" stored="true" /> 
+   <field name="loc_url" type="string" indexed="true" stored="true" /> 
+   <field name="drat_id" type="string" indexed="true" stored="true" />
+   <field name="repo" type="string" indexed="true" stored="true" />
+ 
+   <field name="text" type="text_general" indexed="true" required="false" multiValued="true"/>
 
    <!-- all other fields are indexed and stored as-is and can have multiple values -->
    <!-- <dynamicField name="*" type="string" indexed="true" stored="true" omitNorms="true" multiValued="true" /> -->
@@ -528,6 +540,7 @@
         or to add multiple fields to the same field for easier/faster searching.  -->
 
  <!-- catch-all text fields for full free-text query -->
-   <!-- <copyField source="*" dest="text" /> -->
+ <copyField source="name" dest="text" /> 
+ <copyField source="description" dest="text" />
 
 </schema>
