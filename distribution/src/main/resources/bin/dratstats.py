@@ -204,7 +204,8 @@ def parse_license(s):
 	li = arr[0].strip()
 	if li in li_dict:
 		li = li_dict[li]
-	return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
+	#return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
+	return ["/" + arr[1], li]
 
 
 # Index into Solr

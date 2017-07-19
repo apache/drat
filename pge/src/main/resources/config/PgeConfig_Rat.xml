@@ -2,17 +2,22 @@
 
 <pgeConfig>
 
+  <!--  use file staging -->
+  <fileStaging dir="[JobInputDir]" force="[ForceStaging]">
+    <stageFiles metadataKey="InputFiles" />
+  </fileStaging>
+
   <!-- How to run the PGE -->
   <exe dir="[JobDir]" shell="/bin/bash">
      <cmd>export PATH=$HOME/bin/:${PATH}</cmd>
      <cmd>shopt -s expand_aliases</cmd>
      <cmd>alias rat="java -jar [DRAT_HOME]/rat/lib/apache-rat-0.12.jar"</cmd>
      <cmd>echo "Creating working dirs"</cmd>
-     <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
-     <cmd>echo "Staging input to [JobInputDir]"</cmd>
+     <cmd>mkdir -p [JobInputDir] ; mkdir -p [JobOutputDir]; mkdir -p [JobLogDir]</cmd>
+     <!-- <cmd>echo "Staging input to [JobInputDir]"</cmd>
      <cmd>FILELIST='[InputFiles]'</cmd>
      <cmd>FSEP="_|_"</cmd>
-     <cmd>bash [DRAT_HOME]/pge/bin/rat_audit/copy_files.sh ${FILELIST} "${FSEP}" "[JobInputDir]"</cmd>
+     <cmd>bash [DRAT_HOME]/pge/bin/rat_audit/copy_files.sh ${FILELIST} "${FSEP}" "[JobInputDir]"</cmd>-->
      <cmd>echo "Running Apache RAT on [JobInputDir]"</cmd>
      <cmd>rat [JobInputDir] > [JobOutputDir]/rat_[MimeType]_[DateMilis].log</cmd>
   </exe>
@@ -29,6 +34,10 @@
 
   <!-- Custom metadata to add to output files -->
   <customMetadata>
+  
+    <!--  automatically perform file staging -->
+    <metadata key="ForceStaging" val="true"/>
+    
     <!-- helpful keys -->
     <metadata key="LessThan" val="&#x3C;"/>
     <metadata key="LessThanOrEqualTo" val="[LessThan]="/>
