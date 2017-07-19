@@ -384,6 +384,9 @@ def run(repos_list, output_dir):
 				for doc in docs:
 					fdata = {}
 					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
+					if fdata['id'] not in rat_license:
+						print "File: "+str(fdata['id'])+" not present in parsed licenses => Likely file copying issue. Skipping."
+						continue #handle issue with DRAT #93
 					fdata["type"] = 'file'
 					fdata['parent'] = repository
 					fdata['mimetype'] = doc['mimetype'][0]
