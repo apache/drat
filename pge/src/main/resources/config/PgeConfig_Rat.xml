@@ -10,9 +10,9 @@
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Staging input to [JobInputDir]"</cmd>
-     <cmd>FILELIST="[InputFiles]"</cmd>
+     <cmd>FILELIST='[InputFiles]'</cmd>
      <cmd>FSEP="_|_"</cmd>
-     <cmd>bash [DRAT_HOME]/pge/bin/rat_audit/copy_files.sh "${FILELIST}" "${FSEP}" "[JobInputDir]"</cmd>
+     <cmd>bash [DRAT_HOME]/pge/bin/rat_audit/copy_files.sh ${FILELIST} "${FSEP}" "[JobInputDir]"</cmd>
      <cmd>echo "Running Apache RAT on [JobInputDir]"</cmd>
      <cmd>rat [JobInputDir] > [JobOutputDir]/rat_[MimeType]_[DateMilis].log</cmd>
   </exe>
