@@ -1,6 +1,5 @@
 // Global Params
 SOLR_URL = "/solr/statistics";
-PATH_PREFIX = "/gpfs/flash/users/tg830544/drat-ontosoft/softwares/github";
 
 function getDate() {
 	var now = new Date();

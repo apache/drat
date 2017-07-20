@@ -379,7 +379,7 @@
         $('#projectRepo').val(details['repo'].toUpperCase());
         $('#projectLoc').val(details['loc_url']);
 
-        softwareId = PATH_PREFIX + details['repo'];
+        softwareId = details['repo'];
         console.log(SOLR_URL + "/select?q=id:\"" + softwareId + "\"&fl=license_*&wt=json");
         $.ajax({
             type: 'GET',
@@ -424,7 +424,7 @@
           (filterBy == "Standard" && docs[i]['license'] != "Apache" && docs[i]['license'] != "Binaries"
           && docs[i]['license'] != "Generated" && docs[i]['license'] != "Notes"
           && docs[i]['license'] != "Archives")) {
-            loc_path = docs[i]['id']; //.split(PATH_PREFIX)[1].split("/").slice(3).join("/");
+            loc_path = docs[i]['id']; 
             content += "<tr>";
             content += "<td>"+(i+1)+"</td>";
             content += "<td>" + loc_path + "</td>";
