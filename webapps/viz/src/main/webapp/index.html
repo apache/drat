@@ -326,13 +326,13 @@
       }
 
       function getProjects() {
-              listing = [
-                  { "repo" : "/Users/mattmann/drat/src",
-                    "name" : "DRAT",
-                    "description" : "Default DRAT repo.",
-                    "loc_url" : "http://github.com/chrismattmann/drat.git"
-                  }
-              ]
+
+        $.ajax({
+            type: 'GET',
+            url: SOLR_URL + "/select?q=type:project&rows=220&wt=json",
+            datatype: 'json',
+            success: function(data){
+              listing = data['response']['docs'];
               content = '</tbody>';
               for (var i = 0; i < listing.length; i++) {
                 content += "<tr>";
@@ -343,33 +343,12 @@
                 //content += "<td style='overflow-wrap: break-word; word-wrap: break-word;'>" + listing[i]['loc_url'] + "</td>";
                 content += "<td><button type=\"button\" onclick=\"printAuditDetails('" + encodeURIComponent(JSON.stringify(listing[i])) + "')\" class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-menu-right\"></span></button></td>";
                 content += "</tr>";
-              }         
+              }
               content += "</tbody>";
               $("#projects_table").append(content);
-       }
-
-        //$.ajax({
-        //    type: 'GET',
-        //    url: SOLR_URL + "/select?q=type:project&rows=220&wt=json",
-        //    datatype: 'json',
-        //    success: function(data){
-        //      listing = data['response']['docs'];
-        //      content = '</tbody>';
-        //      for (var i = 0; i < listing.length; i++) {
-        //        content += "<tr>";
-        //        content += "<td>"+(i+1)+"</td>";
-        //        content += "<td>" + listing[i]['repo'].toUpperCase() + "</td>";
-        //        content += "<td>" + listing[i]['name'] + "</td>";
-        //        content += "<td>" + listing[i]['description'] + "</td>";
-                //content += "<td style='overflow-wrap: break-word; word-wrap: break-word;'>" + listing[i]['loc_url'] + "</td>";
-        //        content += "<td><button type=\"button\" onclick=\"printAuditDetails('" + encodeURIComponent(JSON.stringify(listing[i])) + "')\" class=\"btn btn-default btn-sm\"><span class=\"glyphicon glyphicon-menu-right\"></span></button></td>";
-         //       content += "</tr>";
-         //     }
-          //    content += "</tbody>";
-           //   $("#projects_table").append(content);
-           // }
-        //});
-      //}
+            }
+        });
+      }
 
       function printAuditDetails(project) {
         details = JSON.parse(decodeURIComponent(project));

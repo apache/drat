@@ -1,0 +1,2 @@
+/Users/mattmann/drat/src DRAT http://github.com/chrismattmann/drat.git Default DRAT repo.
+#$HOME/drat/src DRAT http://github.com/chrismattmann/drat.git Default DRAT repo.

@@ -17,6 +17,7 @@
 # Please see help() method to understand the usage
 
 # author: karanjeets
+# author: mattmann
 
 
 import sys
@@ -219,37 +220,59 @@ def index_solr(json_data):
 
 # Run DRAT and collect statistics
 def run(repos_list, output_dir):
+	repos = []
+	
 	with open(repos_list) as repositories:
 		for repository in repositories:
 			repository = repository.strip()
-			if repository.startswith('#'):
-				print('\nSkipping Repository: ' + repository[1:])
+			
+			repo_toks = repository.split()
+			repo_path = repo_toks[0]
+			repo_name = repo_toks[1]
+			repo_loc_url = repo_toks[2]
+			repo_desc = ' '.join(repo_toks[3:])
+			rep = {
+				"id" : repo_loc_url,
+				"repo": repo_path,
+				"name" :repo_name,
+				"loc_url" : repo_loc_url,
+				"description": repo_desc,
+				"type" : "project"				
+				}
+			
+			if rep["name"].startswith('#'):
+				print('\nSkipping Repository: ' + rep["repo_name"][1:])
 				continue
 			printnow ("\nVerifying repository path...\n")
-			if not os.path.exists(repository):
-				printnow ("\nPath " + repository + "is not valid. Skipping and moving on...\n")
+			if not os.path.exists(rep["repo"]):
+				printnow ("\nPath " + rep["repo"] + "is not valid. Skipping and moving on...\n")
 				continue
 			printnow ("\nRepository Path: OK\n")
+			repos.append(rep)
 
 			printnow ("\nStarting OODT...\n")
 			oodt_process("start")
 			time.sleep(20)
 			printnow ("\nOODT Started: OK\n")
 
-			printnow ("\nRunning DRAT on " + repository + " ...\n")
+			printnow('Adding repository: '+str(rep)+' to Solr')
+			index_solr(json.dumps([rep]))
+
+
+			printnow ("\nRunning DRAT on " + rep["repo"] + " ...\n")
 			
 			retval = True
 			stats = {}
-			stats['id'] = repository
+			stats['id'] = rep["repo"]
 
 			stats['crawl_start'] = current_datetime()
-			retval = drat_process("crawl", repository)
+			retval = drat_process("crawl", rep["repo"])
 			stats['crawl_end'] = current_datetime()
 
 			if retval:
 				time.sleep(5)
 				stats['index_start'] = current_datetime()
-				retval = drat_process("index", repository)
+				retval = drat_process("index", rep["repo"])
 				stats['index_end'] = current_datetime()
 
 				if retval:
@@ -318,7 +341,7 @@ def run(repos_list, output_dir):
 
 
 				# Count the number of files
-				stats["files"] = count_num_files(repository, ".git")
+				stats["files"] = count_num_files(rep["repo"], ".git")
 
 				# Write data into Solr
 				stats["type"] = 'software'
@@ -397,7 +420,7 @@ def run(repos_list, output_dir):
 						continue #handle issue with DRAT #93
 					
 					fdata["type"] = 'file'
-					fdata['parent'] = repository
+					fdata['parent'] = rep["repo"]
 					fdata['mimetype'] = doc['mimetype'][0]
 					fdata['license'] = rat_license[fileId]
 					if fileId in rat_header:
@@ -413,7 +436,7 @@ def run(repos_list, output_dir):
 					index_solr(json_data)
 
 				# Copying data to Output Directory
-				repos_out = output_dir + "/" + normalize_path(repository)
+				repos_out = output_dir + "/" + normalize_path(rep["repo"])
 				shutil.copytree(os.getenv("DRAT_HOME") + "/data", repos_out)
 				printnow ("\nData copied to Solr and Output Directory: OK\n")
 
