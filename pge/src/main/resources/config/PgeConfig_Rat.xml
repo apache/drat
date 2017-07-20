@@ -37,6 +37,7 @@
   
     <!--  automatically perform file staging -->
     <metadata key="ForceStaging" val="true"/>
+    <metadata key="PGETask_FileStager" val="org.apache.oodt.cas.pge.staging.HashingOrigFileStager"/>
     
     <!-- helpful keys -->
     <metadata key="LessThan" val="&#x3C;"/>

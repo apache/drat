@@ -116,8 +116,8 @@
     <module>crawler</module>
     <module>pge</module>
     <module>solr</module>
-    <module>distribution</module>
     <module>webapps</module>
     <module>proteus</module>
+    <module>distribution</module>
   </modules>
 </project>

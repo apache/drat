@@ -31,6 +31,7 @@ import json
 import xmlrpclib
 import getopt
 import glob
+import md5
 
 # Check for environment variables
 def check_env_var():
@@ -204,8 +205,8 @@ def parse_license(s):
 	li = arr[0].strip()
 	if li in li_dict:
 		li = li_dict[li]
-	#return [arr[1].split("/")[-1].strip().replace("_|_", "/"), li]
-	return ["/" + arr[1], li]
+
+	return [arr[1].split("/")[-1], li]
 
 
 # Index into Solr
@@ -362,7 +363,7 @@ def run(repos_list, output_dir):
 								if '=====================================================' in line or '== File:' in line:
 									h += 1
 								if h == 2:
-									cur_file = line.split("/")[-1].strip().replace("_|_", "/")
+									cur_file = line.split("/")[-1].strip()
 								if h == 3:
 									cur_header += line
 								if h == 4:
@@ -382,18 +383,25 @@ def run(repos_list, output_dir):
 				file_data = []
 				batch = 100
 				dc = 0
+				
 				for doc in docs:
 					fdata = {}
 					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
-					if fdata['id'] not in rat_license:
-						print "File: "+str(fdata['id'])+" not present in parsed licenses => Likely file copying issue. Skipping."
+					m = md5.new()
+					m.update(fdata['id'])
+					hashId = m.hexdigest()
+					fileId = hashId+"-"+doc['filename'][0]
+
+					if fileId not in rat_license:
+						print "File: "+str(fdata['id'])+": ID: ["+fileId+"] not present in parsed licenses => Likely file copying issue. Skipping."
 						continue #handle issue with DRAT #93
+					
 					fdata["type"] = 'file'
 					fdata['parent'] = repository
 					fdata['mimetype'] = doc['mimetype'][0]
-					fdata['license'] = rat_license[fdata['id']]
-					if fdata['id'] in rat_header:
-						fdata['header'] = rat_header[fdata['id']]
+					fdata['license'] = rat_license[fileId]
+					if fileId in rat_header:
+						fdata['header'] = rat_header[fileId]
 					file_data.append(fdata)
 					dc += 1
 					if dc % batch == 0:
