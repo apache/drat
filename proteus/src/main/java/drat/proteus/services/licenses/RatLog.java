@@ -17,8 +17,11 @@
 
 package drat.proteus.services.licenses;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
 
 public class RatLog {
   private String ratLog;

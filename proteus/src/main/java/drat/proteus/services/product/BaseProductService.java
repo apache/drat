@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
@@ -36,8 +37,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class BaseProductService extends AbstractRestService {
+  private static final Logger LOG = Logger.getLogger(BaseProductService.class.getName());
   private static final String PRODUCT_XML_DEMARCATING_TAG = "item";
   private static final String PRODUCT_TITLE = "title";
   private static final String PRODUCT_DESC = "description";
@@ -93,18 +96,29 @@ public class BaseProductService extends AbstractRestService {
     } catch (ParserConfigurationException pce) {
       pce.printStackTrace();
     }
-    Document doc = dbFactory.parse(is);
-    doc.getDocumentElement().normalize();
-    NodeList nodes = doc.getElementsByTagName(PRODUCT_XML_DEMARCATING_TAG);
+    
+    Document doc = null;
     List<Item> productItems = new ArrayList<Item>();
-    for (int i = 0; i < nodes.getLength(); i++) {
-      ProductItem item = createProductItem(nodes.item(i));
-      if (item == null) {
-        throw new IllegalStateException(
-            "RSS Product Service API Feed Malformed");
-      }
-      productItems.add(item);
+    
+    try{
+      doc = dbFactory.parse(is);
+      doc.getDocumentElement().normalize();
+      NodeList nodes = doc.getElementsByTagName(PRODUCT_XML_DEMARCATING_TAG);
+
+      for (int i = 0; i < nodes.getLength(); i++) {
+        ProductItem item = createProductItem(nodes.item(i));
+        if (item == null) {
+          throw new IllegalStateException(
+              "RSS Product Service API Feed Malformed");
+        }
+        productItems.add(item);
+      }      
     }
+    catch(SAXParseException e){
+      e.printStackTrace();
+      LOG.warning("Error parsing: ["+xmlDoc+"] response from base product service. Message: "+e.getMessage());
+    }
+
     return productItems;
   }
 

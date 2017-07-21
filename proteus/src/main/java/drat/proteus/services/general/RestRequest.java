@@ -84,4 +84,8 @@ public class RestRequest {
     }
     }
   }
+  
+  WebTarget getTarget(){
+    return this.target;
+  }
 }

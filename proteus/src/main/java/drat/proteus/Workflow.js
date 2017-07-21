@@ -305,7 +305,7 @@ angular
                 //if ($scope.steps[0] === "Crawling") {
                     getRecentIngestedFiles();
                 //}
-            }, 500);
+            }, 1000);
 
         };
 

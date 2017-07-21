@@ -20,10 +20,12 @@ package drat.proteus.services.general;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public abstract class RequestEmitter {
   private static Client client = ClientBuilder.newBuilder().newClient();
   private String serviceName;
+  private static final Logger LOG = Logger.getLogger(RequestEmitter.class.getName());
 
   public RequestEmitter(String serviceName) {
     this.serviceName = serviceName;
@@ -38,6 +40,7 @@ public abstract class RequestEmitter {
   public RestRequest createRequest(String path, Map<String, String> queryParams) {
     RestRequest request = new RestRequest(client);
     request.buildTarget(this.serviceName, path, queryParams);
+    LOG.warning("REST request: class: ["+this.getClass().getName()+"]: URL: ["+request.getTarget().getUri().toString()+"]");
     return request;
   }
 

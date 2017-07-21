@@ -25,7 +25,7 @@ public class ProteusEndpointConstants {
 
   public static class Services {
     public static final String MIME_TYPE_BREAKDOWN = "/solr/drat";
-    public static final String FILE_MANAGER_PRODUCT = "/fmprod";
+    public static final String FILE_MANAGER_PRODUCT = "/opsui";
     public static final String HEALTH_MONITOR = "/pcs/services/health";
     public static final String RAT_INSTANCES_MONITOR = "/opsui/instances";
   }
