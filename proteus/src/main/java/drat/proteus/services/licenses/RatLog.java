@@ -21,10 +21,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.List;
 
 public class RatLog {
+  private static final Logger LOG = Logger.getLogger(RatLog.class.getName());
   private String ratLog;
+  private String ratLogLink;
   private Map<String, Integer> licenseSpread;
   private List<String> unapprovedLicenseFiles;
   private boolean hasBeenParsed = false;
@@ -45,14 +48,22 @@ public class RatLog {
   }
   private static final String UNKNOWN = "Unknown Licenses";
 
-  public RatLog(String log) {
-    this.ratLog = log;
+  public RatLog(String ratLogLink, String log) {
+    this.ratLogLink = ratLogLink;
+    if (log == null || 
+        (log != null && log.isEmpty())){
+      LOG.warning("RatLog: ["+this.ratLogLink+"]: contents are null or empty. ");
+      this.ratLog = "";
+    }
+    else{
+      this.ratLog = log;
+    }
     licenseSpread = new HashMap<>();
     unapprovedLicenseFiles = new ArrayList<>();
   }
 
   public RatLog parse() {
-    if (!hasBeenParsed) {
+    if (!hasBeenParsed && !isBlank()) {
       try {
         parseFileLineByLine();
         hasBeenParsed = true;
@@ -69,6 +80,22 @@ public class RatLog {
 
   public List<String> getUnapprovedLicenseFiles() {
     return this.unapprovedLicenseFiles;
+  }
+  
+  public void parseUnapprovedFiles(String line) {
+    line = line.trim();
+    if (line.length() > 0) { // check if line is just whitespace
+      if (!line.startsWith(UNAPPROVED_LICENSES)) { // if it's not just white
+                                                   // space, check if it is a
+                                                   // file path or not
+        unapprovedLicenseFiles.add(line);
+      }
+    }
+  }
+  
+  private boolean isBlank(){
+    return this.ratLog == null || 
+        (this.ratLog != null && this.ratLog.isEmpty());
   }
 
   private void parseFileLineByLine() throws IOException {
@@ -113,14 +140,4 @@ public class RatLog {
     return true;
   }
 
-  public void parseUnapprovedFiles(String line) {
-    line = line.trim();
-    if (line.length() > 0) { // check if line is just whitespace
-      if (!line.startsWith(UNAPPROVED_LICENSES)) { // if it's not just white
-                                                   // space, check if it is a
-                                                   // file path or not
-        unapprovedLicenseFiles.add(line);
-      }
-    }
-  }
 }

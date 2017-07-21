@@ -77,6 +77,6 @@ public class RatInstanceService extends BaseProductService {
     WebTarget target = client.target(ratLogLink);
     Invocation.Builder builder = target.request();
     Response res = builder.get();
-    return new RatLog(res.readEntity(String.class));
+    return new RatLog(ratLogLink, res.readEntity(String.class));
   }
 }
