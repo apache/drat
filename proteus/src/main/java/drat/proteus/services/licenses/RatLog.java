@@ -50,12 +50,11 @@ public class RatLog {
 
   public RatLog(String ratLogLink, String log) {
     this.ratLogLink = ratLogLink;
-    if (log == null || 
-        (log != null && log.isEmpty())){
-      LOG.warning("RatLog: ["+this.ratLogLink+"]: contents are null or empty. ");
+    if (log == null || (log != null && log.isEmpty())) {
+      LOG.warning(
+          "RatLog: [" + this.ratLogLink + "]: contents are null or empty. ");
       this.ratLog = "";
-    }
-    else{
+    } else {
       this.ratLog = log;
     }
     licenseSpread = new HashMap<>();
@@ -81,8 +80,9 @@ public class RatLog {
   public List<String> getUnapprovedLicenseFiles() {
     return this.unapprovedLicenseFiles;
   }
-  
+
   public void parseUnapprovedFiles(String line) {
+    if (line == null || (line != null && line.equals(""))) return;
     line = line.trim();
     if (line.length() > 0) { // check if line is just whitespace
       if (!line.startsWith(UNAPPROVED_LICENSES)) { // if it's not just white
@@ -92,22 +92,38 @@ public class RatLog {
       }
     }
   }
-  
-  private boolean isBlank(){
-    return this.ratLog == null || 
-        (this.ratLog != null && this.ratLog.isEmpty());
+
+  private boolean isBlank() {
+    return this.ratLog == null
+        || (this.ratLog != null && this.ratLog.isEmpty());
   }
 
   private void parseFileLineByLine() throws IOException {
-    String[] lines = this.ratLog.split("\n");
-    List<Integer> sectionDelimiters = getSectionDelimiters(lines);
-    // the first two delimiters (0 and 1) represent the bounds of the header
-    for (int i = sectionDelimiters.get(0) + 1; i < sectionDelimiters.get(1); i++) {
-      parseHeader(lines[i]);
+    if (this.ratLog == null
+        || (this.ratLog != null && this.ratLog.equals(""))) {
+      LOG.warning("Rat Log: [" + this.ratLogLink
+          + "]: contents are null or blank, cannot parse.");
+      return;
     }
-    // the next two (1 and 2) represent the unapproved licenses bounds
-    for (int i = sectionDelimiters.get(1) + 1; i < sectionDelimiters.get(2); i++) {
-      parseUnapprovedFiles(lines[i]);
+
+    String[] lines = this.ratLog.split("\n");
+    if (lines != null && lines.length > 0) {
+      List<Integer> sectionDelimiters = getSectionDelimiters(lines);
+      // the first two delimiters (0 and 1) represent the bounds of the header
+      if (sectionDelimiters != null && sectionDelimiters.size() >= 2) {
+        for (int i = sectionDelimiters.get(0) + 1; i < sectionDelimiters
+            .get(1); i++) {
+          parseHeader(lines[i]);
+        }
+        // the next two (1 and 2) represent the unapproved licenses bounds
+        for (int i = sectionDelimiters.get(1) + 1; i < sectionDelimiters
+            .get(2); i++) {
+          parseUnapprovedFiles(lines[i]);
+        }
+      } else {
+        LOG.warning("Section delimeters in rat log: [" + this.ratLogLink
+            + "]: less than 2 delimeters.");
+      }
     }
   }
 
@@ -122,6 +138,7 @@ public class RatLog {
   }
 
   private boolean parseHeader(String line) {
+    if (line == null || (line != null && line.equals(""))) return false;
     for (String licenseType : LICENSE_VALUES) {
       if (line.startsWith(licenseType + ":")) {
         String lineParts[] = line.split(":");

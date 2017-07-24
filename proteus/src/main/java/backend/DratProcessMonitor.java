@@ -17,28 +17,38 @@
 
 package backend;
 
+import java.util.logging.Logger;
+
 import drat.proteus.services.general.DratServiceStatus;
 
 public class DratProcessMonitor implements Runnable {
   private DratServiceStatus status;
   private Process proc;
+  private String dratCmd;
+  private static final Logger LOG = Logger.getLogger(DratProcessMonitor.class.getName());
 
-  public DratProcessMonitor(DratServiceStatus status, Process dratRunningProcess) {
+  public DratProcessMonitor(DratServiceStatus status, Process dratRunningProcess, String dratCmd) {
     this.status = status;
     this.proc = dratRunningProcess;
+    this.dratCmd = dratCmd;
   }
 
   @Override
   public void run() {
+    LOG.info("Invoking and monitoring DRAT process: current status: ["+String.valueOf(this.status.getCurrentState())+"]: dratCmd: ["+dratCmd+"]");
     try {
       this.proc.waitFor();
-      if (this.proc.exitValue() == 0) {
+      int exitValue = this.proc.exitValue();
+      if (exitValue  == 0) {
+        LOG.info("drat cmd: ["+this.dratCmd+"]: is complete,  process completed normally. exitValue:["+String.valueOf(exitValue)+"]");
         status.setCurrentState(DratServiceStatus.State.IDLE);
       } else {
+        LOG.info("drat cmd: ["+this.dratCmd+"]: is complete, process dit not complete normally, exitValue:[ "+String.valueOf(exitValue)+"]: setting state to interrupted");
         status.setCurrentState(DratServiceStatus.State.INTERRUPTED);
       }
     } catch (InterruptedException ie) {
       ie.printStackTrace();
+      LOG.info("drat cmd is interrupted. Message: "+ie.getMessage());
       status.setCurrentState(DratServiceStatus.State.INTERRUPTED);
     }
   }

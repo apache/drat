@@ -35,7 +35,7 @@ public class DratServiceStatus extends ServiceStatus {
     return currentState;
   }
 
-  public void setCurrentState(State status) {
+  public synchronized void setCurrentState(State status) {
     this.currentState = status;
     super.isRunning(currentState != State.IDLE
         && currentState != State.INTERRUPTED);
@@ -45,12 +45,8 @@ public class DratServiceStatus extends ServiceStatus {
     return progress;
   }
 
-  public void setProgress(int progress) {
+  public synchronized void setProgress(int progress) {
     this.progress = progress;
   }
 
-  @Override
-  public boolean isRunning() {
-    return super.isRunning();
-  }
 }

@@ -104,6 +104,16 @@
             <artifactId>cas-metadata</artifactId>
             <version>${oodt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.oodt</groupId>
+            <artifactId>cas-filemgr</artifactId>
+            <version>${oodt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.oodt</groupId>
+            <artifactId>cas-workflow</artifactId>
+            <version>${oodt.version}</version>
+        </dependency>
 	    <dependency>
 	       <groupId>org.reflections</groupId>
 	       <artifactId>reflections</artifactId>
@@ -116,52 +126,6 @@
 	    </dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/resources</directory>
-			</testResource>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
 		<plugins>
 			<plugin>
 				<inherited>true</inherited>
