@@ -21,3 +21,17 @@ export PCS_HOME=$DRAT_HOME/pcs
 export OPSUI_URL=http://localhost:8080/opsui
 export SOLR_URL=http://localhost:8080/solr
 export FMPROD_HOME=$DRAT_HOME/tomcat/webapps/fmprod/WEB-INF/classes/
+
+#####  Copy and Paste this Block into the .bashrc of your deployment user account ##########
+#
+# The following aliases must be used within a filemgr installation's
+# bin directory since relative pathing is being used.  This block also
+# assumes that the filemgr is running on port 9000 (the default port of filemgr)
+#
+alias fmquery="java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --lucene -query "
+#
+alias fmdel="java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl http://localhost:9000 --read"
+#
+alias metdump="java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url $FILEMGR_URL --out . --productId "
+#
+######## END OF BLOCK #######
