@@ -147,7 +147,12 @@ public class ProcessDratWrapper extends GenericProcess
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     }
-    startAndMonitorDratProcess(REDUCE_CMD).waitFor();
+    
+    // you're not done until the final log is generated.
+    while(!hasAggregateRatLog()){
+     startAndMonitorDratProcess(REDUCE_CMD).waitFor();
+     Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
+    }
   }
 
   public boolean isRunning() throws Exception {
@@ -156,6 +161,15 @@ public class ProcessDratWrapper extends GenericProcess
 
   public DratServiceStatus getDratStatus() {
     return status;
+  }
+  
+  private synchronized boolean hasAggregateRatLog(){
+    int numLogs = -1;
+    String fmUrl = PathUtils.replaceEnvVariables("[FILEMGR_URL]");
+    XmlRpcFileManagerClient client = safeGetFileManagerClient(fmUrl);
+    ProductType type = safeGetProductTypeByName("RatAggregateLog", client);
+    numLogs = safeGetNumProducts(type, client);
+    return numLogs > 0;
   }
 
   private boolean mapsStillRunning() throws Exception {
@@ -306,9 +320,7 @@ public class ProcessDratWrapper extends GenericProcess
     }
     LOG.info("Paging through products for product type: " + productTypeName);
     ProductPage page = safeFirstPage(fmClient, type);
-    int numProducts = safeGetNumProducts(type, fmClient );
     
-    while (numProducts > 0){
       while (page != null) {
         LOG.info("Cleaning File Manager: Product Type: [" + productTypeName
             + "]: wiping [" + String.valueOf(page.getTotalPages())
@@ -329,10 +341,7 @@ public class ProcessDratWrapper extends GenericProcess
           break;
         }
       }
-      
-      numProducts = safeGetNumProducts(type, fmClient);
-      
-    }
+
   }
 
   private synchronized void wipeInstanceRepo(String wmUrl) {
