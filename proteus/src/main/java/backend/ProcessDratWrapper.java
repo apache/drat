@@ -23,16 +23,22 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.oodt.cas.filemgr.structs.Product;
+import org.apache.oodt.cas.filemgr.structs.ProductPage;
+import org.apache.oodt.cas.filemgr.structs.ProductType;
 import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
+import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +58,8 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String REDUCE_CMD = "reduce";
 
   private static final String MAPPER_TASK = "urn:drat:RatCodeAudit";
+  private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
+      "RatAggregateLog" };
 
   private String path;
   private DratServiceStatus status = new DratServiceStatus();
@@ -91,26 +99,42 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   public void reset() throws Exception {
+    LOG.info("DRAT: reset: wiping FM product catalog");
+
+    String fmUrl = PathUtils.replaceEnvVariables("[FILEMGR_URL]");
+    for (String type : WIPE_TYPES) {
+      this.wipeProductType(fmUrl, type);
+    }
+
+    LOG.info("DRAT: reset: wiping WM instance repository.");
+    String wmUrl = PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
+    this.wipeInstanceRepo(wmUrl);
+
+    String coreName = "drat";
+    LOG.info("DRAT: reset: wiping Solr core: [" + coreName + "]");
+    this.wipeSolrCore(coreName);
+    
+    LOG.info("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
+    + "]");    
     for (String dir : Utils.getResetDirectories()) {
       File file = new File(dir);
-      try {
-        FileUtils.forceDelete(file);
-      } catch (FileNotFoundException e) {
-        LOG.info("Error removing: ["+file.getAbsolutePath()+"]: Message: "+e.getMessage());
+      if (file.exists()) {
+        try {
+          LOG.info(
+              "DRAT: reset: removing dir: [" + file.getAbsolutePath() + "]");
+          FileUtils.forceDelete(file);
+        } catch (FileNotFoundException e) {
+          LOG.info("Error removing: [" + file.getAbsolutePath() + "]: Message: "
+              + e.getMessage());
+        }
       }
     }
-    
-    LOG.info("DRAT: reset: recursively removed: ["+Utils.getResetDirectories()+"]");
-    LOG.info("DRAT: reset: performing dynamic reset of FM and WM catalog/repos");
-    
-    XmlRpcFileManagerClient fm;
-    XmlRpcWorkflowManagerClient wm;
-    
-    //TODO: finish this method
-    
+
   }
 
   public void go() throws Exception {
+    // before go, always reset
+    this.reset();
     startAndMonitorDratProcess(CRAWL_CMD).waitFor();
     Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     startAndMonitorDratProcess(INDEX_CMD).waitFor();
@@ -207,7 +231,8 @@ public class ProcessDratWrapper extends GenericProcess
   protected boolean isRunning(String status) {
     List<String> runningStates = Arrays.asList("CREATED", "QUEUED", "STARTED",
         "RSUBMIT", "PGE EXEC");
-    List<String> finishedStates = Arrays.asList("PAUSED", "METMISS", "FINISHED");
+    List<String> finishedStates = Arrays.asList("PAUSED", "METMISS",
+        "FINISHED");
     if (finishedStates.contains(status)) {
       return false;
     } else {
@@ -259,4 +284,124 @@ public class ProcessDratWrapper extends GenericProcess
     return (outputStream.toString());
   }
 
+  private XmlRpcFileManagerClient safeGetFileManagerClient(String fmUrl) {
+    XmlRpcFileManagerClient client = null;
+    try {
+      client = new XmlRpcFileManagerClient(new URL(fmUrl));
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("Exception creating file manager client to: [" + fmUrl
+          + "]: Message: " + e.getLocalizedMessage());
+    }
+    return client;
+  }
+
+  private synchronized void wipeProductType(String fmUrl,
+      String productTypeName) {
+    DeleteProduct dp = new DeleteProduct(fmUrl, true);
+    XmlRpcFileManagerClient fmClient = safeGetFileManagerClient(fmUrl);
+    ProductType type = safeGetProductTypeByName(productTypeName, fmClient);
+    if (type == null) {
+      return;
+    }
+    LOG.info("Paging through products for product type: " + productTypeName);
+    ProductPage page = safeFirstPage(fmClient, type);
+    int numProducts = safeGetNumProducts(type, fmClient );
+    
+    while (numProducts > 0){
+      while (page != null) {
+        LOG.info("Cleaning File Manager: Product Type: [" + productTypeName
+            + "]: wiping [" + String.valueOf(page.getTotalPages())
+            + "] pages of products: pageSize: [" + page.getPageSize() + "].");
+        for (Product product : page.getPageProducts()) {
+          dp.remove(product.getProductId());
+        }
+
+        if (page.isLastPage()) {
+          break;
+        }
+        try {
+          page = fmClient.getNextPage(type, page);
+        } catch (Exception e) {
+          e.printStackTrace();
+          LOG.warning("Unable to obtain next page. Message: "
+              + e.getLocalizedMessage() + " breaking loop.");
+          break;
+        }
+      }
+      
+      numProducts = safeGetNumProducts(type, fmClient);
+      
+    }
+  }
+
+  private synchronized void wipeInstanceRepo(String wmUrl) {
+    XmlRpcWorkflowManagerClient wm;
+    try {
+      wm = new XmlRpcWorkflowManagerClient(new URL(wmUrl));
+      wm.clearWorkflowInstances();
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("DRAT: reset: error communicating with the WM. Message: "
+          + e.getLocalizedMessage());
+    }
+  }
+
+  private synchronized void wipeSolrCore(String coreName) {
+    String baseUrl = "http://localhost:8080/solr";
+    String finalUrl = baseUrl + "/" + coreName;
+    CommonsHttpSolrServer server = null;
+    try {
+      server = new CommonsHttpSolrServer(finalUrl);
+      server.deleteByQuery("*:*");
+      server.commit();
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("Error wiping Solr core: [" + coreName + "]: Message: "
+          + e.getLocalizedMessage());
+    }
+  }
+
+  /**
+   * Suppresses exception that occurred with older file managers.
+   */
+  private ProductPage safeFirstPage(XmlRpcFileManagerClient fmClient,
+      ProductType type) {
+    ProductPage page = null;
+    try {
+      page = fmClient.getFirstPage(type);
+    } catch (Exception e) {
+      LOG.info("No products found for: " + type.getName());
+    }
+    return page;
+  }
+
+  private ProductType safeGetProductTypeByName(String productTypeName,
+      XmlRpcFileManagerClient client) {
+    ProductType type = null;
+    try {
+      type = client.getProductTypeByName(productTypeName);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("Exception getting product type by name: [" + productTypeName
+          + "]: Message: " + e.getLocalizedMessage());
+    }
+
+    return type;
+  }
+
+  private int safeGetNumProducts(ProductType type, XmlRpcFileManagerClient client){
+    int numProducts = -1;
+    try{
+      numProducts = client.getNumProducts(type);
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      LOG.warning("Exception getting num products by type: ["+type.getName()+"]: "
+          + "Message: "+e.getLocalizedMessage());
+    }
+    
+    return numProducts;
+  }
+  
 }

@@ -29,6 +29,8 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -52,7 +54,7 @@ public class DratStartForm extends Form {
     super(name);
     fileUploadField = fileUploader;
     pathField = path;
-    String[] cmdArray = { "Crawl", "Index", "Map", "Reduce", "Go" };
+    String[] cmdArray = { "Crawl", "Index", "Map", "Reduce", "Go", "Reset" };
     List<String> commands = (List<String>) Arrays.asList(cmdArray);
     cmdSelect = new ListView<String>("cmd", commands) {
       @Override
@@ -86,53 +88,68 @@ public class DratStartForm extends Form {
 
   private void handleSubmit(String command) {
     FileUpload fileUpload = fileUploadField.getFileUpload();
-    boolean downloadPhase = command.toUpperCase().equals("GO") || 
-        command.toUpperCase().equals("CRAWL");
+    String uCommand = command.toUpperCase();
+    boolean downloadPhase = uCommand.equals("GO") || 
+        uCommand.equals("CRAWL");
     try {
-      String pathValue = pathField.getModelObject();
-      LOG.info("Running DRAT: [" + command + "] on path: [" + pathValue + "]");
-
-      if (pathValue == null || pathValue.isEmpty()) {
-        File file = new File(System.getProperty("java.io.tmpdir")
-            + File.separator + fileUpload.getClientFileName());
-        if (downloadPhase) {
-          fileUpload.writeTo(file);
-          File unzippedFile = Unzipper.unzip(file);
-          file.delete();
-          startDrat(unzippedFile.getCanonicalPath(), command);
-          setResponsePage(DratWorkflow.class);
-          return;
-        }
-        else{
-          LOG.info("Omitting uploading of zip: current phase: ["+command+"]");
-          startDrat(file.getAbsolutePath(), command);
-          setResponsePage(DratWorkflow.class);
-          return;
-        }
-      }
       
-      if (pathValue.startsWith("http://")) {
-        parseAsVersionControlledRepo(pathValue, command, downloadPhase);
-      } else {
-        try {
-          File file = new File(pathValue);
-          if (file.exists()) {
-            startDrat(pathValue, command);
-          } else {
-            setResponsePage(HomePage.class);
+      if (!uCommand.equals("RESET")){
+        String pathValue = pathField.getModelObject();
+        LOG.info("Running DRAT: [" + uCommand + "] on path: [" + pathValue + "]");
+        if (pathValue == null || pathValue.isEmpty()) {
+          File file = new File(System.getProperty("java.io.tmpdir")
+              + File.separator + fileUpload.getClientFileName());
+          if (downloadPhase) {
+            fileUpload.writeTo(file);
+            File unzippedFile = Unzipper.unzip(file);
+            file.delete();
+            startDrat(unzippedFile.getCanonicalPath(), command);
+            setResponsePage(DratWorkflow.class);
             return;
           }
-        } catch (Exception e) {
-          e.printStackTrace();
-          setResponsePage(HomePage.class);
-          return;
+          else{
+            LOG.info("Omitting uploading of zip: current phase: ["+command+"]");
+            startDrat(file.getAbsolutePath(), command);
+            setResponsePage(DratWorkflow.class);
+            return;
+          }
         }
+        
+        if (pathValue.startsWith("http://")) {
+          parseAsVersionControlledRepo(pathValue, command, downloadPhase);
+        } else {
+          try {
+            File file = new File(pathValue);
+            if (file.exists()) {
+              startDrat(pathValue, command);
+            } else {
+              PageParameters params = new PageParameters();
+              setResponsePage(HomePage.class, params);
+              return;
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+            PageParameters params = new PageParameters();
+            setResponsePage(HomePage.class, params);
+            return;
+          }
+        }
+        setResponsePage(DratWorkflow.class);
       }
-      setResponsePage(DratWorkflow.class);
+      else{
+        LOG.info("Running DRAT: reset.");
+        startDrat(null, command);
+        PageParameters params = new PageParameters();
+        params.add("message", "DRAT reset completed successfully.");
+        setResponsePage(HomePage.class, params);
+      }
+      
     } catch (Exception e) {
       e.printStackTrace();
-      setResponsePage(HomePage.class);
+      PageParameters params = new PageParameters();
+      setResponsePage(HomePage.class, params);
     }
+      
   }
 
   private void startDrat(String filePath, String command) {

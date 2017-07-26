@@ -58,12 +58,17 @@ class DratRunnable implements Runnable {
         dratWrapper.index();
         break;
       }
+      case "RESET" : {
+        dratWrapper.reset();
+        break;
+      }
       default: {
         throw new DratWrapperException("No matching step found for selection: "
             + command);
       }
       }
-      deleteTempDratDirectory(filePath);
+      if (this.filePath != null)
+        deleteTempDratDirectory(filePath);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -85,6 +85,9 @@
 	                            <li class="ng-scope">
 	                                <a href="#" class="ng-binding"><span class="ng-binding">Reduce</span></a>
 	                            </li>  
+                                <li class="ng-scope">
+                                    <a href="#" class="ng-binding"><span class="ng-binding">Reset</span></a>
+                                </li>  	                            
 	                        </wicket:remove>                                                      
                         </ul>
                         <button type="button" class="btn btn-info dropdown-toggle down-drop-button" data-toggle="dropdown" aria-expanded="false">
@@ -98,8 +101,14 @@
 				</div>
 			</div>
 		</form>
-	</div>
+	</div>	
 </div>
+<div class="alert alert-warning fade in" wicket:id="alert_div" id="alert_div">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>Info</strong>&nbsp;<span wicket:id="alert_msg" id="alert_msg">Indicates a warning that might need attention.</span>
+</div>  
+
+
 <wicket:link>
 	<script src="jquery-2.1.4.min.js"></script>
 	<script src="angular.min.js"></script>

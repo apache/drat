@@ -1,7 +1,7 @@
 $("#files").change(function() {
      var fileName = $(this).val();
      $("#file-name").html("<strong>Path</strong>: " + fileName + "<a href='' class='x-link'><span class='glyphicon glyphicon-remove pull-right remove-icon'></span></a>");
-     file = event.target.files[0]; 
+
 
      $("#remote_repository").prop('disabled', true);
      stateOfTextArea = $("#remote_repository").prop('disabled');
@@ -50,6 +50,10 @@ angular
                         {
                             id: 'crawl',
                             name: 'Crawl'
+                        },
+                        {
+                        	id: 'reset',
+                        	name: 'Reset'
                         }
                     ]
     }])

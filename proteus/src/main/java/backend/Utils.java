@@ -36,11 +36,8 @@ public class Utils {
     buildEnvironmentVariables();
 
     String DRAT_HOME = environment.get("DRAT_HOME");
-    resetDratConstants.add(DRAT_HOME + "/data/workflow");
-    resetDratConstants.add(DRAT_HOME + "/filemgr/catalog");
-    resetDratConstants.add(DRAT_HOME + "/solr/drat/data");
-    resetDratConstants.add(DRAT_HOME + "/data/archive/*");
-    resetDratConstants.add(DRAT_HOME + "/data/jobs/*");
+    resetDratConstants.add(DRAT_HOME + "/data/archive/");
+    resetDratConstants.add(DRAT_HOME + "/data/jobs/");    
   }
 
   public static Map<String, String> getEnvironment() {

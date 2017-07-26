@@ -28,10 +28,10 @@ export FMPROD_HOME=$DRAT_HOME/tomcat/webapps/fmprod/WEB-INF/classes/
 # bin directory since relative pathing is being used.  This block also
 # assumes that the filemgr is running on port 9000 (the default port of filemgr)
 #
-alias fmquery="java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.QueryTool --url http://localhost:9000 --lucene -query "
+alias fmquery="java -Dorg.apache.oodt.cas.filemgr.properties=$FILEMGR_HOME/etc/filemgr.properties -Djava.ext.dirs=.$FILEMGR_HOME/lib org.apache.oodt.cas.filemgr.tools.QueryTool --url $FILEMGR_URL --lucene -query "
 #
-alias fmdel="java -Dorg.apache.oodt.cas.filemgr.properties=../etc/filemgr.properties -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl http://localhost:9000 --read"
+alias fmdel="java -Dorg.apache.oodt.cas.filemgr.properties=$FILEMGR_HOME/etc/filemgr.properties -Djava.ext.dirs=$FILEMGR_URL/lib org.apache.oodt.cas.filemgr.tools.DeleteProduct --fileManagerUrl $FILEMGR_URL --read"
 #
-alias metdump="java -Djava.ext.dirs=../lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url $FILEMGR_URL --out . --productId "
+alias metdump="java -Djava.ext.dirs=$FILEMGR_HOME/lib org.apache.oodt.cas.filemgr.tools.MetadataDumper --url $FILEMGR_URL --out . --productId "
 #
 ######## END OF BLOCK #######
