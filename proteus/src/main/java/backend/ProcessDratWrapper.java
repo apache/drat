@@ -27,10 +27,10 @@ import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.pcs.util.FileManagerUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -61,6 +61,7 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
+  private FileManagerUtils fm;
   private String path;
   private DratServiceStatus status = new DratServiceStatus();
   private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
@@ -72,6 +73,7 @@ public class ProcessDratWrapper extends GenericProcess
   private ProcessDratWrapper() {
     super(DRAT);
     this.path = "";
+    this.fm = new FileManagerUtils(PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
   }
 
   public void setIndexablePath(String canonicalPath) {
@@ -101,9 +103,8 @@ public class ProcessDratWrapper extends GenericProcess
   public void reset() throws Exception {
     LOG.info("DRAT: reset: wiping FM product catalog");
 
-    String fmUrl = PathUtils.replaceEnvVariables("[FILEMGR_URL]");
     for (String type : WIPE_TYPES) {
-      this.wipeProductType(fmUrl, type);
+      this.wipeProductType(type);
     }
 
     LOG.info("DRAT: reset: wiping WM instance repository.");
@@ -165,10 +166,8 @@ public class ProcessDratWrapper extends GenericProcess
   
   private synchronized boolean hasAggregateRatLog(){
     int numLogs = -1;
-    String fmUrl = PathUtils.replaceEnvVariables("[FILEMGR_URL]");
-    XmlRpcFileManagerClient client = safeGetFileManagerClient(fmUrl);
-    ProductType type = safeGetProductTypeByName("RatAggregateLog", client);
-    numLogs = safeGetNumProducts(type, client);
+    ProductType type = this.fm.safeGetProductTypeByName("RatAggregateLog");
+    numLogs = this.fm.safeGetNumProducts(type);
     return numLogs > 0;
   }
 
@@ -298,28 +297,14 @@ public class ProcessDratWrapper extends GenericProcess
     return (outputStream.toString());
   }
 
-  private XmlRpcFileManagerClient safeGetFileManagerClient(String fmUrl) {
-    XmlRpcFileManagerClient client = null;
-    try {
-      client = new XmlRpcFileManagerClient(new URL(fmUrl));
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOG.warning("Exception creating file manager client to: [" + fmUrl
-          + "]: Message: " + e.getLocalizedMessage());
-    }
-    return client;
-  }
-
-  private synchronized void wipeProductType(String fmUrl,
-      String productTypeName) {
-    DeleteProduct dp = new DeleteProduct(fmUrl, true);
-    XmlRpcFileManagerClient fmClient = safeGetFileManagerClient(fmUrl);
-    ProductType type = safeGetProductTypeByName(productTypeName, fmClient);
+  private synchronized void wipeProductType(String productTypeName) {
+    DeleteProduct dp = new DeleteProduct(this.fm.getFmUrl().toString(), true);
+    ProductType type = this.fm.safeGetProductTypeByName(productTypeName);
     if (type == null) {
       return;
     }
     LOG.info("Paging through products for product type: " + productTypeName);
-    ProductPage page = safeFirstPage(fmClient, type);
+    ProductPage page = this.fm.safeFirstPage(type);
     
       while (page != null) {
         LOG.info("Cleaning File Manager: Product Type: [" + productTypeName
@@ -333,7 +318,7 @@ public class ProcessDratWrapper extends GenericProcess
           break;
         }
         try {
-          page = fmClient.getNextPage(type, page);
+          page = this.fm.getFmgrClient().getNextPage(type, page);
         } catch (Exception e) {
           e.printStackTrace();
           LOG.warning("Unable to obtain next page. Message: "
@@ -369,48 +354,6 @@ public class ProcessDratWrapper extends GenericProcess
       LOG.warning("Error wiping Solr core: [" + coreName + "]: Message: "
           + e.getLocalizedMessage());
     }
-  }
-
-  /**
-   * Suppresses exception that occurred with older file managers.
-   */
-  private ProductPage safeFirstPage(XmlRpcFileManagerClient fmClient,
-      ProductType type) {
-    ProductPage page = null;
-    try {
-      page = fmClient.getFirstPage(type);
-    } catch (Exception e) {
-      LOG.info("No products found for: " + type.getName());
-    }
-    return page;
-  }
-
-  private ProductType safeGetProductTypeByName(String productTypeName,
-      XmlRpcFileManagerClient client) {
-    ProductType type = null;
-    try {
-      type = client.getProductTypeByName(productTypeName);
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOG.warning("Exception getting product type by name: [" + productTypeName
-          + "]: Message: " + e.getLocalizedMessage());
-    }
-
-    return type;
-  }
-
-  private int safeGetNumProducts(ProductType type, XmlRpcFileManagerClient client){
-    int numProducts = -1;
-    try{
-      numProducts = client.getNumProducts(type);
-    }
-    catch(Exception e){
-      e.printStackTrace();
-      LOG.warning("Exception getting num products by type: ["+type.getName()+"]: "
-          + "Message: "+e.getLocalizedMessage());
-    }
-    
-    return numProducts;
   }
   
 }

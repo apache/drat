@@ -114,6 +114,11 @@
             <artifactId>cas-workflow</artifactId>
             <version>${oodt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.oodt</groupId>
+            <artifactId>pcs-core</artifactId>
+            <version>${oodt.version}</version>
+        </dependency>
 	    <dependency>
 	       <groupId>org.reflections</groupId>
 	       <artifactId>reflections</artifactId>
