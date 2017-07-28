@@ -17,8 +17,6 @@
 
 package backend;
 
-import drat.proteus.services.general.DratServiceStatus;
-
 /**
  * This interface abstracts the main communication methods between Apache DRAT
  * and Proteus
@@ -39,6 +37,5 @@ public interface AbstractDratWrapper {
   public void setIndexablePath(String path);
 
   public String getIndexablePath();
-
-  public DratServiceStatus getDratStatus();
+  
 }

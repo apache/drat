@@ -25,8 +25,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+
 
 public class HomePage extends WebPage {
   private static final long serialVersionUID = 1L;
@@ -49,6 +51,13 @@ public class HomePage extends WebPage {
       alertDiv.setVisible(false);
     }
     add(alertDiv);
+    
+    add(new Link("home_link") {
+         @Override
+        public void onClick() {
+          setResponsePage(HomePage.class);          
+        }
+    });
     
     fileUploadField = new FileUploadField("fileUploader");
     final TextField<String> path = new TextField<String>("path", Model.of(""));

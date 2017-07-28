@@ -19,15 +19,15 @@ package drat.proteus.services.health;
 
 import backend.ProcessDratWrapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import drat.proteus.services.constants.ProteusEndpointConstants;
-import drat.proteus.services.general.*;
-//import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
+import drat.proteus.services.general.AbstractRestService;
+import drat.proteus.services.general.Item;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import javax.ws.rs.core.Response;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Map;
 
 public class HealthMonitorService extends AbstractRestService {
@@ -52,17 +52,11 @@ public class HealthMonitorService extends AbstractRestService {
   private static final String DAEMON_RES_MGR = SPECIFIC_DAEMON_STATUS
       + RES_MGR_ABBR;
 
-  // private XmlRpcFileManagerClient fmClient;
-
   private ProcessDratWrapper dratWrapper;
 
   public HealthMonitorService() {
     super(ProteusEndpointConstants.Services.HEALTH_MONITOR);
     dratWrapper = ProcessDratWrapper.getInstance();
-    /*
-     * try { fmClient = new XmlRpcFileManagerClient(new java.net.URL(FM_URL)); }
-     * catch(Exception mue) { mue.printStackTrace(); }
-     */
   }
 
   // Simple function to make a JAX-RS call to the OODT PCS-Health service and
@@ -81,24 +75,25 @@ public class HealthMonitorService extends AbstractRestService {
     return response;
   }
 
-  public DratServiceStatus getDratStatus() {
-    DratServiceStatus currentState = dratWrapper.getDratStatus();
-    int stageProgress = getCurrentProgress(currentState.getCurrentState());
-    currentState.setProgress(stageProgress);
-    return currentState;
+  public String getDratStatus() {
+    return dratWrapper.getStatus();
   }
 
-  public OodtServiceStatus getOodtStatus() {
+  public boolean getOodtStatus() {
     Response response = rerouteHealthMonitorData();
     if (response == null || response.getStatus() > 300) { // there was an error
                                                           // in the response,
                                                           // possibly caused by
                                                           // misconfig or OODT
                                                           // not being on
-      return new OodtServiceStatus(false);
+      return false;
     }
     String jsonBody = response.readEntity(String.class);
-    Map<String, Object> rawStatusOutput = new Gson().fromJson(jsonBody,
+    GsonBuilder g = new GsonBuilder();
+    g.serializeSpecialFloatingPointValues();
+    Gson gson = g.create();
+    
+    Map<String, Object> rawStatusOutput = gson.fromJson(jsonBody,
         Map.class);
     Map<String, Object> report = (Map<String, Object>) rawStatusOutput
         .get("report");
@@ -110,8 +105,8 @@ public class HealthMonitorService extends AbstractRestService {
         .get(RES_MGR_ABBR));
     HealthMonitorItem workflowManager = (HealthMonitorItem) parseJsonMap((Map<String, Object>) daemonStatus
         .get(WORK_MGR_ABBR));
-    return new OodtServiceStatus(fileManager.isRunning()
-        && resManager.isRunning() && workflowManager.isRunning());
+    return fileManager.isRunning()
+        && resManager.isRunning() && workflowManager.isRunning();
   }
 
   public Item getFileManagerStatus() throws URISyntaxException {
@@ -130,7 +125,10 @@ public class HealthMonitorService extends AbstractRestService {
     Response response = this.createRequest(daemonPath).getResponse(
         HttpMethod.GET);
     String jsonBody = response.readEntity(String.class);
-    Map<String, Object> daemonStatus = new Gson().fromJson(jsonBody, Map.class);
+    GsonBuilder g = new GsonBuilder();
+    g.serializeSpecialFloatingPointValues();
+    Gson gson = g.create();
+    Map<String, Object> daemonStatus = gson.fromJson(jsonBody, Map.class);
     return parseJsonMap(daemonStatus);
   }
 
@@ -144,40 +142,6 @@ public class HealthMonitorService extends AbstractRestService {
       urise.printStackTrace();
       return null; // this shouldn't happen unless PCS returns a broken link
     }
-  }
-
-  private int getCurrentProgress(DratServiceStatus.State state) {
-    switch (state) {
-    case CRAWL: {
-      return getGenericFilesCrawled();
-    }
-    case INDEX: {
-      return getSolrFileCount();
-    }
-    case MAP: {
-      return 0;
-    }
-    case REDUCE: {
-      return 0;
-    }
-    default: {
-      return 0;
-    }
-    }
-  }
-
-  private int getGenericFilesCrawled() {
-    int numIngestedFiles = 0;
-    /*
-     * try { // numIngestedFiles =
-     * fmClient.getNumProducts(fmClient.getProductTypeByName(FM_GENERIC_FILE));
-     * } catch(Exception e) { e.printStackTrace(); }
-     */
-    return numIngestedFiles;
-  }
-
-  private int getSolrFileCount() {
-    return 0;
   }
 
 }

@@ -19,8 +19,9 @@ package drat.proteus.rest;
 
 import backend.FileConstants;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import drat.proteus.services.general.Item;
-import drat.proteus.services.general.ServiceStatus;
 import drat.proteus.services.health.HealthMonitorService;
 import drat.proteus.services.licenses.RatInstanceService;
 import drat.proteus.services.mimetype.MimeTypeBreakdownService;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ServicesRestResource extends GsonRestResource {
+
+    private static final long serialVersionUID = -963632756412793830L;
     private RecentProductService productService;
     private HealthMonitorService healthMonitorService;
     private MimeTypeBreakdownService mimeTypeBreakdownService;
@@ -76,18 +79,21 @@ public class ServicesRestResource extends GsonRestResource {
     }
 
     @MethodMapping(value = "/status/drat", httpMethod = HttpMethod.GET)
-    public ServiceStatus getDratRunningStatus() {
-        return healthMonitorService.getDratStatus();
+    public String getDratRunningStatus() {
+        return healthMonitorService.getDratStatus().toUpperCase();
     }
 
     @MethodMapping(value = "/status/oodt", httpMethod = HttpMethod.GET)
-    public ServiceStatus getOodtRunningStatus() {
+    public boolean getOodtRunningStatus() {
         return healthMonitorService.getOodtStatus();
     }
 
     @MethodMapping(value = "/status/oodt/raw", httpMethod = HttpMethod.GET)
     public Object getOodtRawHealthStatus() {
         String jsonBody = healthMonitorService.rerouteHealthMonitorData().readEntity(String.class);
-        return (Map<String,Object>)new Gson().fromJson(jsonBody, Map.class);
+        GsonBuilder g = new GsonBuilder();
+        g.serializeSpecialFloatingPointValues();
+        Gson gson = g.create();
+        return (Map<String,Object>)gson.fromJson(jsonBody, Map.class);
     }
 }

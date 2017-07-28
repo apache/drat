@@ -195,75 +195,7 @@ angular
         }
 
         var cmd = idOfCommand;
-
-//         $scope.runDrat = function() {
-//            var run = null;
-//            var path = "";
-//
-//            setTimeout(function() {
-//
-//                checkingDratStatus();
-//            }, 3000);
-//
-//
-//            var checkingDrat;
-//
-//            if ($scope.dirPath === null) {
-//                 setNgShow();
-//                 zipFile = file;
-//                 console.log(cmd + " ---> command");
-//                 console.log(zipFile);
-//
-//                 var run = {
-//                     method: 'POST',
-//                     url: '/drat/' + cmd,
-//                     data: {
-//                          zipFile: zipFile //dir path
-//                     }
-//                 }
-//            }
-//            else {
-//                   setNgShow();
-//                   path = $scope.dirPath; // get the path from the input
-//                   console.log(cmd);
-//
-//                   $scope.goSecondPage = true;
-//                   var run = {
-//                          method: 'POST',
-//                          url: '/drat/' + cmd,
-//                          data: {
-//                               dirPath: path //dir path
-//                          }
-//                   }
-//
-//            }
-//
-//
-//              $http(run).then(function() {});
-//
-//              setTimeout(function() {
-//                  getHealthMonitorService();
-//                  checkingDratStatus();
-//              }, 3000);
-//
-//
-//              // get the list of unapproved list
-//              getUnapprovedList();
-//
-//              var checkingDrat;
-//
-//              var sizePayload = $http({
-//                  method: "GET",
-//                  url: "./service/repo/size"
-//              }).success(function(response) {
-//                  $scope.memorySize = response.memorySize;
-//                  $scope.numberOfFiles = response.numberOfFiles;
-//              });
-//
-//          };
-
-
-          $scope.ratInstances = null;
+        $scope.ratInstances = null;
 
           // get the list of logs
           function getUnapprovedList () {
@@ -297,7 +229,7 @@ angular
         };
 
         function checkingDratStatus() {
-            var checkingDrat = setInterval(function() {
+            checkingDrat = setInterval(function() {
                 getDratStatus();
                 getMIMEType();
                 getLicenseType();
@@ -314,8 +246,6 @@ angular
           }
 
         function getDratStatus() {
-
-
             var recent = $http({
                     method: "GET",
                     url: './service/status/drat'
@@ -323,20 +253,20 @@ angular
                 .then(function(response) {
                     var res = response
 
-                    if (response.data.currentState == "CRAWL") {
+                    if (response.data == "CRAWL") {
                         $scope.value = 0;
                         $scope.steps[0] = "Crawling";
-                    } else if (response.data.currentState == "INDEX") {
+                    } else if (response.data == "INDEX") {
                         $scope.value = 25;
                         $scope.steps[0] = "Indexing";
-                    } else if (response.data.currentState == "MAP") {
+                    } else if (response.data == "MAP") {
                         $scope.value = 50;
                         $scope.steps[0] = "Mapping";
-                    } else if (response.data.currentState == "REDUCE") {
+                    } else if (response.data == "REDUCE") {
                         $scope.value = 75;
                         $scope.steps[0] = "Reducing";
                         $scope.reduced = true;
-                    } else if (response.data.currentState == "IDLE") {
+                    } else if (response.data == "IDLE") {
                         if ($scope.reduced) {
                             $scope.value = 100;
                             $scope.steps[0] = "Completed";
@@ -348,8 +278,6 @@ angular
                     }
                     $scope.dynamic = $scope.value;
 
-                    //if IDLE
-                    //  clearInterval(checkingDrat);
                 });
 
 

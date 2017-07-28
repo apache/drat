@@ -48,6 +48,6 @@ public class ProcessOodtWrapper extends GenericProcess implements
   }
 
   public boolean isRunning() {
-    return healthMonitorService.getOodtStatus().isRunning();
+    return healthMonitorService.getOodtStatus();
   }
 }

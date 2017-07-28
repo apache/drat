@@ -21,10 +21,12 @@ import backend.DratWrapperException;
 import backend.ProcessDratWrapper;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 class DratRunnable implements Runnable {
   private final String filePath;
   private final String command;
+  private static final Logger LOG = Logger.getLogger(DratRunnable.class.getName());
 
   public DratRunnable(String filePath, String cmd) {
     this.filePath = filePath;
@@ -71,6 +73,7 @@ class DratRunnable implements Runnable {
         deleteTempDratDirectory(filePath);
     } catch (Exception e) {
       e.printStackTrace();
+      LOG.warning("Error executing command: ["+cmdToUpper+"]: Message: "+e.getLocalizedMessage());
     }
   }
 

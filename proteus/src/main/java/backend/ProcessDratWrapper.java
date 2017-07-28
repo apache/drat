@@ -17,12 +17,11 @@
 
 package backend;
 
-import drat.proteus.services.general.DratServiceStatus;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -39,9 +38,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class ProcessDratWrapper extends GenericProcess
@@ -56,14 +57,16 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String INDEX_CMD = "index";
   private static final String MAP_CMD = "map";
   private static final String REDUCE_CMD = "reduce";
+  private static final String RESET_CMD = "reset";
+  private static final String STATUS_IDLE = "idle";
 
   private static final String MAPPER_TASK = "urn:drat:RatCodeAudit";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
+  private String status;
   private FileManagerUtils fm;
   private String path;
-  private DratServiceStatus status = new DratServiceStatus();
   private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
 
   public static ProcessDratWrapper getInstance() {
@@ -73,7 +76,9 @@ public class ProcessDratWrapper extends GenericProcess
   private ProcessDratWrapper() {
     super(DRAT);
     this.path = "";
-    this.fm = new FileManagerUtils(PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
+    this.status = "IDLE";
+    this.fm = new FileManagerUtils(
+        PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
   }
 
   public void setIndexablePath(String canonicalPath) {
@@ -84,22 +89,35 @@ public class ProcessDratWrapper extends GenericProcess
     return this.path;
   }
 
-  public void crawl() throws IOException, DratWrapperException {
-    startAndMonitorDratProcess(CRAWL_CMD);
+  public String getStatus() {
+    return this.status;
   }
 
+  public synchronized void setStatus(String status) {
+    this.status = status;
+  }
+
+  @Override
+  public void crawl() throws Exception {
+    simpleDratExec(CRAWL_CMD, this.path);
+  }
+
+  @Override
   public void index() throws IOException, DratWrapperException {
-    startAndMonitorDratProcess(INDEX_CMD);
+    simpleDratExec(INDEX_CMD, this.path);
   }
 
+  @Override
   public void map() throws IOException, DratWrapperException {
-    startAndMonitorDratProcess(MAP_CMD);
+    simpleDratExec(MAP_CMD);
   }
 
+  @Override
   public void reduce() throws IOException, DratWrapperException {
-    startAndMonitorDratProcess(REDUCE_CMD);
+    simpleDratExec(REDUCE_CMD);
   }
 
+  @Override
   public void reset() throws Exception {
     LOG.info("DRAT: reset: wiping FM product catalog");
 
@@ -114,9 +132,9 @@ public class ProcessDratWrapper extends GenericProcess
     String coreName = "drat";
     LOG.info("DRAT: reset: wiping Solr core: [" + coreName + "]");
     this.wipeSolrCore(coreName);
-    
+
     LOG.info("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
-    + "]");    
+        + "]");
     for (String dir : Utils.getResetDirectories()) {
       File file = new File(dir);
       if (file.exists()) {
@@ -136,38 +154,60 @@ public class ProcessDratWrapper extends GenericProcess
   public void go() throws Exception {
     // before go, always reset
     this.reset();
-    startAndMonitorDratProcess(CRAWL_CMD).waitFor();
-    Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-    startAndMonitorDratProcess(INDEX_CMD).waitFor();
-    Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-    startAndMonitorDratProcess(MAP_CMD).waitFor();
-    Thread.sleep(DRAT_PROCESS_WAIT_DURATION * 4L); // wait 12 seconds after drat
-                                                   // map for all mappers to be
-                                                   // added
+    this.crawl();
+    this.index();
+    this.map();
+
     // don't run reduce until all maps are done
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     }
-    
     // you're not done until the final log is generated.
-    while(!hasAggregateRatLog()){
-     startAndMonitorDratProcess(REDUCE_CMD).waitFor();
-     Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
+    while (!hasAggregateRatLog()) {
+      try {
+        reduce();
+      } catch (IOException e) {
+        LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
+            + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
+            + "] seconds and will try again.");
+      }
+      Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     }
+
+    setStatus(STATUS_IDLE);
   }
 
-  public boolean isRunning() throws Exception {
-    return status.isRunning();
+  public synchronized void simpleDratExec(String command, String... options)
+      throws IOException, DratWrapperException {
+    setStatus(command);
+    String args[] = { FileConstants.DRAT_PATH, command };
+    String all[] = (String[]) ArrayUtils.addAll(args, options);
+    String cmd = Joiner.on(" ").join(all);
+
+    String output = null;
+    try {
+      output = execToString(cmd);
+    } catch (IOException e) {
+      LOG.warning("Executing DRAT cmd: [" + command + "]: command line: [" + cmd
+          + "] generated non-zero exit status. output is: [" + output + "]");
+      throw e;
+    } catch (Exception e) {
+      LOG.warning("Exception executing " + command + ". Output: [" + output
+          + "]: Message: " + e.getLocalizedMessage());
+      throw new IOException(e.getLocalizedMessage());
+    }
+
+    LOG.info(
+        "Command: [" + command + "] completed normally. Output is: " + output);
   }
 
-  public DratServiceStatus getDratStatus() {
-    return status;
-  }
-  
-  private synchronized boolean hasAggregateRatLog(){
+  private synchronized boolean hasAggregateRatLog() {
     int numLogs = -1;
     ProductType type = this.fm.safeGetProductTypeByName("RatAggregateLog");
     numLogs = this.fm.safeGetNumProducts(type);
+    String breakStatus = (numLogs > 0) ? "breaking" : "looping";
+    LOG.info("Checking for RatAggregateLog: num: [" + String.valueOf(numLogs)
+        + "]: " + breakStatus);
     return numLogs > 0;
   }
 
@@ -175,7 +215,9 @@ public class ProcessDratWrapper extends GenericProcess
     String args[] = { FileConstants.WORKFLOW_PATH, "--url",
         "http://localhost:9001", "--operation", "--getWorkflowInsts" };
     String cmd = Joiner.on(" ").join(args);
+    LOG.info("Maps Still Running: Executing: " + cmd);
     String output = execToString(cmd);
+    LOG.info("Output from maps still running: " + output);
     List<WorkflowItem> items = parseWorkflows(output);
     return stillRunning(items);
   }
@@ -186,7 +228,20 @@ public class ProcessDratWrapper extends GenericProcess
 
     String lines[] = cmdOutput.split("\\r?\\n");
     if (lines != null && lines.length > 0) {
+      int lineNo = 1;
       for (String line : lines) {
+        if (line == null || (line != null && line.trim().equals(""))) {
+          LOG.info("Blank line in evaluating workflow instance response: ["
+              + line + "]: skipping lineNo: [" + String.valueOf(lineNo) + "]");
+          continue;
+        }
+
+        if (!line.startsWith("Instance:")) {
+          LOG.info("Skipping line: does not begin with Instance: [" + line
+              + "]: lineNo: [" + String.valueOf(lineNo) + "]");
+          continue;
+        }
+
         String[] tmpLine = line.split("\\[");
         if (tmpLine != null && tmpLine.length > 0) {
           String instInfo = tmpLine[1].trim();
@@ -203,6 +258,8 @@ public class ProcessDratWrapper extends GenericProcess
             items.add(item);
           }
         }
+
+        lineNo++;
       }
     }
     return items;
@@ -214,7 +271,7 @@ public class ProcessDratWrapper extends GenericProcess
     LOG.info("Checking mappers: inspecting ["
         + String.valueOf(mapperItems.size()) + "] mappers.");
     for (WorkflowItem mapperItem : mapperItems) {
-      if (mapperItem.getStatus().equals("PGE EXEC")) {
+      if (isRunning(mapperItem.getStatus())) {
         LOG.info("Mapper: [" + mapperItem.getId() + "] still running.");
         return true;
       }
@@ -268,64 +325,53 @@ public class ProcessDratWrapper extends GenericProcess
       return "";
   }
 
-  private synchronized Process startAndMonitorDratProcess(String dratCmd)
-      throws IOException, DratWrapperException {
-    DratServiceStatus.State dratState = DratServiceStatus.State
-        .valueOf(dratCmd.toUpperCase());
-    boolean needsPathParam = (dratState == DratServiceStatus.State.CRAWL)
-        || (dratState == DratServiceStatus.State.INDEX);
-    if (status.isRunning()) {
-      throw new DratWrapperException(
-          "Drat is currently running with status: " + status.getCurrentState());
-    }
-    status.setCurrentState(dratState);
-    Process process = (needsPathParam) ? super.createProcess(dratCmd, this.path)
-        : super.createProcess(dratCmd);
-    DratProcessMonitor monitor = new DratProcessMonitor(status, process,
-        dratCmd);
-    new Thread(monitor).start();
-    return process;
-  }
-
   private synchronized String execToString(String command) throws Exception {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     CommandLine commandline = CommandLine.parse(command);
     DefaultExecutor exec = new DefaultExecutor();
     PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+    int status = -1;
     exec.setStreamHandler(streamHandler);
-    exec.execute(commandline);
-    return (outputStream.toString());
+    status = exec.execute(commandline);
+    String output = outputStream.toString(Charset.defaultCharset().name());
+    if (status != 0) {
+      throw new IOException("Non-zero status message from executing: ["
+          + command + "]: output: [" + output + "]");
+    }
+    return output;
   }
 
   private synchronized void wipeProductType(String productTypeName) {
     DeleteProduct dp = new DeleteProduct(this.fm.getFmUrl().toString(), true);
     ProductType type = this.fm.safeGetProductTypeByName(productTypeName);
     if (type == null) {
+      LOG.warning("Unable to get product type definition for: ["
+          + productTypeName + "]: FM wipe fails.");
       return;
     }
     LOG.info("Paging through products for product type: " + productTypeName);
     ProductPage page = this.fm.safeFirstPage(type);
-    
-      while (page != null) {
-        LOG.info("Cleaning File Manager: Product Type: [" + productTypeName
-            + "]: wiping [" + String.valueOf(page.getTotalPages())
-            + "] pages of products: pageSize: [" + page.getPageSize() + "].");
-        for (Product product : page.getPageProducts()) {
-          dp.remove(product.getProductId());
-        }
 
-        if (page.isLastPage()) {
-          break;
-        }
-        try {
-          page = this.fm.getFmgrClient().getNextPage(type, page);
-        } catch (Exception e) {
-          e.printStackTrace();
-          LOG.warning("Unable to obtain next page. Message: "
-              + e.getLocalizedMessage() + " breaking loop.");
-          break;
-        }
+    while (page != null) {
+      LOG.info("Cleaning File Manager: Product Type: [" + productTypeName
+          + "]: wiping [" + String.valueOf(page.getTotalPages())
+          + "] pages of products: pageSize: [" + page.getPageSize() + "].");
+      for (Product product : page.getPageProducts()) {
+        dp.remove(product.getProductId());
       }
+
+      if (page.isLastPage()) {
+        break;
+      }
+      try {
+        page = this.fm.getFmgrClient().getNextPage(type, page);
+      } catch (Exception e) {
+        e.printStackTrace();
+        LOG.warning("Unable to obtain next page. Message: "
+            + e.getLocalizedMessage() + " breaking loop.");
+        break;
+      }
+    }
 
   }
 
@@ -355,5 +401,5 @@ public class ProcessDratWrapper extends GenericProcess
           + e.getLocalizedMessage());
     }
   }
-  
+
 }
