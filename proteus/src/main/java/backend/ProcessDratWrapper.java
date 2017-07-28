@@ -300,7 +300,7 @@ public class ProcessDratWrapper extends GenericProcess
   @VisibleForTesting
   protected boolean isRunning(String status) {
     List<String> runningStates = Arrays.asList("CREATED", "QUEUED", "STARTED",
-        "RSUBMIT", "PGE EXEC");
+        "RSUBMIT", "PGE EXEC", "STAGING INPUT", "CRAWLING");
     List<String> finishedStates = Arrays.asList("PAUSED", "METMISS",
         "FINISHED");
     if (finishedStates.contains(status)) {
