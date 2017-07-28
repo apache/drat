@@ -8,6 +8,17 @@ angular
             $(".spinner").show("slow").delay(4300).hide("slow");
         });
         
+        var checkDratStatus = 
+        	setInterval(getDratStatus, 1000);
+        var checkMIMEType = 
+        	setInterval(getMIMEType, 1000);
+        var checkLicenseType = 
+        	setInterval(getLicenseType, 1000);
+        var checkHealth = 
+        	setInterval(getHealthMonitorService, 1000);
+        var checkRecentFiles = 
+        	setInterval(getRecentIngestedFiles, 1000);
+        
         $scope.max = 100;
         // this indicates which step the app is on
         $scope.value = 0;
@@ -171,13 +182,14 @@ angular
 
         $scope.runDrat = function() {
             $scope.showFirst = true;
-
-            setTimeout(function() {
+                
+           /* setTimeout(function() {
                 checkingDratStatus();
             }, 3000);
 
 
             var checkingDrat;
+            */
 
             var sizePayload = $http({
                 method: "GET",
@@ -228,18 +240,18 @@ angular
 
         };
 
-        function checkingDratStatus() {
+        /*function checkingDratStatus() {
             checkingDrat = setInterval(function() {
                 getDratStatus();
                 getMIMEType();
                 getLicenseType();
                 getHealthMonitorService();
-                //if ($scope.steps[0] === "Crawling") {
+                if ($scope.steps[0] === "Crawling") {
                     getRecentIngestedFiles();
-                //}
+                }
             }, 1000);
 
-        };
+        };*/
 
         function showLogsDiv () {
             $scope.showLogsBox = true;
@@ -257,15 +269,18 @@ angular
                         $scope.value = 0;
                         $scope.steps[0] = "Crawling";
                     } else if (response.data == "INDEX") {
+                    	clearInterval(checkRecentFiles);
                         $scope.value = 25;
                         $scope.steps[0] = "Indexing";
                     } else if (response.data == "MAP") {
                         $scope.value = 50;
                         $scope.steps[0] = "Mapping";
+                        clearInterval(checkMIMEType);
                     } else if (response.data == "REDUCE") {
                         $scope.value = 75;
                         $scope.steps[0] = "Reducing";
                         $scope.reduced = true;
+                        clearInterval(checkLicenseType);
                     } else if (response.data == "IDLE") {
                         if ($scope.reduced) {
                             $scope.value = 100;
@@ -273,14 +288,14 @@ angular
                             setTimeout(showLogsDiv, 2000);
                             $scope.scanComplete = true;
                             $scope.scanStatus = "Failed RAT Instances";
+                            clearInterval(checkHealth);
+                            clearInterval(checkDratStatus);
                         }
 
                     }
                     $scope.dynamic = $scope.value;
 
                 });
-
-
 
         };
 
