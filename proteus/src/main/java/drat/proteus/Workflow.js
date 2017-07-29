@@ -8,16 +8,18 @@ angular
             $(".spinner").show("slow").delay(4300).hide("slow");
         });
         
+        var intervalMs = 3000;
+        
         var checkDratStatus = 
-        	setInterval(getDratStatus, 1000);
+        	setInterval(getDratStatus, intervalMs);
         var checkMIMEType = 
-        	setInterval(getMIMEType, 1000);
+        	setInterval(getMIMEType, intervalMs);
         var checkLicenseType = 
-        	setInterval(getLicenseType, 1000);
+        	setInterval(getLicenseType, intervalMs);
         var checkHealth = 
-        	setInterval(getHealthMonitorService, 1000);
+        	setInterval(getHealthMonitorService, intervalMs);
         var checkRecentFiles = 
-        	setInterval(getRecentIngestedFiles, 1000);
+        	setInterval(getRecentIngestedFiles, intervalMs);
         
         $scope.max = 100;
         // this indicates which step the app is on
@@ -182,15 +184,6 @@ angular
 
         $scope.runDrat = function() {
             $scope.showFirst = true;
-                
-           /* setTimeout(function() {
-                checkingDratStatus();
-            }, 3000);
-
-
-            var checkingDrat;
-            */
-
             var sizePayload = $http({
                 method: "GET",
                 url: "./service/repo/size"
@@ -239,19 +232,6 @@ angular
                 });
 
         };
-
-        /*function checkingDratStatus() {
-            checkingDrat = setInterval(function() {
-                getDratStatus();
-                getMIMEType();
-                getLicenseType();
-                getHealthMonitorService();
-                if ($scope.steps[0] === "Crawling") {
-                    getRecentIngestedFiles();
-                }
-            }, 1000);
-
-        };*/
 
         function showLogsDiv () {
             $scope.showLogsBox = true;
