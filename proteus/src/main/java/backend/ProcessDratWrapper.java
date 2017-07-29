@@ -51,6 +51,7 @@ public class ProcessDratWrapper extends GenericProcess
       .getLogger(ProcessDratWrapper.class.getName());
   private static final String DRAT = FileConstants.DRAT_PATH;
   private static final long DRAT_PROCESS_WAIT_DURATION = 3000;
+  private static final int MAX_RESET_TRIES = 10;
 
   private static final String GO_CMD = "go";
   private static final String CRAWL_CMD = "crawl";
@@ -122,7 +123,23 @@ public class ProcessDratWrapper extends GenericProcess
     LOG.info("DRAT: reset: wiping FM product catalog");
 
     for (String type : WIPE_TYPES) {
-      this.wipeProductType(type);
+      int numTries = 0;
+      ProductType pType = fm.safeGetProductTypeByName(type);
+      // make sure all products are actually deleted in case there
+      // are references issues or XML-RPC issues.
+      while (this.fm.safeGetNumProducts(pType) > 0
+          && numTries <= MAX_RESET_TRIES) {
+        this.wipeProductType(type);
+        numTries++;
+      }
+
+      if (numTries == MAX_RESET_TRIES
+          && this.fm.safeGetNumProducts(pType) > 0) {
+        LOG.warning("Unable to fully wipe type: [" + type + "]. Tried ["
+            + String.valueOf(numTries) + "] times. Max attempts: ["
+            + String.valueOf(MAX_RESET_TRIES)
+            + "]. Is your File Manager corrupt?");
+      }
     }
 
     LOG.info("DRAT: reset: wiping WM instance repository.");

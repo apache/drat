@@ -8,7 +8,7 @@ angular
             $(".spinner").show("slow").delay(4300).hide("slow");
         });
         
-        var intervalMs = 3000;
+        var intervalMs = 1000;
         
         var checkDratStatus = 
         	setInterval(getDratStatus, intervalMs);

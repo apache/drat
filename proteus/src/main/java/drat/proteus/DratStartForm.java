@@ -31,6 +31,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import backend.ProcessDratWrapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -138,7 +140,10 @@ public class DratStartForm extends Form {
       }
       else{
         LOG.info("Running DRAT: reset.");
-        startDrat(null, command);
+        // synchronous call so RESET is done when this returns.
+        ProcessDratWrapper dratWrapper = ProcessDratWrapper.getInstance();
+        dratWrapper.setIndexablePath(null);
+        dratWrapper.reset();
         PageParameters params = new PageParameters();
         params.add("message", "DRAT reset completed successfully.");
         setResponsePage(HomePage.class, params);
