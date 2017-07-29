@@ -33,10 +33,13 @@ import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class ServicesRestResource extends GsonRestResource {
 
     private static final long serialVersionUID = -963632756412793830L;
+    private static final Logger LOG = Logger.getLogger(ServicesRestResource.class.getName());
     private RecentProductService productService;
     private HealthMonitorService healthMonitorService;
     private MimeTypeBreakdownService mimeTypeBreakdownService;
@@ -94,6 +97,15 @@ public class ServicesRestResource extends GsonRestResource {
         GsonBuilder g = new GsonBuilder();
         g.serializeSpecialFloatingPointValues();
         Gson gson = g.create();
-        return (Map<String,Object>)gson.fromJson(jsonBody, Map.class);
+        Map<String,Object> status = null;
+        try{
+          status = (Map<String,Object>)gson.fromJson(jsonBody, Map.class);
+          return status;
+        }
+        catch(Exception e){
+          LOG.warning("Exception creating GSON object for OODT raw health. Message: "+e.getLocalizedMessage());
+          status = new ConcurrentHashMap<String,Object>();
+          return status;
+        }
     }
 }
