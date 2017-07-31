@@ -188,7 +188,7 @@ angular
             $scope.showFirst = true;
             var sizePayload = $http({
                 method: "GET",
-                url: "./service/repo/size"
+                url: "./service/repo/size?dir="+repoPath
             }).success(function(response) {
                 $scope.memorySize = response.memorySize;
                 $scope.numberOfFiles = response.numberOfFiles;

@@ -44,8 +44,8 @@ import java.util.logging.Logger;
  *
  */
 public class DratStartForm extends Form {
-  private static final Logger LOG = Logger.getLogger(DratStartForm.class
-      .getName());
+  private static final Logger LOG = Logger
+      .getLogger(DratStartForm.class.getName());
   private FileUploadField fileUploadField;
   private TextField<String> pathField;
   private ListView<String> cmdSelect;
@@ -91,13 +91,13 @@ public class DratStartForm extends Form {
   private void handleSubmit(String command) {
     FileUpload fileUpload = fileUploadField.getFileUpload();
     String uCommand = command.toUpperCase();
-    boolean downloadPhase = uCommand.equals("GO") || 
-        uCommand.equals("CRAWL");
+    boolean downloadPhase = uCommand.equals("GO") || uCommand.equals("CRAWL");
+
     try {
-      
-      if (!uCommand.equals("RESET")){
-        String pathValue = pathField.getModelObject();
-        LOG.info("Running DRAT: [" + uCommand + "] on path: [" + pathValue + "]");
+      String pathValue = pathField.getModelObject();
+      if (!uCommand.equals("RESET")) {
+        LOG.info(
+            "Running DRAT: [" + uCommand + "] on path: [" + pathValue + "]");
         if (pathValue == null || pathValue.isEmpty()) {
           File file = new File(System.getProperty("java.io.tmpdir")
               + File.separator + fileUpload.getClientFileName());
@@ -105,20 +105,35 @@ public class DratStartForm extends Form {
             fileUpload.writeTo(file);
             File unzippedFile = Unzipper.unzip(file);
             file.delete();
-            startDrat(unzippedFile.getCanonicalPath(), command);
-            setResponsePage(DratWorkflow.class);
+            String unzipPath = unzippedFile.getCanonicalPath();
+            startDrat(unzipPath, command);
+            PageParameters params = new PageParameters();
+            params.add("repoPath", unzipPath);
+            setResponsePage(DratWorkflow.class, params);
             return;
-          }
-          else{
-            LOG.info("Omitting uploading of zip: current phase: ["+command+"]");
-            startDrat(file.getAbsolutePath(), command);
-            setResponsePage(DratWorkflow.class);
+          } else {
+            LOG.info(
+                "Omitting uploading of zip: current phase: [" + command + "]");
+            String dratPath = file.getAbsolutePath();
+            startDrat(dratPath, command);
+            PageParameters params = new PageParameters();
+            params.add("repoPath", dratPath);
+            setResponsePage(DratWorkflow.class, params);
             return;
           }
         }
-        
+
         if (pathValue.startsWith("http://")) {
-          parseAsVersionControlledRepo(pathValue, command, downloadPhase);
+          String clonePath = parseAsVersionControlledRepo(pathValue, command);
+          if (!downloadPhase) {
+            startDrat(pathValue, command);
+          } else {
+            startDrat(clonePath, command);
+          }
+
+          PageParameters params = new PageParameters();
+          params.add("repoPath", clonePath);
+          setResponsePage(DratWorkflow.class, params);
         } else {
           try {
             File file = new File(pathValue);
@@ -136,9 +151,7 @@ public class DratStartForm extends Form {
             return;
           }
         }
-        setResponsePage(DratWorkflow.class);
-      }
-      else{
+      } else {
         LOG.info("Running DRAT: reset.");
         // synchronous call so RESET is done when this returns.
         ProcessDratWrapper dratWrapper = ProcessDratWrapper.getInstance();
@@ -148,27 +161,23 @@ public class DratStartForm extends Form {
         params.add("message", "DRAT reset completed successfully.");
         setResponsePage(HomePage.class, params);
       }
-      
+
     } catch (Exception e) {
       e.printStackTrace();
       PageParameters params = new PageParameters();
       setResponsePage(HomePage.class, params);
     }
-      
+
   }
 
   private void startDrat(String filePath, String command) {
-    Thread dratStarterRunnable = new Thread(new DratRunnable(filePath, command));
+    Thread dratStarterRunnable = new Thread(
+        new DratRunnable(filePath, command));
     dratStarterRunnable.start();
   }
 
-  private void parseAsVersionControlledRepo(String path, String command,
-      boolean downloadPhase) throws IOException {
-    if (!downloadPhase) {
-      startDrat(path, command);
-      return;
-    }
-
+  private String parseAsVersionControlledRepo(String path, String command)
+      throws IOException {
     String projectName = null;
     boolean git = path.endsWith(".git");
     File tmpDir = new File(System.getProperty("java.io.tmpdir"));
@@ -185,8 +194,8 @@ public class DratStartForm extends Form {
     String clonePath = tmpDirPath + File.separator + projectName;
     File cloneDir = new File(clonePath);
     if (cloneDir.isDirectory() && cloneDir.exists()) {
-      LOG.info("Git / SVN clone: [" + clonePath
-          + "] already exists, removing it.");
+      LOG.info(
+          "Git / SVN clone: [" + clonePath + "] already exists, removing it.");
       FileUtils.removeDir(cloneDir);
     }
     LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
@@ -204,7 +213,7 @@ public class DratStartForm extends Form {
       FileUtils.removeDir(gitHiddenDir);
     }
 
-    startDrat(clonePath, command);
+    return clonePath;
 
   }
 }

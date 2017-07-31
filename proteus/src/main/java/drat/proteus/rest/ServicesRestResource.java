@@ -26,11 +26,16 @@ import drat.proteus.services.health.HealthMonitorService;
 import drat.proteus.services.licenses.RatInstanceService;
 import drat.proteus.services.mimetype.MimeTypeBreakdownService;
 import drat.proteus.services.product.RecentProductService;
-import drat.proteus.services.repo.Repository;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestParam;
 import org.wicketstuff.rest.resource.gson.GsonRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
+
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,74 +43,102 @@ import java.util.logging.Logger;
 
 public class ServicesRestResource extends GsonRestResource {
 
-    private static final long serialVersionUID = -963632756412793830L;
-    private static final Logger LOG = Logger.getLogger(ServicesRestResource.class.getName());
-    private RecentProductService productService;
-    private HealthMonitorService healthMonitorService;
-    private MimeTypeBreakdownService mimeTypeBreakdownService;
-    private RatInstanceService ratInstanceService;
-    public ServicesRestResource() {
-        productService = new RecentProductService();
-        healthMonitorService = new HealthMonitorService();
-        mimeTypeBreakdownService = new MimeTypeBreakdownService();
-        ratInstanceService = new RatInstanceService();
+  private static final long serialVersionUID = -963632756412793830L;
+  private static final Logger LOG = Logger
+      .getLogger(ServicesRestResource.class.getName());
+  private RecentProductService productService;
+  private HealthMonitorService healthMonitorService;
+  private MimeTypeBreakdownService mimeTypeBreakdownService;
+  private RatInstanceService ratInstanceService;
+
+  public ServicesRestResource() {
+    productService = new RecentProductService();
+    healthMonitorService = new HealthMonitorService();
+    mimeTypeBreakdownService = new MimeTypeBreakdownService();
+    ratInstanceService = new RatInstanceService();
+  }
+
+  @MethodMapping(value = "/repo/licenses/unapproved", httpMethod = HttpMethod.GET)
+  public List<Item> getUnapprovedLicensesFromRatInstances() {
+    ratInstanceService.getRatLogs();
+    return ratInstanceService.getUnapprovedLicenses();
+  }
+
+  @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
+  public List<Item> getRecentProducts() {
+    return productService.getAllRecentProducts();
+  }
+
+  @MethodMapping(value = "/repo/breakdown/mime", httpMethod = HttpMethod.GET)
+  public List<Item> getRepoMimeTypeBreakdown(
+      @RequestParam(value = "limit", required = false) Integer limit) {
+    if (limit == null) {
+      limit = 0;
+    }
+    return mimeTypeBreakdownService.getMimeTypes(limit);
+  }
+
+  @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
+  public List<Item> getRepoLicenseTypeBreakdown() {
+    ratInstanceService.getRatLogs();
+    return ratInstanceService.getLicenseTypeBreakdown();
+  }
+
+  @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)
+  public Map<String, Long> getRepositorySize(
+      @RequestParam(value = "dir", required = false, defaultValue = "NOTPROVIDED") String repoPath) {
+    if (repoPath.equals("NOTPROVIDED")) {
+      repoPath = FileConstants.DRAT_TEMP_UNZIPPED_PATH;
     }
 
-    @MethodMapping(value = "/repo/licenses/unapproved", httpMethod = HttpMethod.GET)
-    public List<Item> getUnapprovedLicensesFromRatInstances() {
-        ratInstanceService.getRatLogs();
-        return ratInstanceService.getUnapprovedLicenses();
+    File repoDir = new File(repoPath);
+    long repoSize = 0;
+    long numFiles = 0;
+    if (repoDir.exists()) {
+      repoSize = FileUtils.sizeOfDirectory(repoDir);
+      numFiles = -1;
+      Collection<File> repoFiles = FileUtils.listFiles(repoDir,
+          FileFilterUtils.trueFileFilter(),
+          FileFilterUtils.directoryFileFilter());
+      if (repoFiles != null && repoFiles.size() > 0) {
+        numFiles = repoFiles.size();
+      } else
+        numFiles = 0;
     }
 
-    @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
-    public List<Item> getRecentProducts() {
-        return productService.getAllRecentProducts();
-    }
+    Map<String, Long> repoSizeInfo = new ConcurrentHashMap<String, Long>();
+    repoSizeInfo.put("numberOfFiles", numFiles);
+    repoSizeInfo.put("memorySize", repoSize);
+    return repoSizeInfo;
+  }
 
-    @MethodMapping(value = "/repo/breakdown/mime", httpMethod = HttpMethod.GET)
-    public List<Item> getRepoMimeTypeBreakdown(@RequestParam(value = "limit", required = false) Integer limit) {
-        if(limit == null) {
-            limit = 0;
-        }
-        return mimeTypeBreakdownService.getMimeTypes(limit);
-    }
+  @MethodMapping(value = "/status/drat", httpMethod = HttpMethod.GET)
+  public String getDratRunningStatus() {
+    return healthMonitorService.getDratStatus().toUpperCase();
+  }
 
-    @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
-    public List<Item> getRepoLicenseTypeBreakdown() {
-        ratInstanceService.getRatLogs();
-        return ratInstanceService.getLicenseTypeBreakdown();
-    }
+  @MethodMapping(value = "/status/oodt", httpMethod = HttpMethod.GET)
+  public boolean getOodtRunningStatus() {
+    return healthMonitorService.getOodtStatus();
+  }
 
-    @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)
-    public Repository.Size getRepositorySize() {
-        return new Repository(FileConstants.DRAT_TEMP_UNZIPPED_PATH).getSize();
+  @MethodMapping(value = "/status/oodt/raw", httpMethod = HttpMethod.GET)
+  public Object getOodtRawHealthStatus() {
+    String jsonBody = healthMonitorService.rerouteHealthMonitorData()
+        .readEntity(String.class);
+    GsonBuilder g = new GsonBuilder();
+    g.serializeSpecialFloatingPointValues();
+    Gson gson = g.create();
+    Map<String, Object> status = null;
+    try {
+      status = (Map<String, Object>) gson.fromJson(jsonBody, Map.class);
+      return status;
+    } catch (Exception e) {
+      LOG.warning(
+          "Exception creating GSON object for OODT raw health. Message: "
+              + e.getLocalizedMessage());
+      status = new ConcurrentHashMap<String, Object>();
+      return status;
     }
-
-    @MethodMapping(value = "/status/drat", httpMethod = HttpMethod.GET)
-    public String getDratRunningStatus() {
-        return healthMonitorService.getDratStatus().toUpperCase();
-    }
-
-    @MethodMapping(value = "/status/oodt", httpMethod = HttpMethod.GET)
-    public boolean getOodtRunningStatus() {
-        return healthMonitorService.getOodtStatus();
-    }
-
-    @MethodMapping(value = "/status/oodt/raw", httpMethod = HttpMethod.GET)
-    public Object getOodtRawHealthStatus() {
-        String jsonBody = healthMonitorService.rerouteHealthMonitorData().readEntity(String.class);
-        GsonBuilder g = new GsonBuilder();
-        g.serializeSpecialFloatingPointValues();
-        Gson gson = g.create();
-        Map<String,Object> status = null;
-        try{
-          status = (Map<String,Object>)gson.fromJson(jsonBody, Map.class);
-          return status;
-        }
-        catch(Exception e){
-          LOG.warning("Exception creating GSON object for OODT raw health. Message: "+e.getLocalizedMessage());
-          status = new ConcurrentHashMap<String,Object>();
-          return status;
-        }
-    }
+  }
 }

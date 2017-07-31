@@ -30,7 +30,7 @@ public class FileConstants {
   public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
   public static final String WORKFLOW_PATH = buildDratSubdirectoryPath("/deploy/workflow/bin/wmgr-client");
   public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
-  public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/deploy/data/staging/uploaded_repo");
+  public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/deploy/data/staging");
   public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
 
   private static String getDratDirectory() {

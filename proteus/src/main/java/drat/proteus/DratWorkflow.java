@@ -17,15 +17,32 @@
 
 package drat.proteus;
 
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+
+import backend.FileConstants;
 
 /**
  * Created by stevenfrancus on 11/15/15.
  */
 public class DratWorkflow extends WebPage {
+
+  private static final long serialVersionUID = 7645955871280602984L;
+  private String repoPath;
+
   public DratWorkflow(final PageParameters params) {
     super();
+    this.repoPath = params.get("repoPath")
+        .toString(FileConstants.DRAT_TEMP_UNZIPPED_PATH);
+  }
+
+  @Override
+  public void renderHead(IHeaderResponse response) {
+    super.renderHead(response);
+    response.render(JavaScriptHeaderItem.forScript(
+        "var repoPath = '" + this.repoPath + "';", "repo_path_script"));
   }
 
 }
