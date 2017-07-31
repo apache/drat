@@ -143,9 +143,10 @@ public class RatLogFile {
       int lineNo = 1;
       boolean parsingUnapproved = false;
       boolean parsingLicenseFiles = false;
-      
+
       for (String line : lines) {
-        if (line.contains(BOUNDARY_HEADER_MARKER_SKIP) && !parsingUnapproved && !parsingLicenseFiles) {
+        if (line.contains(BOUNDARY_HEADER_MARKER_SKIP) && !parsingUnapproved
+            && !parsingLicenseFiles) {
           LOG.info("RAT log: boundary marker at line: ["
               + String.valueOf(lineNo) + "]: Skipping.");
           lineNo++;
@@ -170,11 +171,35 @@ public class RatLogFile {
           for (String type : LICENSE_TYPES) {
             if (line.startsWith(type + ":")) {
               String[] toks = line.split(":");
-              this.licenseCounts.put(type, Integer.valueOf(toks[1].trim()));
+              if (toks != null && toks.length == 2) {
+                int lCount = -1;
+                try {
+                  lCount = Integer.valueOf(toks[1].trim());
+                } catch (NumberFormatException e) {
+                  LOG.warning("Unable to parse tok: [" + toks[1].trim()
+                      + "]: setting value to 0: Message: "
+                      + e.getLocalizedMessage());
+                  lCount = 0;
+                }
+                this.licenseCounts.put(type, lCount);
+              } else {
+                LOG.warning("ERROR parsing license types: type: [" + type
+                    + "] from line: [" + line
+                    + "]: != 2 tokens: total toks: from split on : is ["
+                    + (toks != null ? toks.length : "UNKNOWN, toks=null")
+                    + "]");
+
+                if (toks != null && toks.length == 1) {
+                  // just means it was a line like Archives:
+                  // without specifying 0, it means zero, so we'll put zero
+                  LOG.warning("Adding license count: [0] for type: [" + type
+                      + "]: line to parse: [" + line + "]");
+                  this.licenseCounts.put(type, 0);
+                }
+              }
             }
           }
         }
-        
 
         if (parsingLicenseFiles) {
           if (line.contains(BOUNDARY_HEADER_MARKER_SKIP)) {
@@ -182,12 +207,11 @@ public class RatLogFile {
             parsingLicenseFiles = false;
             lineNo++;
             continue;
-          }
-          else{
+          } else {
             if (!isBlank(line)) {
               String[] toks = line.trim().split("\\s+");
               this.detectedLicensesPerFile.put(toks[1], toks[0]);
-            }            
+            }
           }
 
         }
@@ -215,8 +239,8 @@ public class RatLogFile {
   }
 
   private boolean isBlank(String ratLog) {
-    return ratLog == null || (ratLog != null && ratLog.isEmpty()) ||
-        (ratLog != null && ratLog.trim().equals(""));
+    return ratLog == null || (ratLog != null && ratLog.isEmpty())
+        || (ratLog != null && ratLog.trim().equals(""));
   }
 
 }

@@ -35,7 +35,9 @@ import drat.proteus.services.licenses.RatLogFile;
 public class TestRatLogFile {
 
   private static String ratLogFileContents;
+  private static String ratLogFileContentsBlankLic;
   private static final String ratLogFileName = "sample-rat.log";
+  private static final String ratLogFileBlankLicenseCount = "sample-rat2.log";
   private final static String UNKNOWN_LIC = "!?????";
   private final String expectedDate = "2017-07-29T17:10:42-07:00";
   private static final String[] licenseTypes = { "Notes", "Binaries",
@@ -80,7 +82,35 @@ public class TestRatLogFile {
       throw new InstantiationException(
           "Unable to read RatLog: [" + ratLogFilePath + "]");
     }
+    
+    String ratLogFilePath2 = TestRatLogFile.class.getResource(ratLogFileBlankLicenseCount)
+        .getFile();
+    try {
+      ratLogFileContentsBlankLic = FileUtils.readFileToString(new File(ratLogFilePath2));
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new InstantiationException(
+          "Unable to read RatLog: [" + ratLogFilePath2 + "]");
+    }  
 
+  }
+  
+
+  
+  @Test
+  public void testBlankLicCount(){
+    RatLogFile ratLog = new RatLogFile(null, ratLogFileContentsBlankLic);
+    assertNotNull(ratLog);
+    assertNotNull(ratLog.getLicenseCounts());
+    assertTrue(ratLog.getLicenseCounts().keySet().size() > 0);
+    assertEquals(6, ratLog.getLicenseCounts().keySet().size());
+    int notes = ratLog.getLicenseCounts().get("Notes");
+    int binaries = ratLog.getLicenseCounts().get("Binaries");
+    int archives = ratLog.getLicenseCounts().get("Archives");
+    
+    assertEquals(0, notes); 
+    assertEquals(0, binaries); 
+    assertEquals(0, archives);
   }
 
   @Test
@@ -129,6 +159,7 @@ public class TestRatLogFile {
   @AfterClass
   public static void after() {
     ratLogFileContents = null;
+    ratLogFileContentsBlankLic = null;
   }
 
 }
