@@ -48,7 +48,7 @@ public class RatInstanceService extends BaseProductService {
       return;
     }
     for (Item item : ratLogProducts) {
-      RatLog log = getLicenseTypesFromRatLog(((ProductItem) item).getLink());
+      RatLogFile log = getLicenseTypesFromRatLog(((ProductItem) item).getLink());
       aggregator.add(log);
     }
   }
@@ -73,10 +73,10 @@ public class RatInstanceService extends BaseProductService {
     return aggregator.getRatUnapprovedLicenses();
   }
 
-  private RatLog getLicenseTypesFromRatLog(String ratLogLink) {
+  private RatLogFile getLicenseTypesFromRatLog(String ratLogLink) {
     WebTarget target = client.target(ratLogLink);
     Invocation.Builder builder = target.request();
     Response res = builder.get();
-    return new RatLog(ratLogLink, res.readEntity(String.class));
+    return new RatLogFile(ratLogLink, res.readEntity(String.class));
   }
 }

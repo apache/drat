@@ -41,8 +41,7 @@ public class RatAggregator {
     ratCount = 0;
   }
 
-  public void add(RatLog log) {
-    log.parse();
+  public void add(RatLogFile log) {
     ratCount++;
     addLogToRunningTotal(log);
     addUnapprovedLicenses(log);
@@ -56,14 +55,14 @@ public class RatAggregator {
     return this.ratUnapprovedLicenses;
   }
 
-  private void addUnapprovedLicenses(RatLog log) {
-    List<String> unapproved = log.getUnapprovedLicenseFiles();
+  private void addUnapprovedLicenses(RatLogFile log) {
+    List<String> unapproved = log.getUnapprovedLicensedFiles();
     this.ratUnapprovedLicenses.add(new UnapprovedLicensesItem(ratCount,
         unapproved));
   }
 
-  private void addLogToRunningTotal(RatLog log) {
-    Map<String, Integer> logLicenses = log.getLicenseHistogram();
+  private void addLogToRunningTotal(RatLogFile log) {
+    Map<String, Integer> logLicenses = log.getLicenseCounts();
     for (String key : logLicenses.keySet()) {
       Integer licenseAmountTotal = licenses.get(key);
       Integer licenseAmountLog = logLicenses.get(key);
