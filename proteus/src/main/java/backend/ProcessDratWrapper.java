@@ -206,7 +206,7 @@ public class ProcessDratWrapper extends GenericProcess
       output = execToString(cmd);
     } catch (IOException e) {
       LOG.warning("Executing DRAT cmd: [" + command + "]: command line: [" + cmd
-          + "] generated non-zero exit status. output is: [" + output + "]");
+          + "] generated non-zero exit status. output is: [" + output + "]: Message: "+e.getLocalizedMessage());
       throw e;
     } catch (Exception e) {
       LOG.warning("Exception executing " + command + ". Output: [" + output

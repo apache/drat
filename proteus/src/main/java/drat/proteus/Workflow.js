@@ -130,10 +130,10 @@ angular
                 margin: {
                     top: 5,
                     right: 0,
-                    bottom: 15,
+                    bottom: 95,
                     left: 0
                 },
-                //xAxisTickFormat: $scope.yAxisFormatFunction(),
+
                 x: function(d) {
                     return d.label;
                 },
@@ -147,7 +147,8 @@ angular
                 },
                 transitionDuration: 0,
                 xAxis: {
-                    axisLabel: 'X Axis'
+                    axisLabel: 'X Axis',
+		    rotateLabels: -45
                 },
                 yAxis: {
                     axisLabel: 'Y Axis',
@@ -170,7 +171,8 @@ angular
                 }
             }
          }
-        $scope.chartData = []
+        $scope.chartData = [];
+        $scope.lastLicenseData = null;
 
         $scope.memorySize = 0;
         $scope.numberOfFiles = 0;
@@ -306,45 +308,42 @@ angular
                           });
         };
         function getLicenseType() {
-                                var recent = $http({
-                                        method: "GET",
-                                        url: './service/repo/breakdown/license'
-                                    })
-                                    .then(function(response) {
-
-                                        var temp =  [{
-                                                     key: "Cumulative Return",
-                                                     values: [,]
-                                                    }];
-                                        var j = 0;
-                                        for (var i = 0; i < response.data.length; i++) {
-                                            if(response.data[i].weight > 0.001){
-                                               var payload = {
-                                                      "label": response.data[i].type,
-                                                       "value": response.data[i].weight * 100
-                                                };
-                                                temp[0].values[j] = payload;
-
-                                                j++;
-
-
-                                            }
-
-                                        }
-                                        for (var i = 0 ; i < response.data.length; i ++){
-                                            console.log(temp[0].values[i]);
-                                            //console.log(temp[0].values[i].weight);
-                                            if($scope.chartData.length == 0){
-                                                    $scope.chartData = temp;
-                                                     break;
-                                            }
-                                            if(temp[0].values[i].weight != $scope.chartData[0].values[i].weight){
-                                              $scope.chartData = temp;
-                                              break;
-                                            }
-                                        }
-                                    });
-                  };
+                    var recent = $http({
+                            method: "GET",
+                            url: './service/repo/breakdown/license'
+                        })
+                        .then(function(response) {
+                        	if (response.data != null){
+                        		if(hasChanged(response.data, $scope.lastLicenseData)){
+                        			$scope.lastLicenseData = response.data;
+    		                        $scope.chartData = [];                            	
+                                	var charLicData = [{
+    										key: "License Data",
+    										values: []
+    									    }];
+                                	
+                                	for(var i=0; i < response.data.length; i++){
+                                		var licData = {
+                                			"label" : response.data[i].type,
+                                			"value" : response.data[i].weight*100
+                                		};
+    				                    charLicData[0].values.push(licData);
+                                	}
+                                	//console.log("CHAR LIC DATA is "+JSON.stringify(charLicData));
+    			                    if(response.data.length > 0){
+                                    	$scope.chartData = charLicData;    			                    	
+    			                    }
+    			                    //else{
+    			                    //	console.log("Response data wasn't > 0 "+JSON.stringify(response.data));
+    			                    //}
+                        		}
+                        		//else{
+                        		//	console.log("License data hasn't changed.");
+                        		//}
+                        	}                                   
+                        });
+        };
+                  
         function getRecentIngestedFiles() {
             var recent = $http({
                     method: "GET",
@@ -363,4 +362,39 @@ angular
                     console.log($scope.arrayOfScannedFiles);
                 });
         };
+        
+       function hasChanged(jsonRespData, lastRespData){
+    	   if(lastRespData == null) return true;
+    	   if(jsonRespData == null) return true;
+    	   
+    	   var licTypes = [];
+    	   for(var i=0; i < jsonRespData.length; i++){
+    		   licTypes.push(jsonRespData[i].type);
+    	   }
+    	   
+    	   //console.log("License types: "+licTypes);
+    	   for(var i=0; i < licTypes.length; i++){
+    		   var lType = licTypes[i];
+		       var lrType = getLicType(lType, lastRespData);
+		       var jrType = getLicType(lType, jsonRespData);
+		       //console.log("Comparing old data: type: ["+lType+"]: old: ["+lrType+"]: new: ["+jrType+"]");
+		       if (lrType != jrType){
+		    	   return true;
+		       }
+    	   }
+    	   
+    	   return false;
+    	   
+       };
+       
+       function getLicType(type, jsonData){
+    	   var t = -1;
+    	   
+    	   for(var i=0; i < jsonData.length; i++){
+    		   if(jsonData[i].type == type){
+    			   return jsonData[i].weight;
+    		   }
+    	   }
+    	   return t;
+       };
     }])
