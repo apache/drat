@@ -18,13 +18,10 @@
 package drat.proteus.services.licenses;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-
-import com.google.common.base.Joiner;
 
 public class RatLogFile {
 
