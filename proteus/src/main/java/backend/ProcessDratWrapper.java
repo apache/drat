@@ -160,8 +160,11 @@ public class ProcessDratWrapper extends GenericProcess
               "DRAT: reset: removing dir: [" + file.getAbsolutePath() + "]");
           FileUtils.forceDelete(file);
         } catch (FileNotFoundException e) {
-          LOG.info("Error removing: [" + file.getAbsolutePath() + "]: Message: "
-              + e.getMessage());
+          LOG.warning("Error removing: [" + file.getAbsolutePath()
+              + "]: Message: " + e.getLocalizedMessage());
+        } catch (IOException e) {
+          LOG.warning("Unable to remove file: [" + file.getAbsolutePath()
+              + "]: Message: " + e.getLocalizedMessage());
         }
       }
     }
@@ -206,7 +209,8 @@ public class ProcessDratWrapper extends GenericProcess
       output = execToString(cmd);
     } catch (IOException e) {
       LOG.warning("Executing DRAT cmd: [" + command + "]: command line: [" + cmd
-          + "] generated non-zero exit status. output is: [" + output + "]: Message: "+e.getLocalizedMessage());
+          + "] generated non-zero exit status. output is: [" + output
+          + "]: Message: " + e.getLocalizedMessage());
       throw e;
     } catch (Exception e) {
       LOG.warning("Exception executing " + command + ". Output: [" + output
