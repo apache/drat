@@ -27,9 +27,6 @@ import org.wicketstuff.rest.annotations.parameters.RequestBody;
 import org.wicketstuff.rest.contenthandling.json.webserialdeserial.GsonWebSerialDeserial;
 import org.wicketstuff.rest.resource.AbstractRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
-
-import com.google.gson.GsonBuilder;
-
 import backend.AbstractDratWrapper;
 import backend.AbstractOodtWrapper;
 import backend.FileConstants;
@@ -46,8 +43,6 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
     super(new GsonWebSerialDeserial());
     oodtWrapper = ProcessOodtWrapper.getInstance();
     dratWrapper = ProcessDratWrapper.getInstance();
-    GsonBuilder g = new GsonBuilder();
-    g.serializeSpecialFloatingPointValues();
   }
 
   @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
