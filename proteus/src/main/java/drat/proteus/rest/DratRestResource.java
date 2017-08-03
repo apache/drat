@@ -17,34 +17,37 @@
 
 package drat.proteus.rest;
 
-import backend.*;
-import org.wicketstuff.rest.annotations.MethodMapping;
-import org.wicketstuff.rest.annotations.parameters.RequestBody;
-import org.wicketstuff.rest.resource.gson.GsonRestResource;
-import org.wicketstuff.rest.resource.gson.GsonSerialDeserial;
-import org.wicketstuff.rest.utils.http.HttpMethod;
-
-import com.google.gson.GsonBuilder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class DratRestResource extends GsonRestResource {
+import org.wicketstuff.rest.annotations.MethodMapping;
+import org.wicketstuff.rest.annotations.parameters.RequestBody;
+import org.wicketstuff.rest.contenthandling.json.webserialdeserial.GsonWebSerialDeserial;
+import org.wicketstuff.rest.resource.AbstractRestResource;
+import org.wicketstuff.rest.utils.http.HttpMethod;
+
+import com.google.gson.GsonBuilder;
+
+import backend.AbstractDratWrapper;
+import backend.AbstractOodtWrapper;
+import backend.FileConstants;
+import backend.ProcessDratWrapper;
+import backend.ProcessOodtWrapper;
+
+public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial> {
 
   private static final long serialVersionUID = -5885535059043262485L;
   public AbstractOodtWrapper oodtWrapper;
   public AbstractDratWrapper dratWrapper;
 
   public DratRestResource() {
+    super(new GsonWebSerialDeserial());
     oodtWrapper = ProcessOodtWrapper.getInstance();
     dratWrapper = ProcessDratWrapper.getInstance();
     GsonBuilder g = new GsonBuilder();
     g.serializeSpecialFloatingPointValues();
-    GsonSerialDeserial sd = new GsonSerialDeserial(g.create());
-    configureObjSerialDeserial(sd);
-    
   }
 
   @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)

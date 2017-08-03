@@ -17,23 +17,6 @@
 
 package drat.proteus.rest;
 
-import backend.FileConstants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import drat.proteus.services.general.Item;
-import drat.proteus.services.health.HealthMonitorService;
-import drat.proteus.services.licenses.RatInstanceService;
-import drat.proteus.services.mimetype.MimeTypeBreakdownService;
-import drat.proteus.services.product.RecentProductService;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.wicketstuff.rest.annotations.MethodMapping;
-import org.wicketstuff.rest.annotations.parameters.RequestParam;
-import org.wicketstuff.rest.resource.gson.GsonRestResource;
-import org.wicketstuff.rest.utils.http.HttpMethod;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +24,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-public class ServicesRestResource extends GsonRestResource {
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.wicketstuff.rest.annotations.MethodMapping;
+import org.wicketstuff.rest.annotations.parameters.RequestParam;
+import org.wicketstuff.rest.contenthandling.json.webserialdeserial.GsonWebSerialDeserial;
+import org.wicketstuff.rest.resource.AbstractRestResource;
+import org.wicketstuff.rest.utils.http.HttpMethod;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import backend.FileConstants;
+import drat.proteus.services.general.Item;
+import drat.proteus.services.health.HealthMonitorService;
+import drat.proteus.services.licenses.RatInstanceService;
+import drat.proteus.services.mimetype.MimeTypeBreakdownService;
+import drat.proteus.services.product.RecentProductService;
+
+public class ServicesRestResource extends AbstractRestResource<GsonWebSerialDeserial> {
 
   private static final long serialVersionUID = -963632756412793830L;
   private static final Logger LOG = Logger
@@ -52,6 +53,7 @@ public class ServicesRestResource extends GsonRestResource {
   private RatInstanceService ratInstanceService;
 
   public ServicesRestResource() {
+    super(new GsonWebSerialDeserial());
     productService = new RecentProductService();
     healthMonitorService = new HealthMonitorService();
     mimeTypeBreakdownService = new MimeTypeBreakdownService();
@@ -131,7 +133,7 @@ public class ServicesRestResource extends GsonRestResource {
     Gson gson = g.create();
     Map<String, Object> status = null;
     try {
-      status = (Map<String, Object>) gson.fromJson(jsonBody, Map.class);
+      status = gson.fromJson(jsonBody, Map.class);
       return status;
     } catch (Exception e) {
       LOG.warning(
