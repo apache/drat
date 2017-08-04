@@ -1,5 +1,14 @@
 angular
     .module('drat', ['ngAnimate', 'ui.bootstrap', 'nvd3', 'nvd3ChartDirectives'])
+    .filter('bytes', function() {
+    	return function(bytes, precision) {
+    		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    		if (typeof precision === 'undefined') precision = 1;
+    		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+    		    number = Math.floor(Math.log(bytes) / Math.log(1024)) | 0;
+    		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+    	}
+    })
     .controller('switch', ['$scope', '$http', function($scope, $http) {
      
         //using jquery for displaying the spinner instead of 'No Data Available'
