@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class RatAggregator {
   private Map<String, Integer> licenses;
   private List<Item> ratUnapprovedLicenses;
   private int ratCount;
+  private static final Logger LOG = Logger.getLogger(RatAggregator.class.getName());
 
   public RatAggregator() {
     licenses = new HashMap<>();
@@ -43,6 +45,7 @@ public class RatAggregator {
 
   public void add(RatLogFile log) {
     ratCount++;
+    LOG.info("Adding Rat Log: ["+String.valueOf(ratCount)+"]: "+log.getRatLogLinkUrlStr());
     addLogToRunningTotal(log);
     addUnapprovedLicenses(log);
   }

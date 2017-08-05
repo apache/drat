@@ -27,12 +27,15 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class RatInstanceService extends BaseProductService {
   private static final String CHANNEL = "RatLog";
   private static final String TYPE_ID = "urn:drat:RatLog";
+  private static final Logger LOG = Logger.getLogger(RatInstanceService.class.getName());
   private RatAggregator aggregator;
   private static Client client = ClientBuilder.newBuilder().newClient();
 
@@ -44,7 +47,9 @@ public class RatInstanceService extends BaseProductService {
     aggregator.clear();
     List<Item> ratLogProducts = super.getRecentProductsByChannelAndTypeId(
         CHANNEL, TYPE_ID);
-    if (ratLogProducts == null) {
+    if (ratLogProducts == null || 
+        (ratLogProducts != null && ratLogProducts.size() == 0)) {
+      LOG.warning("No rat log products to aggregate");
       return;
     }
     for (Item item : ratLogProducts) {
@@ -55,6 +60,13 @@ public class RatInstanceService extends BaseProductService {
 
   public List<Item> getLicenseTypeBreakdown() {
     Map<String, Integer> aggregate = aggregator.getAggregatedLicenseTotal();
+    if (aggregate == null || 
+        (aggregate != null && aggregate.keySet() == null) || 
+        (aggregate != null && aggregate.keySet() != null && aggregate.keySet().size() == 0)){
+      LOG.warning("Cannot obtain license type breakdown: no aggregate data.");
+      return Collections.EMPTY_LIST;
+    }
+    
     List<Item> breakdownItems = new ArrayList<>();
     int totalLicensesInRepo = 0;
     for (Integer count : aggregate.values()) {

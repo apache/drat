@@ -18,6 +18,7 @@
 package drat.proteus.rest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,8 @@ import drat.proteus.services.licenses.RatInstanceService;
 import drat.proteus.services.mimetype.MimeTypeBreakdownService;
 import drat.proteus.services.product.RecentProductService;
 
-public class ServicesRestResource extends AbstractRestResource<GsonWebSerialDeserial> {
+public class ServicesRestResource
+    extends AbstractRestResource<GsonWebSerialDeserial> {
 
   private static final long serialVersionUID = -963632756412793830L;
   private static final Logger LOG = Logger
@@ -62,8 +64,17 @@ public class ServicesRestResource extends AbstractRestResource<GsonWebSerialDese
 
   @MethodMapping(value = "/repo/licenses/unapproved", httpMethod = HttpMethod.GET)
   public List<Item> getUnapprovedLicensesFromRatInstances() {
-    ratInstanceService.getRatLogs();
-    return ratInstanceService.getUnapprovedLicenses();
+    List<Item> licenses = new ArrayList<Item>();
+    try {
+      ratInstanceService.getRatLogs();
+      licenses = ratInstanceService.getUnapprovedLicenses();
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("Error obtaining unapproved licenses from RAT: Message: "
+          + e.getLocalizedMessage());
+    }
+
+    return licenses;
   }
 
   @MethodMapping(value = "/products", httpMethod = HttpMethod.GET)
@@ -82,8 +93,17 @@ public class ServicesRestResource extends AbstractRestResource<GsonWebSerialDese
 
   @MethodMapping(value = "/repo/breakdown/license", httpMethod = HttpMethod.GET)
   public List<Item> getRepoLicenseTypeBreakdown() {
-    ratInstanceService.getRatLogs();
-    return ratInstanceService.getLicenseTypeBreakdown();
+    List<Item> breakdown = new ArrayList<Item>();
+    try {
+      ratInstanceService.getRatLogs();
+      breakdown = ratInstanceService.getLicenseTypeBreakdown();
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.warning("Unable to get repo license type breakdown: Message: "
+          + e.getLocalizedMessage());
+    }
+
+    return breakdown;
   }
 
   @MethodMapping(value = "/repo/size", httpMethod = HttpMethod.GET)

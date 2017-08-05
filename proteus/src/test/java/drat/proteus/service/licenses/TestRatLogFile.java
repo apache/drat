@@ -36,8 +36,10 @@ public class TestRatLogFile {
 
   private static String ratLogFileContents;
   private static String ratLogFileContentsBlankLic;
+  private static String ratLogFileUnspecifiedLicPerFile;
   private static final String ratLogFileName = "sample-rat.log";
   private static final String ratLogFileBlankLicenseCount = "sample-rat2.log";
+  private static final String ratLogUnspecifiedLicensePerFile = "sample-rat3.log";
   private final static String UNKNOWN_LIC = "!?????";
   private final String expectedDate = "2017-07-29T17:10:42-07:00";
   private static final String[] licenseTypes = { "Notes", "Binaries",
@@ -71,34 +73,30 @@ public class TestRatLogFile {
       UNKNOWN_LIC, "MIT", UNKNOWN_LIC, UNKNOWN_LIC, UNKNOWN_LIC, "MIT", "AL",
       UNKNOWN_LIC, UNKNOWN_LIC, UNKNOWN_LIC };
 
+  private static final String unspecifiedLicUnknownKey = "/Users/mattmann/drat/deploy/data/jobs/rat/1501912823777/input/8fb403b70729d1d76218b246615c9b7c-prototype.js";
+
   @BeforeClass
   public static void prepare() throws InstantiationException {
-    String ratLogFilePath = TestRatLogFile.class.getResource(ratLogFileName)
-        .getFile();
-    try {
-      ratLogFileContents = FileUtils.readFileToString(new File(ratLogFilePath));
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new InstantiationException(
-          "Unable to read RatLog: [" + ratLogFilePath + "]");
-    }
-    
-    String ratLogFilePath2 = TestRatLogFile.class.getResource(ratLogFileBlankLicenseCount)
-        .getFile();
-    try {
-      ratLogFileContentsBlankLic = FileUtils.readFileToString(new File(ratLogFilePath2));
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new InstantiationException(
-          "Unable to read RatLog: [" + ratLogFilePath2 + "]");
-    }  
-
+    ratLogFileContents = loadFile(ratLogFileName);
+    ratLogFileContentsBlankLic = loadFile(ratLogFileBlankLicenseCount);
+    ratLogFileUnspecifiedLicPerFile = loadFile(ratLogUnspecifiedLicensePerFile);
   }
-  
 
-  
   @Test
-  public void testBlankLicCount(){
+  public void testBlankLicensePerFile() {
+    RatLogFile ratLog = new RatLogFile(null, ratLogFileUnspecifiedLicPerFile);
+    assertNotNull(ratLog);
+    assertNotNull(ratLog.getDetectedLicensesPerFile());
+    assertNotNull(ratLog.getDetectedLicensesPerFile().keySet());
+    assertEquals(100, ratLog.getDetectedLicensesPerFile().keySet().size());
+    assertNotNull(
+        ratLog.getDetectedLicensesPerFile().get(unspecifiedLicUnknownKey));
+    assertEquals("UNKNOWN",
+        ratLog.getDetectedLicensesPerFile().get(unspecifiedLicUnknownKey));
+  }
+
+  @Test
+  public void testBlankLicCount() {
     RatLogFile ratLog = new RatLogFile(null, ratLogFileContentsBlankLic);
     assertNotNull(ratLog);
     assertNotNull(ratLog.getLicenseCounts());
@@ -107,9 +105,9 @@ public class TestRatLogFile {
     int notes = ratLog.getLicenseCounts().get("Notes");
     int binaries = ratLog.getLicenseCounts().get("Binaries");
     int archives = ratLog.getLicenseCounts().get("Archives");
-    
-    assertEquals(0, notes); 
-    assertEquals(0, binaries); 
+
+    assertEquals(0, notes);
+    assertEquals(0, binaries);
     assertEquals(0, archives);
   }
 
@@ -160,6 +158,23 @@ public class TestRatLogFile {
   public static void after() {
     ratLogFileContents = null;
     ratLogFileContentsBlankLic = null;
+    ratLogFileUnspecifiedLicPerFile = null;
+  }
+
+  private static String loadFile(String filename)
+      throws InstantiationException {
+    String ratLogFilePath = TestRatLogFile.class.getResource(filename)
+        .getFile();
+    String contents = null;
+    try {
+      contents = FileUtils.readFileToString(new File(ratLogFilePath));
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new InstantiationException(
+          "Unable to read RatLog: [" + ratLogFilePath + "]");
+    }
+
+    return contents;
   }
 
 }

@@ -209,8 +209,19 @@ public class RatLogFile {
             continue;
           } else {
             if (!isBlank(line)) {
+              LOG.info("parsing license files, unblank line: [" + line
+                  + "]: file: " + this.ratLogLinkUrlStr);
               String[] toks = line.trim().split("\\s+");
-              this.detectedLicensesPerFile.put(toks[1], toks[0]);
+              if (toks != null && toks.length == 2) {
+                this.detectedLicensesPerFile.put(toks[1], toks[0]);
+              } else {
+                LOG.warning("Error parsing licenses per file: [" + line
+                    + "]: parsed: [" + (toks != null ? toks.length : 0)
+                    + "] tokens. Adding as UNKNOWN");
+                if (toks != null && toks.length == 1) {
+                  this.detectedLicensesPerFile.put(toks[0], "UNKNOWN");
+                }
+              }
             }
           }
 
