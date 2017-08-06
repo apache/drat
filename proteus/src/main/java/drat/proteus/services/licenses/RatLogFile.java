@@ -209,7 +209,7 @@ public class RatLogFile {
             continue;
           } else {
             if (!isBlank(line)) {
-              LOG.info("parsing license files, unblank line: [" + line
+              LOG.finest("parsing license files, unblank line: [" + line
                   + "]: file: " + this.ratLogLinkUrlStr);
               String[] toks = line.trim().split("\\s+");
               if (toks != null && toks.length == 2) {
@@ -245,6 +245,9 @@ public class RatLogFile {
 
         lineNo++;
       }
+
+      LOG.info("Done parsing RAT log: [" + this.ratLogLinkUrlStr
+          + "]: total lines: [" + String.valueOf(lineNo) + "]");
     }
 
   }

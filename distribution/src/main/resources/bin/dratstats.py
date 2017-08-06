@@ -202,17 +202,25 @@ def wait_for_job(job_name):
 # Parse license from RAT
 def parse_license(s):
 	li_dict = {'N': 'Notes', 'B': 'Binaries', 'A': 'Archives', 'AL': 'Apache', '!?????': 'Unknown'}
-	arr = s.split("/", 1)
-	li = arr[0].strip()
-	if li in li_dict:
-		li = li_dict[li]
-
-	return [arr[1].split("/")[-1], li]
+	if s and not s.isspace():
+		arr = s.split("/", 1)
+		li = arr[0].strip()
+		if li in li_dict:
+			li = li_dict[li]
+	
+		if len(arr) > 1 and len(arr[1].split("/")) > 0:
+			return [arr[1].split("/")[-1], li]
+		else:
+			printnow('split not correct during license parsing '+str(arr))
+			return ["/dev/null", li_dict['!?????']]
+	else:
+		printnow('blank line provided to parse license ['+s+']')
+		return ["/dev/null", li_dict['!?????']]
 
 
 # Index into Solr
 def index_solr(json_data):
-	printnow(json_data)
+	#printnow(json_data)
 	request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
 	request.add_header('Content-type', 'application/json')
 	urllib2.urlopen(request, json_data)
@@ -223,9 +231,13 @@ def run(repos_list, output_dir):
 	repos = []
 	
 	with open(repos_list) as repositories:
-		for repository in repositories:
-			repository = repository.strip()
-			
+		
+		repo_content = repositories.readlines()
+		# you may also want to remove whitespace characters like `\n` at the end of each line
+		repo_content = [x.strip() for x in repo_content] 
+		print('DRAT stats: inspecting '+str(len(repo_content))+' repositories.')
+		
+		for repository in repo_content:
 			repo_toks = repository.split()
 			repo_path = repo_toks[0]
 			repo_name = repo_toks[1]
@@ -240,26 +252,26 @@ def run(repos_list, output_dir):
 				"type" : "project"				
 				}
 			
-			if rep["name"].startswith('#'):
-				print('\nSkipping Repository: ' + rep["repo_name"][1:])
+			if rep["repo"].startswith('#'):
+				print('\nSkipping Repository: ' + rep["repo"][1:])
 				continue
-			printnow ("\nVerifying repository path...\n")
+			print("\nVerifying repository path...\n")
 			if not os.path.exists(rep["repo"]):
-				printnow ("\nPath " + rep["repo"] + "is not valid. Skipping and moving on...\n")
+				print ("\nPath " + rep["repo"] + "is not valid. Skipping and moving on...\n")
 				continue
-			printnow ("\nRepository Path: OK\n")
+			print("\nRepository Path: OK\n")
 			repos.append(rep)
 
-			printnow ("\nStarting OODT...\n")
+			print ("\nStarting OODT...\n")
 			oodt_process("start")
 			time.sleep(20)
-			printnow ("\nOODT Started: OK\n")
+			print("\nOODT Started: OK\n")
 
-			printnow('Adding repository: '+str(rep)+' to Solr')
+			print('Adding repository: '+str(rep)+' to Solr')
 			index_solr(json.dumps([rep]))
 
 
-			printnow ("\nRunning DRAT on " + rep["repo"] + " ...\n")
+			print("\nRunning DRAT on " + rep["repo"] + " ...\n")
 			
 			retval = True
 			stats = {}
@@ -361,27 +373,36 @@ def run(repos_list, output_dir):
 					cur_file = ''
 					cur_header = ''
 					cur_section = ''
+					parsedHeaders = False
+					parsedLicenses = False
+					
 					with open(filename, 'rb') as f:
+						printnow('Parsing rat log: ['+filename+']')
 						for line in f:
 							if '*****************************************************' in line:
 								l = 0
 								h = 0
+								if cur_section == 'licenses':
+									parsedLicenses = True
+								if cur_section == 'headers':
+									parsedHeaders = True
+									
 								cur_file = ''
 								cur_header = ''
 								cur_section = ''
-							if line.startswith('  Files with Apache'):
+							if line.startswith('  Files with Apache') and not parsedLicenses:
 								cur_section = 'licenses'
-							if line.startswith(' Printing headers for '):
+							if line.startswith(' Printing headers for ') and not parsedHeaders:
 								cur_section = 'headers'
 							if cur_section == 'licenses':
 								l += 1
 								if l > 4:
 									line = line.strip()
 									if line:
-										# print("File: %s with License Line: %s" % (filename, line))
+										print("File: %s with License Line: %s" % (filename, line))
 										li = parse_license(line)
 										rat_license[li[0]] = li[1]
-									# print(li)
+									 	print(li)
 							if cur_section == 'headers':
 								if '=====================================================' in line or '== File:' in line:
 									h += 1
@@ -396,6 +417,8 @@ def run(repos_list, output_dir):
 									h = 1
 					if h == 3:
 						rat_header[cur_file] = cur_header.split("\n", 1)[1]
+					parsedHeaders = True
+					parsedLicenses = True
 
 				# Index RAT logs into Solr
 				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
@@ -438,24 +461,24 @@ def run(repos_list, output_dir):
 				# Copying data to Output Directory
 				repos_out = output_dir + "/" + normalize_path(rep["repo"])
 				shutil.copytree(os.getenv("DRAT_HOME") + "/data", repos_out)
-				printnow ("\nData copied to Solr and Output Directory: OK\n")
+				print("\nData copied to Solr and Output Directory: OK\n")
 
 			else:
-				printnow ("\nDRAT Scan Completed: Resulted in Error\n")
+				print ("\nDRAT Scan Completed: Resulted in Error\n")
 
 
 			time.sleep(5)
-			printnow ("\nStopping OODT...\n")
+			print ("\nStopping OODT...\n")
 			oodt_process("stop")
 			time.sleep(20)
-			printnow ("\nOODT Stopped: OK\n")
+			print ("\nOODT Stopped: OK\n")
 
-			printnow ("\nReseting DRAT...\n")
+			print ("\nReseting DRAT...\n")
 			drat_reset()
 			time.sleep(5)
-			printnow ("\nDRAT Reset: OK\n")
+			print ("\nDRAT Reset: OK\n")
 
-	printnow ("\nDRAT SCAN COMPLETED!!!\n")
+	print("\nDRAT SCAN COMPLETED!!!\n")
 
 
 # This is where it all begins
@@ -475,6 +498,12 @@ def main():
 
 	if not os.path.isdir(output_dir):
 		print >>sys.stderr, "\nOutput Directory doesn't exist at the path: ", output_dir
+		help()
+		sys.exit(1)
+	
+	dratData = os.getenv("DRAT_HOME") + "/data"
+	if os.path.realpath(output_dir).startswith(dratData):
+		print >>sys.stderr, "\nOutput dir cannot be a sub directory of "+dratData
 		help()
 		sys.exit(1)
 

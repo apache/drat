@@ -37,9 +37,11 @@ public class TestRatLogFile {
   private static String ratLogFileContents;
   private static String ratLogFileContentsBlankLic;
   private static String ratLogFileUnspecifiedLicPerFile;
+  private static String ratLogBinaryContents;
   private static final String ratLogFileName = "sample-rat.log";
   private static final String ratLogFileBlankLicenseCount = "sample-rat2.log";
   private static final String ratLogUnspecifiedLicensePerFile = "sample-rat3.log";
+  private static final String ratLogBinary = "sample-rat4.log";
   private final static String UNKNOWN_LIC = "!?????";
   private final String expectedDate = "2017-07-29T17:10:42-07:00";
   private static final String[] licenseTypes = { "Notes", "Binaries",
@@ -73,6 +75,10 @@ public class TestRatLogFile {
       UNKNOWN_LIC, "MIT", UNKNOWN_LIC, UNKNOWN_LIC, UNKNOWN_LIC, "MIT", "AL",
       UNKNOWN_LIC, UNKNOWN_LIC, UNKNOWN_LIC };
 
+  private static final String[] ratLogBinaryFiles = {
+      "/Users/mattmann/drat/deploy/data/jobs/rat/1501962347659/input/71d8a431d5ea53f3aaf0a06ea7b9b188-DRAT-Workflow-Wangler.pdf",
+      "/Users/mattmann/drat/deploy/data/jobs/rat/1501962347659/input/da9083b9beb0827804591899c66f31e6-IWSM15.pdf" };
+
   private static final String unspecifiedLicUnknownKey = "/Users/mattmann/drat/deploy/data/jobs/rat/1501912823777/input/8fb403b70729d1d76218b246615c9b7c-prototype.js";
 
   @BeforeClass
@@ -80,6 +86,25 @@ public class TestRatLogFile {
     ratLogFileContents = loadFile(ratLogFileName);
     ratLogFileContentsBlankLic = loadFile(ratLogFileBlankLicenseCount);
     ratLogFileUnspecifiedLicPerFile = loadFile(ratLogUnspecifiedLicensePerFile);
+    ratLogBinaryContents = loadFile(ratLogBinary);
+  }
+
+  @Test
+  public void testRatLogBinary() {
+    RatLogFile ratLog = new RatLogFile(null, ratLogBinaryContents);
+    assertNotNull(ratLog);
+    assertNotNull(ratLog.getDetectedLicensesPerFile());
+    assertNotNull(ratLog.getDetectedLicensesPerFile().keySet());
+    assertEquals(2, ratLog.getDetectedLicensesPerFile().keySet().size());
+    for (int i = 0; i < ratLogBinaryFiles.length; i++) {
+      assertTrue(ratLog.getDetectedLicensesPerFile()
+          .containsKey(ratLogBinaryFiles[i]));
+      assertNotNull(
+          ratLog.getDetectedLicensesPerFile().get(ratLogBinaryFiles[i]));
+      assertTrue(ratLog.getDetectedLicensesPerFile().get(ratLogBinaryFiles[i])
+          .equals("B"));
+    }
+
   }
 
   @Test
@@ -159,6 +184,7 @@ public class TestRatLogFile {
     ratLogFileContents = null;
     ratLogFileContentsBlankLic = null;
     ratLogFileUnspecifiedLicPerFile = null;
+    ratLogBinaryContents = null;
   }
 
   private static String loadFile(String filename)
