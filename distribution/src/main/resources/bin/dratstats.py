@@ -220,7 +220,7 @@ def parse_license(s):
 
 # Index into Solr
 def index_solr(json_data):
-	#printnow(json_data)
+	printnow(json_data)
 	request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
 	request.add_header('Content-type', 'application/json')
 	urllib2.urlopen(request, json_data)
