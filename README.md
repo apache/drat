@@ -1,4 +1,4 @@
-Distributed Release Audit Tool (DRAT)
+Apache Distributed Release Audit Tool (DRAT)&trade;
 ====
  
 A distributed, parallelized (Map Reduce) wrapper around [Apache RAT&trade;](http://creadur.apache.org/rat/) (Release Audit Tool). RAT is used to check for proper licensing in software projects. However, RAT takes a prohibitively long time to analyze large repositories of code, since it can only run on one JVM. Furthermore, RAT isn't customizable by file type or file size and provides no incremental output. This wrapper dramatically speeds up the process by leveraging Apache OODT&trade; to parallelize and workflow the following components:
