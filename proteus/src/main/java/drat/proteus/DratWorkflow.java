@@ -20,6 +20,7 @@ package drat.proteus;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import backend.FileConstants;
@@ -36,6 +37,13 @@ public class DratWorkflow extends WebPage {
     super();
     this.repoPath = params.get("repoPath")
         .toString(FileConstants.DRAT_TEMP_UNZIPPED_PATH);
+    
+    add(new Link("home_link") {
+      @Override
+     public void onClick() {
+       setResponsePage(HomePage.class);          
+     }
+    });
   }
 
   @Override
