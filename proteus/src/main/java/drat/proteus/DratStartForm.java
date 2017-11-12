@@ -123,7 +123,7 @@ public class DratStartForm extends Form {
           }
         }
 
-        if (pathValue.startsWith("http://")) {
+        if (pathValue.startsWith("http://") || pathValue.startsWith("https://")) {
           String clonePath = parseAsVersionControlledRepo(pathValue, command);
           if (!downloadPhase) {
             startDrat(pathValue, command);
