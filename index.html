@@ -6,13 +6,12 @@
 -->
 <html>
 	<head>
-		<title>Apache DRAT - under construction</title>
+		<title>Apache DRAT - project page is under construction</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 	</head>
 	<body>
-
 		<!-- Wrapper -->
 			<div id="wrapper" class="divided">
 
@@ -23,7 +22,10 @@
 							<h1>Apache DRAT project page</h1>
 							<p class="major">Thanks for finding us - but this page is under construction...</p>
 							<ul class="actions vertical">
-								<li><a href="#mstatement" class="button big wide smooth-scroll-middle">What is our mission?</a></li>
+								<li><a href="#mstatement" class="button special big wide smooth-scroll-middle">What is our mission?</a></li>
+							</ul>
+							<ul class="actions vertical">
+								<li><a href="#asflinks" class="button special big wide smooth-scroll-middle">Links</a></li>
 							</ul>
 						</div>
 						<div class="image">
@@ -42,14 +44,15 @@
 															</dd>
 															<dt>What does DRAT want?</dt>
 															<dd>
-																<p>The Distributed Release Audit Tool (DRAT) improves over the Apache RAT code audit tool in several ways. RAT is a command line tool and Java API and Maven plugin that audits a code base and its declared OSS licenses - if you say it's Apache2, RAT will check whether or not your source is Apache2 and produce a report that states what files are/aren't and why.
+																<p>The Distributed Release Audit Tool (DRAT) improves over the Apache RAT code audit tool in several ways. <br />
+																	RAT is a command line tool and Java API and Maven plugin that audits a code base and its declared OSS licenses - if you say it's Apache2, RAT will check whether or not your source is Apache2 and produce a report that states what files are/aren't and why.
 
 RAT has several problems, namely:
-<br />
-
-It doesn't scale to large code bases - running it on a 25k file and 10M LOC code base ran for ~4 weeks on a normal Linux server with 5GB memory and tons of hard disk and modern CPUs.
-RAT's crawler is rudimentary and you have to use explicit white/black lists on what files to avoid or else it will be checking binary files for licenses.
-RAT doesn't produce incremental output. It either completes and generates a log, or it doesn't.
+<ul>
+<li>It doesn't scale to large code bases - running it on a 25k file and 10M LOC code base ran for ~4 weeks on a normal Linux server with 5GB memory and tons of hard disk and modern CPUs.</li>
+<li>RAT's crawler is rudimentary and you have to use explicit white/black lists on what files to avoid or else it will be checking binary files for licenses.</li>
+<li>RAT doesn't produce incremental output. It either completes and generates a log, or it doesn't.</li>
+</ul>
 DRAT improves upon RAT in several ways namely by addressing all of the above concerns.
 <br />
 DRAT is a Map Reduce version of RAT using Apache Tika to automatically sort and classify the code base files; Apache OODT to index metadata and Tika information about those code files into Apache Solr; and OODT to produce a Map Reduce workflow that runs RAT incrementally on k-sized chunks of same-MIME-typed files (detected by Tika) and then producing incremental, per type logs, and then aggregating and reducing them into a combined log at the end.</p>
@@ -58,9 +61,10 @@ DRAT is a Map Reduce version of RAT using Apache Tika to automatically sort and 
 															<dd>
 																<p>As of September 2017 the project was granted top-level status after being developed for a while on Github.</p>
 															</dd>
-															<dt>Want to contribute?</dt>
+															<dt>Do you want to contribute?</dt>
 															<dd>
-																<p>TBD - link to mailing list? Jira? Github/ASF-base repo page</p>
+																<p>You can find our Github repository at: <a href="https://github.com/apache/drat/">https://github.com/apache/drat/</a><br/>
+																Our mailing list is <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;">&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;</a></p>
 															</dd>
 														</dl>
 													</div>
@@ -68,18 +72,34 @@ DRAT is a Map Reduce version of RAT using Apache Tika to automatically sort and 
 														<img src="images/spotlight03.jpg" alt="" />
 													</div>
 							</section>
+				<!-- links -->
+				<section class="spotlight style1 orient-left content-align-center image-position-center onscroll-image-fade-in">
+														<div class="content">
+															<h3 id="asflinks" >Links</h3>
+															<ul class="alt">
+																<li><a href="https://www.apache.org/"><img src="images/asf_logo_wide.svg" alt="Apache Software Foundation"></a></li>
+																<li><a href="https://www.apache.org/licenses/">License</a></li>
+																<li><a href="https://www.apache.org/foundation/sponsorship.html">Donate</a></li>
+																<li><a href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
+																<li><a href="https://www.apache.org/security.html">Security</a></li>
+															</ul>
+														</div>
+														<div class="image">
+															<img src="images/spotlight02.jpg" alt="" />
+														</div>
+								</section>
 
 				<!-- Footer -->
 					<footer class="wrapper style1 align-center">
 						<div class="inner">
 							<ul class="icons">
-								<li><a href="#" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
+								<!-- nyi li><a href="#" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
 								<li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li>
 								<li><a href="#" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
-								<li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
-								<li><a href="#" class="icon style2 fa-envelope"><span class="label">Email</span></a></li>
+								<li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li-->
+								<li><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;" class="icon style2 fa-envelope"><span class="label">Email</span></a></li>
 							</ul>
-							<p>&copy; 2017 Apache DRAT, Design: <a href="https://html5up.net">HTML5 UP</a>. - any changes? <a href="https://github.com/ottlinger/drat-in-progress/issues" target="_blank">File a bug</a></p>
+							<p>&copy; 2017 Apache DRAT, Design taken from <a href="https://html5up.net">HTML5 UP</a>. - any changes? <a href="https://github.com/apache/drat/issues/98" target="_blank">File a bug or add a comment</a></p>
 						</div>
 					</footer>
 			<!-- page container -->
