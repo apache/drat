@@ -1,0 +1,77 @@
+body{
+	font-family: 'Lato', sans-serif;
+}
+
+.breathing-space{
+	padding:20px 0;
+}
+
+.section-space{
+	padding: 80px 0;
+}
+
+a{
+	color:#494E9D;
+}
+
+a:hover{
+	color:#C4C8F4;
+}
+
+header{
+	background: #494E9D;
+}
+
+.nav a{
+	padding: 30px 20px;
+	color: #fff;
+}
+
+.white-text{
+	color: #fff;
+}
+
+.grey-text{
+	color:#BDBDBD;
+}
+
+.apache{
+	font-size:2em;
+}
+
+.drat{
+	font-size:6em;
+}
+
+.superscript{
+	font-size:12px; 
+	position:relative; 
+	top:-6em;
+}
+
+.circle{
+	height:50px;
+	width: 50px;
+	border-radius: 50px;
+	background: #fff;
+	margin: 10px;
+	position: relative;
+	left:36%;
+}
+
+.alternate-lightbg{
+	background: #F1F1F7;
+}
+
+
+.alternate-darkbg{
+	background: #4B4F85;
+}
+
+.footer-bg{
+	background: #383838;
+}
+
+.circular-border{
+	border-radius: 50px;
+}
