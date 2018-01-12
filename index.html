@@ -1,0 +1,253 @@
+<html lang="en">
+  <head>
+    <title>Apache DRAT</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/custom.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+  </head>
+  <body>
+    <header>
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                <a class="nav-link active" href="#problem">The Problem</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#drat">Apache DRAT</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#resources">Resources</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#contributors">Contributors</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row  align-items-center">
+          <div class="offset-md-1 col-md-5">
+            <img src="img/header.png" width="100%">
+          </div>
+          <div class="offset-md-1 col-md-5 white-text ">
+            <h4 class="apache">Apache</h4>
+            <h1 class="drat">DRAT<sup class="superscript">TM</sup></h1>
+            <p>An unobstructive, scalable approach<br/>
+              to large scale Software License Analysis
+          </div>
+        </div>
+
+       </div> 
+
+   </header>
+
+  <div class="row">
+
+    <section id="problem" class="container section-space">
+      <div class="row align-items-center">
+        <div class="col-md-12 breathing-space">
+          <h2>THE PROBLEM</h2>
+          <hr/>
+        </div>
+        <div class="col-md-4">
+          <img src="img/the-problem.png" />
+        </div>
+        <div class="col-md-8">
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-1.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>INCREASING OPEN SOURCE PROJECTS</h4>
+              <p class="grey-text">With increasing number of open source projects across many domains, the license of open source software becomes critical to grant everyone legally appropriate permission to freely use, modify and distribute open source software.</p>
+            </div>
+          </div>
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-2.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>INCREASING LICENSE ISSUERS</h4>
+              <p class="grey-text">With more than 60 licenses such as Berkeley Software Distribution(BSD), MIT License, the Apache License, and so on, approved by, Open Source Initiative (OSI) for complying with open source definition, there exists differences among them.</p>
+            </div>
+          </div>
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-3.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>NEED FOR AUTOMATED VERIFICATION</h4>
+              <p class="grey-text">With increasing number of open source projects across many domains, the license of open source software becomes critical to grant everyone legally appropriate permission to freely use, modify and distribute open source software.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+     </section>
+     
+     <section id="drat" class="container-fluid alternate-lightbg section-space">
+       <div class="container text-center ">
+          <h2 class="col-sm-12 breathing-space">WHAT IS DRAT?</h2>
+          <hr/>
+          <p class="col-sm-12 breathing-space">
+            A distributed parallelized ( Map Reduce) wrapper around APACHE RAT<sup>TM</sup> (Release Audit Tool) that <br/> goes far beyond RAT<sup>TM</sup> by leveraging Apache OODT<sup>TM</sup> to dramatically speed up the process.
+          </p>
+          <div class="row">
+            <div class="col-md-3 breathing-space">
+              <i class="fa fa-file-code-o fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Scales to large code bases</h4>
+              <p>DRAT is a Map Reduce version of RAT using Apache Tika to automatically sort and classify the code base files</p>
+            </div>
+            <div class="offset-md-1 col-md-3 breathing-space">
+              <i class="fa fa-object-group fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Mapreduce for the win!</h4>
+              <p>DRAT uses Apache OODT to index metadata and Tika information about those code files into Apache Solr and OODT to produce a Map Reduce workflow</p>
+            </div>
+            <div class="offset-md-1 col-md-3 breathing-space">
+              <i class="fa fa-tasks fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Incremental output</h4>
+              <p>DRAT runs RAT incrementally on k-sized chunks of same-MIME-typed files (detected by Tika) and then producing incremental, per type logs, and then aggregating and reducing them into a combined log at the end.</p>
+            </div>
+          </div>
+       </div>
+     </section> 
+
+     <section id="resources" class="container-fluid section-space">
+        <div class="container">
+          <h2 class="col-sm-12 breathing-space">RESOURCES</h2>
+          <hr/>
+
+          <div class="row breathing-space">
+
+            <div class="col">
+              <div class="row">
+                <div class="col-sm-1">
+                  <img src="img/code.png"/>
+                </div>
+                <div class="offset-sm-1 col-sm-9">
+                  <h6>GITHUB</h6>
+                  <p>Learn more about the project, people involved, how it works and ways to contribute on github.</p>
+                  <button class="btn btn-outline-danger circular-border">VIEW PROJECT</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="row">
+                <div class="col-sm-1">
+                  <img src="img/publication.png"/>
+                </div>
+                <div class="offset-sm-1 col-sm-9">
+                  <h6>PUBLICATIONS</h6>
+                  <p>Read and follow the ongoing research work on Apache DRAT<sup>TM</sup>.</p>
+                  <button class="btn btn-outline-danger circular-border">DOWNLOAD</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+     </section> 
+
+
+     <section id="contributors" class="container-fluid alternate-darkbg white-text section-space">
+       <div class="container text-center breathing-space">
+          <h2 class="col-sm-12 breathing-space ">CONTRIBUTORS</h2>
+          <hr/>
+          <div class="row">
+
+            <div class="col-md-3 breathing-space">
+              <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+              <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+              <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+              <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+               <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+               <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+               <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+            <div class="col-md-3 breathing-space">
+               <img src="img/code.png"/>
+              <h5>Name1</h5>
+            </div>
+
+          </div>
+       </div>
+     </section> 
+
+     <footer class="container-fluid footer-bg section-space">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                  <div class="row">
+                    <div class="col-md-4 right-align">
+                        <a href="http://apache.org" target="_blank">
+                            <img src="img/apache-logo.png" width="70%">
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <ul style="list-style-type: none;">
+                            <li><a href="http://apache.org" target="_blank"><h4 class="white-text">Apache</h4></a>
+                            <li><a class="white-text" href="http://apache.org/" target="_blank">Apache Server Foundation</a>
+                            </li>
+                            <li><a class="white-text" href="http://apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+                            <li><a class="white-text" href="http://apache.org/foundation/sponsorship.html" target="_blank">Become
+                                a Sponsor</a></li>
+                            <li><a class="white-text" href="http://apache.org/security/" target="_blank">Security</a></li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-7">
+                    <p class="white-text">Copyright c 2017 The Apache Software Foundation. Licensed under the Apache License. version 2.0.</p>
+
+                    <p class="grey-text">Apache DRAT<sup>TM</sup>, DRAT<sup>TM</sup>, Apache, Apache DRAT<sup>TM</sup> Logo are the trademarks of Apache Software Foundation.</p>
+                    
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+  </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
