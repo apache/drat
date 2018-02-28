@@ -146,9 +146,9 @@
                   <img src="img/publication.png"/>
                 </div>
                 <div class="offset-sm-1 col-sm-9">
-                  <h6>PUBLICATIONS</h6>
-                  <p>Read and follow the ongoing research work on Apache DRAT<sup>TM</sup>.</p>
-                  <a class="btn btn-outline-danger circular-border" href="">DOWNLOAD</a>
+                  <h6>CONTRIBUTE</h6>
+                  <p>You can follow and contribute to ongoing research work on Apache DRAT<sup>TM</sup>.</p>
+                  <a class="btn btn-outline-danger circular-border" href="mailto:dev-subscribe@drat.apache.org?subject=Subscribe">SUBSCRIBE</a>
                 </div>
               </div>
             </div>
@@ -162,47 +162,7 @@
        <div class="container text-center breathing-space">
           <h2 class="col-sm-12 breathing-space ">CONTRIBUTORS</h2>
           <hr/>
-          <div class="row">
-
-            <div class="col-md-3 breathing-space">
-              <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-              <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-              <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-              <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-               <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-               <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-               <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
-
-            <div class="col-md-3 breathing-space">
-               <img src="img/code.png"/>
-              <h5>Name1</h5>
-            </div>
+          <div class="row names">
 
           </div>
        </div>
@@ -246,8 +206,93 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      var drat = {};
+
+      drat = $.getJSON( "https://api.github.com/repos/apache/drat/contributors",
+        function( drat){
+          for( var i=0; i<drat.length;i++){
+              $(".names").append('<div class="col-md-3 breathing-space"><a target="_blank" href="https://github.com/' +  drat[i].login + '"><img src="' + drat[i].avatar_url +'" width="50%"/><h5>' + drat[i].login + '</h5></a></div>');
+            }
+        })
+        .fail( function(){
+          drat = {
+                            "display_name": "DRAT",
+                            "site": "http://drat.apache.org/",
+                            "description": "large scale code license analysis, auditing and reporting",
+                            "mail_list": "drat",
+                            "established": "09/2017",
+                            "report": [
+                              "Next month: missing in February",
+                              "February",
+                              "May",
+                              "August",
+                              "November"
+                            ],
+                            "chair": {
+                              "chrismattmann": {
+                                "name": "Chris Mattmann"
+                              }
+                            },
+                            "roster": {
+                              "brianf": {
+                                "name": "Brian Fox",
+                                "date": "2017-09-20"
+                              },
+                              "francus": {
+                                "name": "Steven Francus",
+                                "date": "2017-09-20"
+                              },
+                              "MJJoyce": {
+                                "name": "Michael James Joyce",
+                                "date": "2017-09-20"
+                              },
+                              "karanjeets": {
+                                "name": "Karanjeet Singh",
+                                "date": "2017-09-20"
+                              },
+                              "lewismc": {
+                                "name": "Lewis John McGibbney",
+                                "date": "2017-09-20"
+                              },
+                              "buggtb": {
+                                "name": "Tom Barber",
+                                "date": "2017-09-20"
+                              },
+                              "chrismattmann ": {
+                                "name": "Chris Mattmann",
+                                "date": "2017-09-20"
+                              },
+                              "darth-pr": {
+                                "name": "Paul Ramirez",
+                                "date": "2017-09-20"
+                              },
+                              "tbpalsulich": {
+                                "name": "Tyler Palsulich",
+                                "date": "2017-09-20"
+                              },
+                              "wmburke": {
+                                "name": "Wayne Burke",
+                                "date": "2017-09-20"
+                              }
+                            },
+                            "pmc": true
+                          };
+            for( var username in drat.roster){
+              $(".names").append('<div class="col-md-3 breathing-space"><a href="https://github.com/' + username + '"><img src="https://avatars.githubusercontent.com/' + username +'" width="50%"/><h5>' + drat.roster[username]["name"] + '</h5></a></div>');
+            }
+
+            });
+
+
+      
+    </script>
   </body>
 </html>
