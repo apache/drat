@@ -1,117 +1,298 @@
-<!DOCTYPE HTML>
-<!--
-	Story by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Apache DRAT - project page is under construction</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="assets/css/main-min.css" />
-	</head>
-	<body>
-		<!-- Wrapper -->
-			<div id="wrapper" class="divided">
+<html lang="en">
+  <head>
+    <title>Apache DRAT</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-				<!-- teaser -->
-					<section class="banner style1 orient-left content-align-left image-position-right fullscreen onload-image-fade-in onload-content-fade-right">
-						<div class="content">
-							<img src="images/feather.svg" style="height:200px;" alt="Apache Software Foundation">
-							<h1>Apache DRAT project page</h1>
-							<p class="major">Thanks for finding us - but this page is under construction...</p>
-							<ul class="actions vertical">
-								<li><a href="#mstatement" class="button special big wide smooth-scroll-middle">What is our mission?</a></li>
-							</ul>
-							<ul class="actions vertical">
-								<li><a href="#asflinks" class="button special big wide smooth-scroll-middle">Links</a></li>
-							</ul>
-						</div>
-						<div class="image">
-							<img src="images/banner.jpg" alt="" />
-						</div>
-					</section>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/custom.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+  </head>
+  <body>
+    <header>
+      <div class="container-fluid">
 
-			<!-- mission statement -->
-			<section class="spotlight style1 orient-right content-align-left image-position-center onscroll-image-fade-in">
-													<div class="content">
-														<h3 id="mstatement" >Apache DRAT mission statement</h3>
-														<dl>
-															<dt>What does DRAT stand for?</dt>
-															<dd>
-																<p><strong>D</strong>istributed <strong>R</strong>elease <strong>A</strong>udit <strong>T</strong>ool - based on the shoulders of Apache Creadur's <a href="https://creadur.apache.org/rat">Release Audit Tool (RAT)</a> this project tries to scale out license checks on a large scale.</p>
-															</dd>
-															<dt>What does DRAT want?</dt>
-															<dd>
-																<p>The Distributed Release Audit Tool (DRAT) improves over the Apache RAT code audit tool in several ways. <br />
-																	RAT is a command line tool and Java API and Maven plugin that audits a code base and its declared OSS licenses - if you say it's Apache2, RAT will check whether or not your source is Apache2 and produce a report that states what files are/aren't and why.
+        <div class="row">
+          <div class="col-sm-12">
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                <a class="nav-link active" href="#problem">The Problem</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#drat">Apache DRAT</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#resources">Resources</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#contributors">Contributors</a>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-RAT has several problems, namely:
-<ul>
-<li>It doesn't scale to large code bases - running it on a 25k file and 10M LOC code base ran for ~4 weeks on a normal Linux server with 5GB memory and tons of hard disk and modern CPUs.</li>
-<li>RAT's crawler is rudimentary and you have to use explicit white/black lists on what files to avoid or else it will be checking binary files for licenses.</li>
-<li>RAT doesn't produce incremental output. It either completes and generates a log, or it doesn't.</li>
-</ul>
-DRAT improves upon RAT in several ways namely by addressing all of the above concerns.
-<br />
-DRAT is a Map Reduce version of RAT using Apache Tika to automatically sort and classify the code base files; Apache OODT to index metadata and Tika information about those code files into Apache Solr; and OODT to produce a Map Reduce workflow that runs RAT incrementally on k-sized chunks of same-MIME-typed files (detected by Tika) and then producing incremental, per type logs, and then aggregating and reducing them into a combined log at the end.</p>
-															</dd>
-															<dt>What's the status of the project?</dt>
-															<dd>
-																<p>As of September 2017 the project was granted top-level status after being developed for a while on Github.</p>
-															</dd>
-															<dt>Do you want to contribute?</dt>
-															<dd>
-																<p>You can find our Github repository at: <a href="https://github.com/apache/drat/">https://github.com/apache/drat/</a><br/>
-																Our mailing list is <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;">&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;</a></p>
-															</dd>
-														</dl>
-													</div>
-													<div class="image">
-														<img src="images/spotlight03.jpg" alt="" />
-													</div>
-							</section>
-				<!-- links -->
-				<section class="spotlight style1 orient-left content-align-center image-position-center onscroll-image-fade-in">
-														<div class="content">
-															<h3 id="asflinks" >Links</h3>
-															<ul class="alt">
-																<li><a href="https://www.apache.org/"><img src="images/asf_logo_wide.svg" alt="Apache Software Foundation"></a></li>
-																<li><a href="https://www.apache.org/licenses/">License</a></li>
-																<li><a href="https://www.apache.org/foundation/sponsorship.html">Donate</a></li>
-																<li><a href="https://www.apache.org/foundation/thanks.html">Thanks</a></li>
-																<li><a href="https://www.apache.org/security.html">Security</a></li>
-															</ul>
-														</div>
-														<div class="image">
-															<img src="images/spotlight02.jpg" alt="" />
-														</div>
-								</section>
+        <div class="row  align-items-center">
+          <div class="offset-md-1 col-md-5">
+            <img src="img/header.png" width="100%">
+          </div>
+          <div class="offset-md-1 col-md-5 white-text ">
+            <h4 class="apache">Apache</h4>
+            <h1 class="drat">DRAT<sup class="superscript">TM</sup></h1>
+            <p>An unobstructive, scalable approach<br/>
+              to large scale Software License Analysis
+          </div>
+        </div>
 
-				<!-- Footer -->
-					<footer class="wrapper style1 align-center">
-						<div class="inner">
-							<ul class="icons">
-								<!-- nyi li><a href="#" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li>
-								<li><a href="#" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
-								<li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li-->
-								<li><a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#118;&#64;&#100;&#114;&#97;&#116;&#46;&#97;&#112;&#97;&#99;&#104;&#101;&#46;&#111;&#114;&#103;" class="icon style2 fa-envelope"><span class="label">Email</span></a></li>
-							</ul>
-							<p>&copy; 2017 Apache DRAT, Design taken from <a href="https://html5up.net">HTML5 UP</a>. - any changes? <a href="https://github.com/apache/drat/issues/98" target="_blank">File a bug or add a comment</a></p>
-						</div>
-					</footer>
-			<!-- page container -->
+       </div> 
+
+   </header>
+
+  <div class="row">
+
+    <section id="problem" class="container section-space">
+      <div class="row align-items-center">
+        <div class="col-md-12 breathing-space">
+          <h2>THE PROBLEM</h2>
+          <hr/>
+        </div>
+        <div class="col-md-4">
+          <img src="img/the-problem.png" />
+        </div>
+        <div class="col-md-8">
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-1.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>INCREASING OPEN SOURCE PROJECTS</h4>
+              <p class="grey-text">With increasing number of open source projects across many domains, the license of open source software becomes critical to grant everyone legally appropriate permission to freely use, modify and distribute open source software.</p>
+            </div>
+          </div>
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-2.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>INCREASING LICENSE ISSUERS</h4>
+              <p class="grey-text">With more than 60 licenses such as Berkeley Software Distribution(BSD), MIT License, the Apache License, and so on, approved by, Open Source Initiative (OSI) for complying with open source definition, there exists differences among them.</p>
+            </div>
+          </div>
+          <div class="row breathing-space">
+            <div class="col-sm-1">
+              <img src="img/icon-3.png"/>
+            </div>
+            <div class="offset-md-1 col-sm-10">
+              <h4>NEED FOR AUTOMATED VERIFICATION</h4>
+              <p class="grey-text">With increasing number of open source projects across many domains, the license of open source software becomes critical to grant everyone legally appropriate permission to freely use, modify and distribute open source software.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+     </section>
+     
+     <section id="drat" class="container-fluid alternate-lightbg section-space">
+       <div class="container text-center ">
+          <h2 class="col-sm-12 breathing-space">WHAT IS DRAT?</h2>
+          <hr/>
+          <p class="col-sm-12 breathing-space">
+	  A distributed parallelized ( Map Reduce) wrapper around <a href="https://creadur.apache.org/rat/">APACHE RAT<sup>TM</sup> (Release Audit Tool)</a> that <br/> goes far beyond RAT<sup>TM</sup> by leveraging <a href="http://oodt.apache.org/">Apache OODT<sup>TM</sup></a> to dramatically speed up the process.
+          </p>
+          <div class="row">
+            <div class="col-md-3 breathing-space">
+              <i class="fa fa-file-code-o fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Scales to large code bases</h4>
+	      <p>DRAT is a Map Reduce version of RAT using <a href="http://tika.apache.org/">Apache Tika</a> to automatically sort and classify the code base files</p>
+            </div>
+            <div class="offset-md-1 col-md-3 breathing-space">
+              <i class="fa fa-object-group fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Mapreduce for the win!</h4>
+	      <p>DRAT uses <a href="http://oodt.apache.org/">Apache OODT</a> to index metadata and Tika information about those code files into <a href="https://lucene.apache.org/solr/">Apache Solr</a> and OODT to produce a Map Reduce workflow</p>
+            </div>
+            <div class="offset-md-1 col-md-3 breathing-space">
+              <i class="fa fa-tasks fa-3x fa-color" aria-hidden="true"></i>
+              <h4>Incremental output</h4>
+              <p>DRAT runs RAT incrementally on k-sized chunks of same-MIME-typed files (detected by Tika) and then producing incremental, per type logs, and then aggregating and reducing them into a combined log at the end.</p>
+            </div>
+          </div>
+       </div>
+     </section> 
+
+     <section id="resources" class="container-fluid section-space">
+        <div class="container">
+          <h2 class="col-sm-12 breathing-space">RESOURCES</h2>
+          <hr/>
+
+          <div class="row breathing-space">
+
+            <div class="col">
+              <div class="row">
+                <div class="col-sm-1">
+                  <img src="img/code.png"/>
+                </div>
+                <div class="offset-sm-1 col-sm-9">
+                  <h6>GITHUB</h6>
+                  <p>Learn more about the project, people involved, how it works and ways to contribute on github.</p>
+		  <a class="btn btn-outline-danger circular-border" href="https://github.com/apache/drat">VIEW PROJECT</a>
 			</div>
+              </div>
+            </div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/util-min.js"></script>
-			<script src="assets/js/main-min.js"></script>
+            <div class="col">
+              <div class="row">
+                <div class="col-sm-1">
+                  <img src="img/publication.png"/>
+                </div>
+                <div class="offset-sm-1 col-sm-9">
+                  <h6>CONTRIBUTE</h6>
+                  <p>You can follow and contribute to ongoing research work on Apache DRAT<sup>TM</sup>.</p>
+                  <a class="btn btn-outline-danger circular-border" href="mailto:dev-subscribe@drat.apache.org?subject=Subscribe">SUBSCRIBE</a>
+                </div>
+              </div>
+            </div>
+          </div>
 
-	</body>
+        </div>
+     </section> 
+
+
+     <section id="contributors" class="container-fluid alternate-darkbg white-text section-space">
+       <div class="container text-center breathing-space">
+          <h2 class="col-sm-12 breathing-space ">CONTRIBUTORS</h2>
+          <hr/>
+          <div class="row names">
+
+          </div>
+       </div>
+     </section> 
+
+     <footer class="container-fluid footer-bg section-space">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                  <div class="row">
+                    <div class="col-md-4 right-align">
+                        <a href="http://apache.org" target="_blank">
+                            <img src="img/apache-logo.png" width="70%">
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <ul style="list-style-type: none;">
+                            <li><a href="http://apache.org" target="_blank"><h4 class="white-text">Apache</h4></a>
+                            <li><a class="white-text" href="http://apache.org/" target="_blank">Apache Server Foundation</a>
+                            </li>
+                            <li><a class="white-text" href="http://apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+                            <li><a class="white-text" href="http://apache.org/foundation/sponsorship.html" target="_blank">Become
+                                a Sponsor</a></li>
+                            <li><a class="white-text" href="http://apache.org/security/" target="_blank">Security</a></li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-7">
+			<p class="white-text">&#169; 2017 The Apache Software Foundation. Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License v2.0</a>.</p>
+
+                    <p class="grey-text">Apache DRAT<sup>TM</sup>, DRAT<sup>TM</sup>, Apache, Apache DRAT<sup>TM</sup> Logo are the trademarks of Apache Software Foundation.</p>
+                    
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+  </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      var drat = {};
+
+      drat = $.getJSON( "https://api.github.com/repos/apache/drat/contributors",
+        function( drat){
+          for( var i=0; i<drat.length;i++){
+              $(".names").append('<div class="col-md-3 breathing-space"><a target="_blank" href="https://github.com/' +  drat[i].login + '"><img src="' + drat[i].avatar_url +'" width="50%"/><h5>' + drat[i].login + '</h5></a></div>');
+            }
+        })
+        .fail( function(){
+          drat = {
+                            "display_name": "DRAT",
+                            "site": "http://drat.apache.org/",
+                            "description": "large scale code license analysis, auditing and reporting",
+                            "mail_list": "drat",
+                            "established": "09/2017",
+                            "report": [
+                              "Next month: missing in February",
+                              "February",
+                              "May",
+                              "August",
+                              "November"
+                            ],
+                            "chair": {
+                              "chrismattmann": {
+                                "name": "Chris Mattmann"
+                              }
+                            },
+                            "roster": {
+                              "brianf": {
+                                "name": "Brian Fox",
+                                "date": "2017-09-20"
+                              },
+                              "francus": {
+                                "name": "Steven Francus",
+                                "date": "2017-09-20"
+                              },
+                              "MJJoyce": {
+                                "name": "Michael James Joyce",
+                                "date": "2017-09-20"
+                              },
+                              "karanjeets": {
+                                "name": "Karanjeet Singh",
+                                "date": "2017-09-20"
+                              },
+                              "lewismc": {
+                                "name": "Lewis John McGibbney",
+                                "date": "2017-09-20"
+                              },
+                              "buggtb": {
+                                "name": "Tom Barber",
+                                "date": "2017-09-20"
+                              },
+                              "chrismattmann ": {
+                                "name": "Chris Mattmann",
+                                "date": "2017-09-20"
+                              },
+                              "darth-pr": {
+                                "name": "Paul Ramirez",
+                                "date": "2017-09-20"
+                              },
+                              "tbpalsulich": {
+                                "name": "Tyler Palsulich",
+                                "date": "2017-09-20"
+                              },
+                              "wmburke": {
+                                "name": "Wayne Burke",
+                                "date": "2017-09-20"
+                              }
+                            },
+                            "pmc": true
+                          };
+            for( var username in drat.roster){
+              $(".names").append('<div class="col-md-3 breathing-space"><a href="https://github.com/' + username + '"><img src="https://avatars.githubusercontent.com/' + username +'" width="50%"/><h5>' + drat.roster[username]["name"] + '</h5></a></div>');
+            }
+
+            });
+
+
+      
+    </script>
+  </body>
 </html>
