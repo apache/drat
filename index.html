@@ -215,14 +215,6 @@
 
     <script type="text/javascript">
       var drat = {};
-
-     // drat = $.getJSON( "https://api.github.com/repos/apache/drat/contributors",
-      //  function( drat){
-     //     for( var i=0; i<drat.length;i++){
-     //         $(".names").append('<div class="col-md-3 breathing-space"><a target="_blank" href="https://github.com/' +  drat[i].login + '"><img src="' + drat[i].avatar_url +'" width="50%"/><h5>' + drat[i].login + '</h5></a></div>');
-     //       }
-      //  })
-      //  .fail( function(){
           drat = {
                             "display_name": "DRAT",
                             "site": "http://drat.apache.org/",
@@ -292,10 +284,6 @@
             for( var username in drat.roster){
               $(".names").append('<div class="col-md-3 breathing-space"><a href="https://github.com/' + username + '"><img src="https://avatars.githubusercontent.com/' + username +'" width="50%"/><h5>' + drat.roster[username]["name"] + '</h5></a></div>');
             }
-
-            //});
-
-
       
     </script>
   </body>
