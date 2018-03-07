@@ -20,3 +20,6 @@ See the wiki for more information on installing and running DRAT:
 
 You can clone the wiki by running  
 `git clone https://github.com/apache/drat.wiki.git`
+
+Visit our new website [drat.apache.org](http://drat.apache.org/) at the [Apache Software Foundation](http://www.apache.org/).
+
