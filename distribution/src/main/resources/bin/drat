@@ -92,7 +92,7 @@ function map {
 # Get the current list of RatAuditTasks running.
 function current_pges {
     STATUS="PGE%20EXEC"
-    tika="java -jar $DRAT_HOME/lib/tika-app-1.5.jar"
+    tika="java -jar $DRAT_HOME/lib/tika-app-1.18.jar"
 
     # Added workaround to catch the intermitent 500 error (very unlikely) and let the script continue
     # The workaround shall not be required once we solve OODT-920 issue
