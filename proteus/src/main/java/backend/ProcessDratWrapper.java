@@ -22,11 +22,15 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.oodt.cas.crawl.CrawlerLauncher;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
+import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.pcs.util.FileManagerUtils;
@@ -36,6 +40,7 @@ import com.google.common.base.Joiner;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -104,8 +109,18 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   @Override
-  public void index() throws IOException, DratWrapperException {
-    simpleDratExec(INDEX_CMD, this.path);
+  public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
+//    simpleDratExec(INDEX_CMD, this.path);
+      solrIndex();
+  }
+  
+  private void solrIndex() throws InstantiationException, SolrServerException, IOException {
+      System.setProperty(FileConstants.SOLR_INDEXER_CONFIG,FileConstants.SOLR_INDEXER_CONFIG_PATH);
+      SolrIndexer sIndexer = new SolrIndexer(FileConstants.SOLR_URL,FileConstants.FILEMGR_URL);
+      LOG.info("Setting SOLR_INDEXER_CONFIG to "+System.getProperty(FileConstants.SOLR_INDEXER_CONFIG));
+      sIndexer.indexAll(false);
+      sIndexer.commit();
+      sIndexer.optimize();
   }
 
   @Override
@@ -175,7 +190,12 @@ public class ProcessDratWrapper extends GenericProcess
     // before go, always reset
     this.reset();
     this.crawl();
+    
+    LOG.info("Indexing starts");
     this.index();
+//    this.solrIndex();
+    LOG.info("Indexing done");
+    
     this.map();
 
     // don't run reduce until all maps are done
