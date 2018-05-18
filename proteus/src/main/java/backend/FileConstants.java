@@ -36,10 +36,10 @@ public class FileConstants {
   public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
   public static final String SOLR_INDEXER_CONFIG_PATH = buildDratSubdirectoryPath("/deploy/filemgr/etc/indexer.properties");
 
-  public static final String FILEMGR_URL=replaceEnvVar("http://${OODT_HOST}:9000");
-  public static final String SOLR_URL=replaceEnvVar("http://${OODT_HOST}:8080/solr/drat");
-  public static final String CLIENT_URL=replaceEnvVar("http://${OODT_HOST}:9001");
-  public static final String OPSUI_URL=replaceEnvVar("http://${OODT_HOST}:8080/opsui");
+  public static final String FILEMGR_URL=PathUtils.replaceEnvVariables("[FILEMGR_URL]");
+  public static final String SOLR_DRAT_URL=PathUtils.replaceEnvVariables("[SOLR_DRAT_URL]");
+  public static final String CLIENT_URL=PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
+  public static final String OPSUI_URL=PathUtils.replaceEnvVariables("[OPSUI_URL]");
   
   public static final String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
   
@@ -52,21 +52,5 @@ public class FileConstants {
     return DRAT_SUPER_DIR + additionalPath;
   }
   
-  public static String replaceEnvVar(String input) {
-      if (null == input) {
-          return null;
-       }
-
-      Pattern p = Pattern.compile("\\$\\{(\\w+)\\}|\\$(\\w+)");
-      Matcher m = p.matcher(input);
-      StringBuffer sb = new StringBuffer();
-      while (m.find()) {
-          String envVarName = null == m.group(1) ? m.group(2) : m.group(1);
-          String envVarValue = System.getenv(envVarName);
-          m.appendReplacement(sb, null == envVarValue ? "" : Matcher.quoteReplacement(envVarValue));
-       }
-      m.appendTail(sb);
-      return sb.toString();
-    }
   
 }
