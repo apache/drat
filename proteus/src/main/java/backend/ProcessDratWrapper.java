@@ -127,7 +127,7 @@ public class ProcessDratWrapper extends GenericProcess
       sIndexer.indexAll(false);
       sIndexer.commit();
       sIndexer.optimize();
-      idl.logInfo("Comepleted",null);
+      idl.logInfo("Completed",null);
       
   }
 
