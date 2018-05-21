@@ -22,11 +22,17 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.python.modules.synchronize;
+import org.apache.oodt.cas.crawl.CrawlerLauncher;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
+import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
+import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.pcs.util.FileManagerUtils;
@@ -36,9 +42,14 @@ import com.google.common.base.Joiner;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,8 +115,20 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   @Override
-  public void index() throws IOException, DratWrapperException {
-    simpleDratExec(INDEX_CMD, this.path);
+  public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
+      solrIndex();
+  }
+  
+  private synchronized void solrIndex() throws InstantiationException, SolrServerException, IOException {
+      DratLog idl = new DratLog("INDEXING");
+      idl.logInfo("Starting", null);
+      System.setProperty(FileConstants.SOLR_INDEXER_CONFIG,FileConstants.SOLR_INDEXER_CONFIG_PATH);
+      SolrIndexer sIndexer = new SolrIndexer(FileConstants.SOLR_DRAT_URL,FileConstants.FILEMGR_URL);
+      sIndexer.indexAll(false);
+      sIndexer.commit();
+      sIndexer.optimize();
+      idl.logInfo("Completed",null);
+      
   }
 
   @Override
@@ -173,6 +196,7 @@ public class ProcessDratWrapper extends GenericProcess
 
   public void go() throws Exception {
     // before go, always reset
+    
     this.reset();
     this.crawl();
     this.index();
@@ -421,6 +445,63 @@ public class ProcessDratWrapper extends GenericProcess
       LOG.warning("Error wiping Solr core: [" + coreName + "]: Message: "
           + e.getLocalizedMessage());
     }
+  }
+  
+  private class DratLog{
+      private static final String MODULE = "DRAT_LOG"; 
+      long startTime =0;
+      private long lastActionTime=-1L;
+      private long timeDiff  =-1L;
+      private ZonedDateTime zdt;
+      private String action;
+      public DratLog(String action) {
+          this.action = action;
+          
+      }
+      
+      private void logWarning(String status,String desc) {
+          LOG.warning(getMsg(status,desc));
+      }
+      
+      private void logWarning(String desc) {
+          LOG.warning(MODULE+" : "+desc);
+      }
+      
+      private void logInfo(String status,String desc) {
+          LOG.info(getMsg(status,desc));
+      }
+      
+      private void logInfo(String desc) {
+          LOG.info(MODULE+" : "+desc);
+      }
+      
+      private void logSevere(String status,String desc) {
+          LOG.fine(getMsg(status,desc));
+      }
+      
+      private String getMsg(String status,String desc) {
+          String basic = "";
+          if(startTime==0) {
+              startTime = System.currentTimeMillis();
+              zdt = ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
+              basic = String.format("%1$s : %2$s : %3$s, at time %4$s", MODULE,action,status,
+                      zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+          }else {
+              lastActionTime = System.currentTimeMillis();
+              timeDiff = lastActionTime - startTime;
+              zdt = ZonedDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
+              basic =  String.format("%1$s : %2$s : %3$s, at time %4$s with duration %5$s", MODULE,action,status,
+                      zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),DurationFormatUtils.formatDuration(timeDiff,"MM-dd T HH-mm-ss"));
+          }
+          
+          if(desc==null) {
+              return basic;
+          }else {
+              return String.format("%1$s : %2$s", basic,desc);
+          }
+      }
+      
+      
   }
 
 }

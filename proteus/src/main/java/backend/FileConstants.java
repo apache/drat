@@ -20,6 +20,8 @@ package backend;
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by stevenfrancus on 10/13/15.
@@ -32,7 +34,15 @@ public class FileConstants {
   public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
   public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/deploy/data/staging");
   public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
+  public static final String SOLR_INDEXER_CONFIG_PATH = buildDratSubdirectoryPath("/deploy/filemgr/etc/indexer.properties");
 
+  public static final String FILEMGR_URL=PathUtils.replaceEnvVariables("[FILEMGR_URL]");
+  public static final String SOLR_DRAT_URL=PathUtils.replaceEnvVariables("[SOLR_DRAT_URL]");
+  public static final String CLIENT_URL=PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
+  public static final String OPSUI_URL=PathUtils.replaceEnvVariables("[OPSUI_URL]");
+  
+  public static final String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
+  
   private static String getDratDirectory() {
     final String DRAT_HOME = PathUtils.replaceEnvVariables("[DRAT_HOME]");
     return DRAT_HOME.substring(0, DRAT_HOME.lastIndexOf(DRAT) + DRAT.length());
@@ -41,4 +51,6 @@ public class FileConstants {
   public static String buildDratSubdirectoryPath(String additionalPath) {
     return DRAT_SUPER_DIR + additionalPath;
   }
+  
+  
 }
