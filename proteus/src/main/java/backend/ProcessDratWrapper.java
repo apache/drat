@@ -25,7 +25,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.python.modules.synchronize;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
+import org.apache.oodt.cas.cli.option.store.spring.SpringCmdLineOptionStoreFactory;
 import org.apache.oodt.cas.crawl.CrawlerLauncher;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
@@ -34,16 +36,26 @@ import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
 import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.pcs.util.FileManagerUtils;
+import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 
+import com.amazonaws.services.simpleworkflow.flow.common.WorkflowExecutionUtils;
+import com.drew.metadata.Metadata;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+
+import drat.proteus.workflow.rest.DynamicWorkflowRequestWrapper;
+import drat.proteus.workflow.rest.WorkflowRestResource;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.Instant;
@@ -54,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ProcessDratWrapper extends GenericProcess
@@ -120,10 +133,12 @@ public class ProcessDratWrapper extends GenericProcess
   }
   
   private synchronized void solrIndex() throws InstantiationException, SolrServerException, IOException {
+      setStatus(INDEX_CMD);
       DratLog idl = new DratLog("INDEXING");
       idl.logInfo("Starting", null);
       System.setProperty(FileConstants.SOLR_INDEXER_CONFIG,FileConstants.SOLR_INDEXER_CONFIG_PATH);
       SolrIndexer sIndexer = new SolrIndexer(FileConstants.SOLR_DRAT_URL,FileConstants.FILEMGR_URL);
+      
       sIndexer.indexAll(false);
       sIndexer.commit();
       sIndexer.optimize();
@@ -133,12 +148,44 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void map() throws IOException, DratWrapperException {
-    simpleDratExec(MAP_CMD);
+//    simpleDratExec(MAP_CMD);
+    setStatus(MAP_CMD);
+    DratLog mapLog = new DratLog("MAPPING");
+    WorkflowRestResource restResource = new WorkflowRestResource();
+    DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
+    requestBody.taskIds = new ArrayList<>();
+    requestBody.taskIds.add("urn:drat:MimePartitioner");
+    LOG.info("STARTING MAPPING");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task urn:drat:MimePartitioner");
+    String resp = (String)restResource.performDynamicWorkFlow(requestBody);
+    if(resp.equals("OK")) {
+        mapLog.logInfo("STARTED SUCCESSFULLY, urn:drat:MimePartitioner dynamic workflow");
+    }else {
+        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+    }   
   }
+  
 
   @Override
   public void reduce() throws IOException, DratWrapperException {
-    simpleDratExec(REDUCE_CMD);
+//    simpleDratExec(REDUCE_CMD);
+    
+    
+    setStatus(REDUCE_CMD);
+    DratLog mapLog = new DratLog("REDUCING");
+    WorkflowRestResource restResource = new WorkflowRestResource();
+    DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
+    requestBody.taskIds = new ArrayList<>();
+    requestBody.taskIds.add("urn:drat:RatAggregator");
+    LOG.info("STARTING REDUCING");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task urn:drat:RatAggregator");
+    String resp = (String)restResource.performDynamicWorkFlow(requestBody);
+    if(resp.equals("OK")) {
+        mapLog.logInfo("STARTED SUCCESSFULLY, urn:drat:RatAggregator dynamic workflow");
+    }else {
+        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+        throw new IOException(resp);
+    }  
   }
 
   @Override
@@ -202,14 +249,32 @@ public class ProcessDratWrapper extends GenericProcess
     this.index();
     this.map();
 
+    //Logs for understanding 
+    LOG.info("SYSTEM PROPS");
+    LOG.info("java.util.logging.config.file" +" : "+ System.getProperty("java.util.logging.config.file"));
+    LOG.info("org.apache.oodt.cas.cli.action.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
+    LOG.info("org.apache.oodt.cas.cli.option.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.option.spring.config"));
+    
+    
+    
+    System.setProperty("org.apache.oodt.cas.cli.action.spring.config","file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-actions.xml");
+    System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-options.xml");
+    
+    LOG.info("org.apache.oodt.cas.cli.action.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
+    LOG.info("org.apache.oodt.cas.cli.option.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.option.spring.config"));
+    //undestanding logs ends
+    
+    
     // don't run reduce until all maps are done
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
+      LOG.info("MAP STILL RUNNING");
     }
     // you're not done until the final log is generated.
     while (!hasAggregateRatLog()) {
       try {
         reduce();
+        LOG.info("REDUCE STILL RUNNING");
       } catch (IOException e) {
         LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
             + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
@@ -266,6 +331,7 @@ public class ProcessDratWrapper extends GenericProcess
     List<WorkflowItem> items = parseWorkflows(output);
     return stillRunning(items);
   }
+
 
   @VisibleForTesting
   protected List<WorkflowItem> parseWorkflows(String cmdOutput) {
