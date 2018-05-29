@@ -138,7 +138,6 @@ public class ProcessDratWrapper extends GenericProcess
       idl.logInfo("Starting", null);
       System.setProperty(FileConstants.SOLR_INDEXER_CONFIG,FileConstants.SOLR_INDEXER_CONFIG_PATH);
       SolrIndexer sIndexer = new SolrIndexer(FileConstants.SOLR_DRAT_URL,FileConstants.FILEMGR_URL);
-      
       sIndexer.indexAll(false);
       sIndexer.commit();
       sIndexer.optimize();
@@ -169,8 +168,6 @@ public class ProcessDratWrapper extends GenericProcess
   @Override
   public void reduce() throws IOException, DratWrapperException {
 //    simpleDratExec(REDUCE_CMD);
-    
-    
     setStatus(REDUCE_CMD);
     DratLog mapLog = new DratLog("REDUCING");
     WorkflowRestResource restResource = new WorkflowRestResource();
@@ -249,22 +246,10 @@ public class ProcessDratWrapper extends GenericProcess
     this.index();
     this.map();
 
-    //Logs for understanding 
-    LOG.info("SYSTEM PROPS");
-    LOG.info("java.util.logging.config.file" +" : "+ System.getProperty("java.util.logging.config.file"));
-    LOG.info("org.apache.oodt.cas.cli.action.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
-    LOG.info("org.apache.oodt.cas.cli.option.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.option.spring.config"));
-    
-    
-    
+
     System.setProperty("org.apache.oodt.cas.cli.action.spring.config","file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-actions.xml");
     System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-options.xml");
-    
-    LOG.info("org.apache.oodt.cas.cli.action.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.action.spring.config"));
-    LOG.info("org.apache.oodt.cas.cli.option.spring.config : "+System.getProperty("org.apache.oodt.cas.cli.option.spring.config"));
-    //undestanding logs ends
-    
-    
+//
     // don't run reduce until all maps are done
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);

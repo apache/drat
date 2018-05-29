@@ -82,7 +82,6 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
   @MethodMapping(value = "/log", httpMethod = HttpMethod.GET)
   public String getProcessLog() {
     File log = new File(FileConstants.DRAT_TEMP_LOG_OUTPUT);
-    LOG.info("TESTING :"+log.getName());
     if (log.exists()) {
       try {
         byte[] encoded = Files.readAllBytes(Paths.get(log.getAbsolutePath()));

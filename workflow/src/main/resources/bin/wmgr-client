@@ -67,9 +67,6 @@ fi
 # In case this script was run from somewhere else cd to this directory
 cd "$WORKFLOW_HOME"/bin
 
-echo "EXECUTING"
-echo "$@"
-
 "$_RUNJAVA" $JAVA_OPTS $OODT_OPTS \
   -Djava.ext.dirs="$WORKFLOW_HOME"/lib \
   -Djava.util.logging.config.file="$WORKFLOW_HOME"/etc/logging.properties \
