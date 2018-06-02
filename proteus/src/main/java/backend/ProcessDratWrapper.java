@@ -23,39 +23,29 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.oodt.cas.crawl.MetExtractorProductCrawler;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.xmlrpc.XmlRpcException;
-import org.apache.oodt.cas.cli.option.store.CmdLineOptionStore;
-import org.apache.oodt.cas.cli.option.store.spring.SpringCmdLineOptionStoreFactory;
-import org.apache.oodt.cas.crawl.CrawlerLauncher;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
 import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
-import org.apache.oodt.cas.workflow.structs.exceptions.RepositoryException;
 import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.pcs.util.FileManagerUtils;
-import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 
-import com.amazonaws.services.simpleworkflow.flow.common.WorkflowExecutionUtils;
-import com.drew.metadata.Metadata;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 
 import drat.proteus.workflow.rest.DynamicWorkflowRequestWrapper;
 import drat.proteus.workflow.rest.WorkflowRestResource;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.Instant;
@@ -65,8 +55,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ProcessDratWrapper extends GenericProcess
@@ -124,7 +112,42 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void crawl() throws Exception {
-    simpleDratExec(CRAWL_CMD, this.path);
+//    simpleDratExec(CRAWL_CMD, this.path);
+      crawlTemp();
+  }
+
+
+  public void crawlTemp() throws Exception{
+    DratLog crawlLog = new DratLog("CRAWLING");
+    try{
+      setStatus(CRAWL_CMD);
+
+      crawlLog.logInfo("Configuring");
+      String beanRepo = System.getProperty("org.apache.oodt.cas.crawl.bean.repo",
+              FileConstants.CRAWLER_CONFIG);
+      String crawlerId = "MetExtractorProductCrawler";
+      System.setProperty("DRAT_EXCLUDE","");
+      FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext("file:"+beanRepo);
+
+        MetExtractorProductCrawler crawler = new MetExtractorProductCrawler();
+        crawler.setApplicationContext(appContext);
+        crawler.setId(crawlerId);
+        crawler.setMetExtractor("org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor");
+        crawler.setMetExtractorConfig(FileConstants.MET_EXT_CONFIG_PATH);
+        crawler.setFilemgrUrl(FileConstants.FILEMGR_URL);
+        crawler.setClientTransferer("org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory");
+        crawler.setPreCondIds(Arrays.asList("RegExExcludeComparator"));
+        crawler.setProductPath(this.path);
+        crawlLog.logInfo("STARTING ",null);
+        crawler.crawl();
+        crawlLog.logInfo("COMPLETED",null);
+      }catch (Exception ex) {
+//      LOG.severe(ex.getLocalizedMessage());
+        crawlLog.logSevere("ERROR",ex.getLocalizedMessage());
+        ex.printStackTrace();
+        throw ex;
+      }
+
   }
 
   @Override
@@ -247,9 +270,6 @@ public class ProcessDratWrapper extends GenericProcess
     this.map();
 
 
-    System.setProperty("org.apache.oodt.cas.cli.action.spring.config","file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-actions.xml");
-    System.setProperty("org.apache.oodt.cas.cli.option.spring.config", "file:/home/xelvias/drat/deploy/workflow/policy/cmd-line-options.xml");
-//
     // don't run reduce until all maps are done
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);

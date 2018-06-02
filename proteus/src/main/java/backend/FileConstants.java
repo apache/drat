@@ -19,10 +19,6 @@ package backend;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by stevenfrancus on 10/13/15.
  */
@@ -40,7 +36,9 @@ public class FileConstants {
   public static final String SOLR_DRAT_URL=PathUtils.replaceEnvVariables("[SOLR_DRAT_URL]");
   public static final String CLIENT_URL=PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
   public static final String OPSUI_URL=PathUtils.replaceEnvVariables("[OPSUI_URL]");
-  
+
+  public static final String MET_EXT_CONFIG_PATH =buildDratSubdirectoryPath("/deploy/extractors/code/default.cpr.conf");
+  public static final String CRAWLER_CONFIG = buildDratSubdirectoryPath("/deploy/crawler/policy/crawler-config.xml");
   public static final String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
   
   private static String getDratDirectory() {
