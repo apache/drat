@@ -24,6 +24,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.oodt.cas.crawl.MetExtractorProductCrawler;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.oodt.cas.filemgr.structs.Product;
@@ -73,7 +75,8 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String RESET_CMD = "reset";
   private static final String STATUS_IDLE = "idle";
 
-  private static final String MAPPER_TASK = "urn:drat:RatCodeAudit";
+//  private static final String MAPPER_TASK = "urn:drat:RatCodeAudit";
+  private static final String MAPPER_TASK = "RatCodeAudit";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
@@ -154,7 +157,7 @@ public class ProcessDratWrapper extends GenericProcess
   public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
       solrIndex();
   }
-  
+
   private synchronized void solrIndex() throws InstantiationException, SolrServerException, IOException {
       setStatus(INDEX_CMD);
       DratLog idl = new DratLog("INDEXING");
@@ -165,7 +168,7 @@ public class ProcessDratWrapper extends GenericProcess
       sIndexer.commit();
       sIndexer.optimize();
       idl.logInfo("Completed",null);
-      
+
   }
 
   @Override
@@ -184,9 +187,9 @@ public class ProcessDratWrapper extends GenericProcess
         mapLog.logInfo("STARTED SUCCESSFULLY, urn:drat:MimePartitioner dynamic workflow");
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
-    }   
+    }
   }
-  
+
 
   @Override
   public void reduce() throws IOException, DratWrapperException {
@@ -205,7 +208,7 @@ public class ProcessDratWrapper extends GenericProcess
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
-    }  
+    }
   }
 
   @Override
@@ -263,7 +266,7 @@ public class ProcessDratWrapper extends GenericProcess
 
   public void go() throws Exception {
     // before go, always reset
-    
+
     this.reset();
     this.crawl();
     this.index();
@@ -327,14 +330,21 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   private boolean mapsStillRunning() throws Exception {
-    String args[] = { FileConstants.WORKFLOW_PATH, "--url",
-        "http://localhost:9001", "--operation", "--getWorkflowInsts" };
-    String cmd = Joiner.on(" ").join(args);
-    LOG.info("Maps Still Running: Executing: " + cmd);
-    String output = execToString(cmd);
-    LOG.info("Output from maps still running: " + output);
-    List<WorkflowItem> items = parseWorkflows(output);
-    return stillRunning(items);
+//    String args[] = { FileConstants.WORKFLOW_PATH, "--url",
+//        "http://localhost:9001", "--operation", "--getWorkflowInsts" };
+//    String cmd = Joiner.on(" ").join(args);
+//    LOG.info("Maps Still Running: Executing: " + cmd);
+//    String output = execToString(cmd);
+//    LOG.info("Output from maps still running: " + output);
+//    List<WorkflowItem> items = parseWorkflows(output);
+    WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
+    List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
+    for(WorkflowInstance instance : workflowInstances){
+      LOG.info("TEMP : id: "+instance.getId()
+              +" state name "+instance.getState().getName()+" current tas name :"+instance.getCurrentTask().getTaskName()
+              +" status :" + instance.getStatus());
+    }
+    return stillRunning(workflowInstances);
   }
 
 
@@ -381,36 +391,65 @@ public class ProcessDratWrapper extends GenericProcess
     return items;
   }
 
-  @VisibleForTesting
-  protected boolean stillRunning(List<WorkflowItem> items) {
-    List<WorkflowItem> mapperItems = filterMappers(items);
-    LOG.info("Checking mappers: inspecting ["
-        + String.valueOf(mapperItems.size()) + "] mappers.");
-    for (WorkflowItem mapperItem : mapperItems) {
-      if (isRunning(mapperItem.getStatus())) {
-        LOG.info("Mapper: [" + mapperItem.getId() + "] still running.");
-        return true;
+  protected boolean stillRunning(List<WorkflowInstance> instances){
+      List<WorkflowInstance> mapperInstances = filterMappers(instances);
+      LOG.info("Checking mappers: inspecting ["
+              + String.valueOf(mapperInstances.size()) + "] mappers.");
+      for(WorkflowInstance mapperInstance:mapperInstances){
+          if(isRunning(mapperInstance.getState().getName())){
+              LOG.info("Mapper: [" + mapperInstance.getId() + "] still running.");
+              return true;
+          }
       }
-    }
+      return false;
 
-    return false;
   }
 
-  @VisibleForTesting
-  protected List<WorkflowItem> filterMappers(List<WorkflowItem> items) {
-    List<WorkflowItem> mappers = new ArrayList<WorkflowItem>();
-    if (items != null && items.size() > 0) {
-      for (WorkflowItem item : items) {
-        if (item.getCurrentTask().equals(MAPPER_TASK)) {
-          LOG.info("Adding mapper: [" + item.getCurrentTask() + "]");
-          mappers.add(item);
-        } else {
-          LOG.info("Filtering task: [" + item.getCurrentTask() + "]");
-        }
-      }
-    }
+//  @VisibleForTesting
+//  protected boolean stillRunning(List<WorkflowItem> items) {
+//    List<WorkflowItem> mapperItems = filterMappers(items);
+//    LOG.info("Checking mappers: inspecting ["
+//        + String.valueOf(mapperItems.size()) + "] mappers.");
+//    for (WorkflowItem mapperItem : mapperItems) {
+//      if (isRunning(mapperItem.getStatus())) {
+//        LOG.info("Mapper: [" + mapperItem.getId() + "] still running.");
+//        return true;
+//      }
+//    }
+//
+//    return false;
+//  }
 
-    return mappers;
+//  @VisibleForTesting
+//  protected List<WorkflowItem> filterMappers(List<WorkflowItem> items) {
+//    List<WorkflowItem> mappers = new ArrayList<WorkflowItem>();
+//    if (items != null && items.size() > 0) {
+//      for (WorkflowItem item : items) {
+//        if (item.getCurrentTask().equals(MAPPER_TASK)) {
+//          LOG.info("Adding mapper: [" + item.getCurrentTask() + "]");
+//          mappers.add(item);
+//        } else {
+//          LOG.info("Filtering task: [" + item.getCurrentTask() + "]");
+//        }
+//      }
+//    }
+//
+//    return mappers;
+//  }
+
+  protected List<WorkflowInstance> filterMappers(List<WorkflowInstance> instances){
+      List<WorkflowInstance> mappers = new ArrayList<WorkflowInstance>();
+      if(instances!=null && instances.size()>0){
+          for(WorkflowInstance instance:instances){
+              if(instance.getCurrentTask().equals(MAPPER_TASK)){
+                  LOG.info("Adding mapper: [" + instance.getCurrentTask() + "]");
+                  mappers.add(instance);
+              }else{
+                  LOG.info("Filtering task: [" + instance.getCurrentTask() + "]");
+              }
+          }
+      }
+      return mappers;
   }
 
   @VisibleForTesting
@@ -517,9 +556,9 @@ public class ProcessDratWrapper extends GenericProcess
           + e.getLocalizedMessage());
     }
   }
-  
+
   private class DratLog{
-      private static final String MODULE = "DRAT_LOG"; 
+      private static final String MODULE = "DRAT_LOG";
       long startTime =0;
       private long lastActionTime=-1L;
       private long timeDiff  =-1L;
@@ -527,29 +566,29 @@ public class ProcessDratWrapper extends GenericProcess
       private String action;
       public DratLog(String action) {
           this.action = action;
-          
+
       }
-      
+
       private void logWarning(String status,String desc) {
           LOG.warning(getMsg(status,desc));
       }
-      
+
       private void logWarning(String desc) {
           LOG.warning(MODULE+" : "+desc);
       }
-      
+
       private void logInfo(String status,String desc) {
           LOG.info(getMsg(status,desc));
       }
-      
+
       private void logInfo(String desc) {
           LOG.info(MODULE+" : "+desc);
       }
-      
+
       private void logSevere(String status,String desc) {
           LOG.fine(getMsg(status,desc));
       }
-      
+
       private String getMsg(String status,String desc) {
           String basic = "";
           if(startTime==0) {
@@ -564,15 +603,15 @@ public class ProcessDratWrapper extends GenericProcess
               basic =  String.format("%1$s : %2$s : %3$s, at time %4$s with duration %5$s", MODULE,action,status,
                       zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),DurationFormatUtils.formatDuration(timeDiff,"MM-dd T HH-mm-ss"));
           }
-          
+
           if(desc==null) {
               return basic;
           }else {
               return String.format("%1$s : %2$s", basic,desc);
           }
       }
-      
-      
+
+
   }
 
 }
