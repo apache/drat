@@ -36,7 +36,7 @@ public class FileConstants {
   public static final String SOLR_DRAT_URL=PathUtils.replaceEnvVariables("[SOLR_DRAT_URL]");
   public static final String CLIENT_URL=PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
   public static final String OPSUI_URL=PathUtils.replaceEnvVariables("[OPSUI_URL]");
-
+  
   public static final String MET_EXT_CONFIG_PATH =buildDratSubdirectoryPath("/deploy/extractors/code/default.cpr.conf");
   public static final String CRAWLER_CONFIG = buildDratSubdirectoryPath("/deploy/crawler/policy/crawler-config.xml");
   public static final String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
