@@ -74,6 +74,9 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String STATUS_IDLE = "idle";
 
   private static final String MAPPER_TASK = "RatCodeAudit";
+  
+  private static final String MAPPER_TASK_ID = "urn:drat:MimePartitioner";
+  private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
@@ -166,12 +169,12 @@ public class ProcessDratWrapper extends GenericProcess
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
-    requestBody.taskIds.add("urn:drat:MimePartitioner");
+    requestBody.taskIds.add(MAPPER_TASK_ID);
     LOG.info("STARTING MAPPING");
-    mapLog.logInfo("STARTING", " (dynamic workflow with task urn:drat:MimePartitioner");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task "+MAPPER_TASK_ID);
     String resp = restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
-        mapLog.logInfo("STARTED SUCCESSFULLY, urn:drat:MimePartitioner dynamic workflow");
+        mapLog.logInfo("STARTED SUCCESSFULLY, "+MAPPER_TASK_ID+" dynamic workflow");
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
     }
@@ -184,12 +187,12 @@ public class ProcessDratWrapper extends GenericProcess
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
-    requestBody.taskIds.add("urn:drat:RatAggregator");
+    requestBody.taskIds.add(REDUCE_TASK_ID);
     LOG.info("STARTING REDUCING");
-    mapLog.logInfo("STARTING", " (dynamic workflow with task urn:drat:RatAggregator");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
     String resp = (String)restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
-        mapLog.logInfo("STARTED SUCCESSFULLY, urn:drat:RatAggregator dynamic workflow");
+        mapLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
