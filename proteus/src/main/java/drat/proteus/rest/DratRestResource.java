@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
@@ -34,7 +35,7 @@ import backend.ProcessDratWrapper;
 import backend.ProcessOodtWrapper;
 
 public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial> {
-
+  private static final Logger LOG = Logger.getLogger(DratRestResource.class.getName());
   private static final long serialVersionUID = -5885535059043262485L;
   public AbstractOodtWrapper oodtWrapper;
   public AbstractDratWrapper dratWrapper;

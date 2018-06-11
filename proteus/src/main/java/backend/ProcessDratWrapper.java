@@ -21,16 +21,15 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.oodt.cas.crawl.MetExtractorProductCrawler;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.python.modules.synchronize;
-import org.apache.oodt.cas.crawl.CrawlerLauncher;
 import org.apache.oodt.cas.filemgr.structs.Product;
 import org.apache.oodt.cas.filemgr.structs.ProductPage;
 import org.apache.oodt.cas.filemgr.structs.ProductType;
-import org.apache.oodt.cas.filemgr.system.XmlRpcFileManagerClient;
 import org.apache.oodt.cas.filemgr.tools.DeleteProduct;
 import org.apache.oodt.cas.filemgr.tools.SolrIndexer;
 import org.apache.oodt.cas.metadata.util.PathUtils;
@@ -38,11 +37,14 @@ import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
 import org.apache.oodt.pcs.util.FileManagerUtils;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
+
+import drat.proteus.workflow.rest.DynamicWorkflowRequestWrapper;
+import drat.proteus.workflow.rest.WorkflowRestResource;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -53,7 +55,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 public class ProcessDratWrapper extends GenericProcess
@@ -72,7 +73,10 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String RESET_CMD = "reset";
   private static final String STATUS_IDLE = "idle";
 
-  private static final String MAPPER_TASK = "urn:drat:RatCodeAudit";
+  private static final String MAPPER_TASK = "RatCodeAudit";
+  
+  private static final String MAPPER_TASK_ID = "urn:drat:MimePartitioner";
+  private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
@@ -111,7 +115,34 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void crawl() throws Exception {
-    simpleDratExec(CRAWL_CMD, this.path);
+      DratLog crawlLog = new DratLog("CRAWLING");
+      try{
+          setStatus(CRAWL_CMD);
+
+          crawlLog.logInfo("Configuring");
+          String beanRepo = System.getProperty("org.apache.oodt.cas.crawl.bean.repo",
+                  FileConstants.CRAWLER_CONFIG);
+          String crawlerId = "MetExtractorProductCrawler";
+          System.setProperty("DRAT_EXCLUDE","");
+          FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext("file:"+beanRepo);
+
+          MetExtractorProductCrawler crawler = new MetExtractorProductCrawler();
+          crawler.setApplicationContext(appContext);
+          crawler.setId(crawlerId);
+          crawler.setMetExtractor("org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor");
+          crawler.setMetExtractorConfig(FileConstants.MET_EXT_CONFIG_PATH);
+          crawler.setFilemgrUrl(FileConstants.FILEMGR_URL);
+          crawler.setClientTransferer("org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory");
+          crawler.setPreCondIds(Arrays.asList("RegExExcludeComparator"));
+          crawler.setProductPath(this.path);
+          crawlLog.logInfo("STARTING ",null);
+          crawler.crawl();
+          crawlLog.logInfo("COMPLETED",null);
+      }catch (Exception ex) {
+          crawlLog.logSevere("ERROR ",ex.getLocalizedMessage());
+          ex.printStackTrace();
+          throw ex;
+      }
   }
 
   @Override
@@ -120,6 +151,7 @@ public class ProcessDratWrapper extends GenericProcess
   }
   
   private synchronized void solrIndex() throws InstantiationException, SolrServerException, IOException {
+      setStatus(INDEX_CMD);
       DratLog idl = new DratLog("INDEXING");
       idl.logInfo("Starting", null);
       System.setProperty(FileConstants.SOLR_INDEXER_CONFIG,FileConstants.SOLR_INDEXER_CONFIG_PATH);
@@ -128,17 +160,43 @@ public class ProcessDratWrapper extends GenericProcess
       sIndexer.commit();
       sIndexer.optimize();
       idl.logInfo("Completed",null);
-      
   }
 
   @Override
-  public void map() throws IOException, DratWrapperException {
-    simpleDratExec(MAP_CMD);
+  public void map() {
+    setStatus(MAP_CMD);
+    DratLog mapLog = new DratLog("MAPPING");
+    WorkflowRestResource restResource = new WorkflowRestResource();
+    DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
+    requestBody.taskIds = new ArrayList<>();
+    requestBody.taskIds.add(MAPPER_TASK_ID);
+    LOG.info("STARTING MAPPING");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task "+MAPPER_TASK_ID);
+    String resp = restResource.performDynamicWorkFlow(requestBody);
+    if(resp.equals("OK")) {
+        mapLog.logInfo("STARTED SUCCESSFULLY, "+MAPPER_TASK_ID+" dynamic workflow");
+    }else {
+        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+    }
   }
 
   @Override
-  public void reduce() throws IOException, DratWrapperException {
-    simpleDratExec(REDUCE_CMD);
+  public void reduce() throws IOException {
+    setStatus(REDUCE_CMD);
+    DratLog mapLog = new DratLog("REDUCING");
+    WorkflowRestResource restResource = new WorkflowRestResource();
+    DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
+    requestBody.taskIds = new ArrayList<>();
+    requestBody.taskIds.add(REDUCE_TASK_ID);
+    LOG.info("STARTING REDUCING");
+    mapLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
+    String resp = (String)restResource.performDynamicWorkFlow(requestBody);
+    if(resp.equals("OK")) {
+        mapLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
+    }else {
+        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+        throw new IOException(resp);
+    }
   }
 
   @Override
@@ -205,11 +263,13 @@ public class ProcessDratWrapper extends GenericProcess
     // don't run reduce until all maps are done
     while (mapsStillRunning()) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
+      LOG.info("MAP STILL RUNNING");
     }
     // you're not done until the final log is generated.
     while (!hasAggregateRatLog()) {
       try {
         reduce();
+        LOG.info("REDUCE STILL RUNNING");
       } catch (IOException e) {
         LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
             + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
@@ -221,30 +281,6 @@ public class ProcessDratWrapper extends GenericProcess
     setStatus(STATUS_IDLE);
   }
 
-  public synchronized void simpleDratExec(String command, String... options)
-      throws IOException, DratWrapperException {
-    setStatus(command);
-    String args[] = { FileConstants.DRAT_PATH, command };
-    String all[] = (String[]) ArrayUtils.addAll(args, options);
-    String cmd = Joiner.on(" ").join(all);
-
-    String output = null;
-    try {
-      output = execToString(cmd);
-    } catch (IOException e) {
-      LOG.warning("Executing DRAT cmd: [" + command + "]: command line: [" + cmd
-          + "] generated non-zero exit status. output is: [" + output
-          + "]: Message: " + e.getLocalizedMessage());
-      throw e;
-    } catch (Exception e) {
-      LOG.warning("Exception executing " + command + ". Output: [" + output
-          + "]: Message: " + e.getLocalizedMessage());
-      throw new IOException(e.getLocalizedMessage());
-    }
-
-    LOG.info(
-        "Command: [" + command + "] completed normally. Output is: " + output);
-  }
 
   private synchronized boolean hasAggregateRatLog() {
     int numLogs = -1;
@@ -257,14 +293,13 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   private boolean mapsStillRunning() throws Exception {
-    String args[] = { FileConstants.WORKFLOW_PATH, "--url",
-        "http://localhost:9001", "--operation", "--getWorkflowInsts" };
-    String cmd = Joiner.on(" ").join(args);
-    LOG.info("Maps Still Running: Executing: " + cmd);
-    String output = execToString(cmd);
-    LOG.info("Output from maps still running: " + output);
-    List<WorkflowItem> items = parseWorkflows(output);
-    return stillRunning(items);
+    WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
+    List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
+    for(WorkflowInstance instance : workflowInstances){
+      LOG.info("Running Instances : id: "+instance.getId()
+              +" state name "+instance.getState().getName()+" current task name : "+instance.getCurrentTask().getTaskName());
+    }
+    return stillRunning(workflowInstances);
   }
 
   @VisibleForTesting
@@ -311,35 +346,33 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   @VisibleForTesting
-  protected boolean stillRunning(List<WorkflowItem> items) {
-    List<WorkflowItem> mapperItems = filterMappers(items);
+  protected boolean stillRunning(List<WorkflowInstance> instances) {
+    List<WorkflowInstance> mapperInstances = filterMappers(instances);
     LOG.info("Checking mappers: inspecting ["
-        + String.valueOf(mapperItems.size()) + "] mappers.");
-    for (WorkflowItem mapperItem : mapperItems) {
-      if (isRunning(mapperItem.getStatus())) {
-        LOG.info("Mapper: [" + mapperItem.getId() + "] still running.");
+            + String.valueOf(mapperInstances.size()) + "] mappers.");
+    for (WorkflowInstance mapperInstance : mapperInstances) {
+      if (isRunning(mapperInstance.getState().getName())) {
+        LOG.info("Mapper: [" + mapperInstance.getId() + "] still running.");
         return true;
       }
     }
-
     return false;
   }
 
   @VisibleForTesting
-  protected List<WorkflowItem> filterMappers(List<WorkflowItem> items) {
-    List<WorkflowItem> mappers = new ArrayList<WorkflowItem>();
-    if (items != null && items.size() > 0) {
-      for (WorkflowItem item : items) {
-        if (item.getCurrentTask().equals(MAPPER_TASK)) {
-          LOG.info("Adding mapper: [" + item.getCurrentTask() + "]");
-          mappers.add(item);
-        } else {
-          LOG.info("Filtering task: [" + item.getCurrentTask() + "]");
-        }
+  protected List<WorkflowInstance> filterMappers(List<WorkflowInstance> instances){
+      List<WorkflowInstance> mappers = new ArrayList<>();
+      if(instances!=null && instances.size()>0){
+          for(WorkflowInstance instance:instances){
+              if(instance.getCurrentTask().equals(MAPPER_TASK)){
+                  LOG.info("Adding mapper: [" + instance.getCurrentTask() + "]");
+                  mappers.add(instance);
+              }else{
+                  LOG.info("Filtering task: [" + instance.getCurrentTask() + "]");
+              }
+          }
       }
-    }
-
-    return mappers;
+      return mappers;
   }
 
   @VisibleForTesting
@@ -448,7 +481,7 @@ public class ProcessDratWrapper extends GenericProcess
   }
   
   private class DratLog{
-      private static final String MODULE = "DRAT_LOG"; 
+      private static final String MODULE = "DRAT_LOG";
       long startTime =0;
       private long lastActionTime=-1L;
       private long timeDiff  =-1L;
