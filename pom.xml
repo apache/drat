@@ -48,6 +48,7 @@
   </distributionManagement>
 
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
     <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
     <plugins>
