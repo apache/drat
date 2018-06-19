@@ -74,8 +74,8 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String STATUS_IDLE = "idle";
 
   private static final String MAPPER_TASK = "RatCodeAudit";
-  
-  private static final String MAPPER_TASK_ID = "urn:drat:MimePartitioner";
+  private static final String REDUCE_TASK = "RatAggregator";
+  private static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
   private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
@@ -364,11 +364,11 @@ public class ProcessDratWrapper extends GenericProcess
       List<WorkflowInstance> mappers = new ArrayList<>();
       if(instances!=null && instances.size()>0){
           for(WorkflowInstance instance:instances){
-              if(instance.getCurrentTask().equals(MAPPER_TASK)){
-                  LOG.info("Adding mapper: [" + instance.getCurrentTask() + "]");
+              if(instance.getCurrentTask().getTaskId().equals(MAPPER_TASK_ID)){
+                  LOG.info("Adding mapper: [" + instance.getCurrentTask().getTaskId() + "]");
                   mappers.add(instance);
               }else{
-                  LOG.info("Filtering task: [" + instance.getCurrentTask() + "]");
+                  LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
               }
           }
       }

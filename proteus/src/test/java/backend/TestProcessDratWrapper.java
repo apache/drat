@@ -17,8 +17,9 @@
 
 package backend;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import backend.ProcessDratWrapper;
 import junit.framework.TestCase;
 
@@ -47,7 +48,11 @@ public class TestProcessDratWrapper extends TestCase {
     List<WorkflowItem> items = null;
     items = wrapper.parseWorkflows(cmdLines);
     assertNotNull(items);
-    assertTrue(wrapper.stillRunning(items)); 
+    List<WorkflowInstance> insts = new ArrayList<WorkflowInstance>(items.size());
+    for(WorkflowItem wi: items) {
+      insts.add(wi.toInstance());
+    }
+    assertTrue(wrapper.stillRunning(insts)); 
   }
   
   public void testFilterMappers(){
@@ -60,8 +65,12 @@ public class TestProcessDratWrapper extends TestCase {
     List<WorkflowItem> items = null;
     items = wrapper.parseWorkflows(cmdLines);
     assertNotNull(items);
-    List<WorkflowItem> mappers = null;
-    mappers = wrapper.filterMappers(items);
+    List<WorkflowInstance> insts = new ArrayList<WorkflowInstance>(items.size());
+    for(WorkflowItem wi: items) {
+      insts.add(wi.toInstance());
+    }    
+    List<WorkflowInstance> mappers = null;
+    mappers = wrapper.filterMappers(insts);
     assertNotNull(mappers);
     assertEquals(1, mappers.size());    
   }
