@@ -65,16 +65,12 @@ public class ProcessDratWrapper extends GenericProcess
   private static final long DRAT_PROCESS_WAIT_DURATION = 3000;
   private static final int MAX_RESET_TRIES = 10;
 
-  private static final String GO_CMD = "go";
   private static final String CRAWL_CMD = "crawl";
   private static final String INDEX_CMD = "index";
   private static final String MAP_CMD = "map";
   private static final String REDUCE_CMD = "reduce";
-  private static final String RESET_CMD = "reset";
   private static final String STATUS_IDLE = "idle";
-
-  private static final String MAPPER_TASK = "RatCodeAudit";
-  private static final String REDUCE_TASK = "RatAggregator";
+  private static final String PARTITION_AND_MAP_TASK_ID = "urn:drat:MimePartitioner";
   private static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
   private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
@@ -169,12 +165,12 @@ public class ProcessDratWrapper extends GenericProcess
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
-    requestBody.taskIds.add(MAPPER_TASK_ID);
+    requestBody.taskIds.add(PARTITION_AND_MAP_TASK_ID);
     LOG.info("STARTING MAPPING");
-    mapLog.logInfo("STARTING", " (dynamic workflow with task "+MAPPER_TASK_ID);
+    mapLog.logInfo("STARTING", " (dynamic workflow with task "+PARTITION_AND_MAP_TASK_ID);
     String resp = restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
-        mapLog.logInfo("STARTED SUCCESSFULLY, "+MAPPER_TASK_ID+" dynamic workflow");
+        mapLog.logInfo("STARTED SUCCESSFULLY, "+PARTITION_AND_MAP_TASK_ID+" dynamic workflow");
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
     }
