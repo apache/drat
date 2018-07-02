@@ -1,0 +1,19 @@
+@import '../bootstrap'
+@import '../browsers'
+
+.content
+  bootable()
+
+  display: flex
+  flex: 1 0 auto
+  max-width: 100%
+  will-change: padding
+
+  &--wrap
+    flex: 1 1 auto
+    max-width: 100%
+
++firefox()
+  @media print
+    .content
+      display: block

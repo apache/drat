@@ -1,0 +1,209 @@
+@import '../bootstrap'
+@import '../theme'
+
+stepper($material)
+  background: $material.bg-color
+
+  .stepper__step
+    &:not(.stepper__step--active):not(.stepper__step--complete):not(.stepper__step--error)
+      .stepper__step__step
+        background: rgba($material.fg-color, $material.disabledORhints-text-percent)
+
+    &__step
+      color: $material.stepper.active
+
+      .icon
+        color: $material.stepper.active
+
+  .stepper__header
+    .divider
+      background: rgba($material.fg-color, $material.divider-percent)
+
+  .stepper__step
+    &--active
+      .stepper__label
+        text-shadow: 0px 0px 0px rgba($material.fg-color, 1)
+
+    &--editable:hover
+      background: rgba($material.fg-color, .06)
+
+      .stepper__label
+        text-shadow: 0px 0px 0px rgba($material.fg-color, 1)
+
+    &--complete
+      .stepper__label
+        color: $material.stepper.completed
+
+    &--inactive
+      &.stepper__step--editable:not(.stepper__step--error)
+        &:hover
+          .stepper__step__step
+            background: $material.stepper.hover
+
+  .stepper__label
+    color: rgba($material.fg-color, $material.disabledORhints-text-percent)
+
+    small
+      color: rgba($material.fg-color, $material.secondary-text-percent)
+
+  &--non-linear
+    .stepper__step:not(.stepper__step--complete):not(.stepper__step--error)
+      .stepper__label
+        color: rgba($material.fg-color, $material.secondary-text-percent)
+
+  &--vertical
+    .stepper__content:not(:last-child)
+      border-left: 1px solid rgba($material.fg-color, $material.divider-percent)
+
+theme(stepper, "stepper")
+
+.stepper
+  overflow: hidden
+  position: relative
+  elevation(2)
+
+.stepper
+  &__header
+    height: 72px
+    align-items: stretch
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-between
+    elevation(2)
+
+    .divider
+      align-self: center
+      margin: 0 -16px
+
+.stepper
+  &__items
+    position: relative
+    overflow: hidden
+
+.stepper
+  &__step__step
+    align-items: center
+    border-radius: 50%
+    display: inline-flex
+    font-size: 12px
+    justify-content: center
+    height: 24px
+    margin-right: 8px
+    min-width: 24px
+    width: 24px
+    transition: .3s $transition.fast-in-fast-out
+
+    .icon
+      font-size: 18px
+
+.stepper
+  &__step
+    align-items: center
+    display: flex
+    flex-direction: row
+    padding: 24px
+    position: relative
+
+    &--active
+      .stepper__label
+        transition: .3s $transition.ease-in-out
+
+    &--editable
+      cursor: pointer
+
+    &.stepper__step--error
+      .stepper__step__step
+        background: transparent
+        color: inherit
+
+        .icon
+          font-size: 24px
+          color: inherit
+
+      .stepper__label
+        color: inherit
+        text-shadow: none
+        font-weight: 500
+
+        small
+          color: inherit
+
+.stepper
+  &__label
+    align-items: flex-start
+    display: flex
+    flex-direction: column
+    text-align: left
+
+    small
+      font-size: 12px
+      font-weight: 300
+      text-shadow: none
+
+.stepper
+  &__wrapper
+    overflow: hidden
+    transition: none
+
+.stepper
+  &__content
+    top: 0
+    padding: 24px 24px 16px 24px
+    flex: 1 0 auto
+    // Chrome has an issue with overflow hidden for rendering
+    // Originally used translateZ but this messes up fixed
+    // elements within the stepper
+    // Fix for #512 and #620
+    // overflow: hidden
+    width: 100%
+
+    > .btn
+      margin: 24px 8px 8px 0
+
+  &--is-booted
+    .stepper__content, .stepper__wrapper
+      transition: .3s $transition.swing
+
+.stepper
+  &--vertical
+    padding-bottom: 36px
+
+    .stepper__content
+      margin: -8px -36px -16px 36px
+      padding: 16px 60px 16px 23px
+      width: auto
+
+    .stepper__step
+      padding: 24px 24px 16px
+
+    .stepper__step__step
+      margin-right: 12px
+
+  &--alt-labels
+    .stepper__header
+      height: auto
+
+      .divider
+        margin: 35px -67px 0
+        align-self: flex-start
+
+    .stepper__step
+      flex-direction: column
+      justify-content: flex-start
+      align-items: center
+      flex-basis: 175px
+
+      small
+        align-self: center
+
+    .stepper__step__step
+      margin-right: 0
+      margin-bottom: 11px
+
+@media $display-breakpoints.sm-and-down
+  .stepper:not(.stepper--vertical)
+    .stepper__label
+      display: none
+
+    .stepper__step__step
+      margin-right: 0
