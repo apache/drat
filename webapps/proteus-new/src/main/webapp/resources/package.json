@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "clean": "rm -r ../css ../favicon.ico ../fonts ../index.html ../js ../logo.png",
+    "build": "vue-cli-service build &&  sed -i 's/src=\\//src=.\\//g' dist/index.html && sed -i 's/href=\\//href=.\\//g' dist/index.html  && mv dist/* ./.. && rm -r dist",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -22,6 +23,8 @@
     "@vue/cli-plugin-babel": "^3.0.0-beta.15",
     "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
     "@vue/cli-service": "^3.0.0-beta.15",
+    "base-href-webpack-plugin": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
     "material-design-icons-iconfont": "^3.0.3",
     "vue-template-compiler": "^2.5.16"
   },

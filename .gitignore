@@ -2,6 +2,7 @@
 .project
 .classpath
 .settings
+.cache
 target
 */target
 */*/target

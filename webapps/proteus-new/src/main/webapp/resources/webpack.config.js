@@ -2,6 +2,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {BaseHrefWebpackPlugin} = require('base-href-webpack-plugin');
 
 const env = process.env.NODE_ENV;
 
@@ -9,7 +10,7 @@ const config = {
   entry: path.join(__dirname, './src', 'main.js'),
   mode: env,
   output: {
-    publicPath: '/',
+    publicPath: './',
   },
   optimization: {
     splitChunks: {
@@ -36,9 +37,10 @@ const config = {
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       filename: path.join(__dirname, 'dist', 'index.html'),
-      template: path.join(__dirname, 'static', 'index.html'),
+      template: path.join(__dirname, 'public', 'index.html'),
       inject: true,
     }),
+    new BaseHrefWebpackPlugin({baseHref:'./'})
   ],
 };
 
