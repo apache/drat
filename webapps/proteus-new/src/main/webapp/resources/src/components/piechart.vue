@@ -12,8 +12,10 @@
 <script lang="js">
 import * as d3 from 'd3';
 import axios from 'axios';
+import store from './../store/store';
   export default  {
     name: 'piechart',
+    store,
     props: [],
     mounted() {
         this.loadData();
@@ -72,7 +74,7 @@ import axios from 'axios';
         // });
       },
       loadData(){
-        axios.get("http://localhost:8080/proteus/service/repo/breakdown/mime?limit=5")
+        axios.get(this.origin+"/proteus/service/repo/breakdown/mime?limit=5")
             .then(response=>{
               this.$log.info(response.data);
               this.data=response.data;
@@ -85,7 +87,9 @@ import axios from 'axios';
       }
     },
     computed: {
-
+      origin(){
+        return store.state.origin;
+      }
     }
 }
 </script>

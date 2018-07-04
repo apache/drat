@@ -20,6 +20,7 @@
 
 <script lang="js">
   import axios from 'axios';
+  import store from './../store/store';
   export default  {
     name: 'progresscomp',
     props: [],
@@ -37,7 +38,7 @@
     },
     methods: {
       loaddata(){
-        axios.get("http://localhost:8080/proteus/service/status/drat")
+        axios.get(this.origin+"/proteus/service/status/drat")
         .then(response=>{
             if(response.data=="CRAWL"){
               this.status="Crawling...";
@@ -63,7 +64,9 @@
       }
     },
     computed: {
-
+      origin(){
+        return store.state.origin;
+      }
     }
 }
 </script>

@@ -129,7 +129,7 @@ import store from './../store/store';
             //       });
             
             if(this.currentRepo!=''){
-                axios.get("http://localhost:8080/proteus/service/products?topn=10")
+                axios.get(this.origin+"/proteus/service/products?topn=10")
                 .then(response=>{
                   // this.fileslist.splice(0,this.fileslist.length);
                   
@@ -161,7 +161,11 @@ import store from './../store/store';
       // },
       currentRepo (){
         return store.state.currentRepo;
+      },
+      origin(){
+        return store.state.origin;
       }
+
     }
 }
 </script>

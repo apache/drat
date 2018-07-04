@@ -68,12 +68,18 @@ export default {
     }
   },
   methods:{
-    
+    setHost(){
+      this.$log.info(location.origin)
+      store.commit("setOrigin",location.origin);
+    }
   },
   computed:{
     progress (){
       return store.state.progress;
     } 
+  },
+  mounted(){
+   this.setHost();
   }
 }
 </script>

@@ -5,7 +5,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state:{
         progress:false,
-        currentRepo:''
+        currentRepo:'',
+        origin:''
     },
     mutations:{
         invert(state){
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
         },
         setCurrentRepo(state,newVal){
             state.currentRepo = newVal;
+        },
+        setOrigin(state,neworigin){
+            state.origin = neworigin;
         }
     },
     getters:{
@@ -24,6 +28,9 @@ const store = new Vuex.Store({
         },
         getcurrentrepo(state){
             return state.currentRepo;
+        },
+        getCurrentOrigin(state){
+            return state.origin;
         }
     }
 });

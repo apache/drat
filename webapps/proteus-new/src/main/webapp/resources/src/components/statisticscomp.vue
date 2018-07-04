@@ -65,7 +65,7 @@
     },
     methods: {
       loadSizeData(){
-        axios.get("http://localhost:8080/proteus/service/repo/size?dir="+this.currentRepo)
+        axios.get(this.origin+"/proteus/service/repo/size?dir="+this.currentRepo)
         .then(response=>{
           this.stat.size = (response.data.memorySize / (1024*1024)).toFixed(2);
           this.stat.numOfFiles = response.data.numberOfFiles;
@@ -78,6 +78,9 @@
     computed: {
       currentRepo (){
           return store.state.currentRepo;
+      },
+      origin(){
+        return store.state.origin;
       }
     }
 }

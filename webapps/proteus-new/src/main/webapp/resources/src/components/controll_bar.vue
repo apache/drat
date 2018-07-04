@@ -22,8 +22,10 @@
 <script lang="js">
   import store from './../store/store'
   import axios from 'axios'
+  
   export default  {
     name: 'controllbar',
+    store,
     props: [],
     mounted() {
 
@@ -69,7 +71,7 @@
           }else{
               store.commit("setprogress",true);
               store.commit("setCurrentRepo",this.url);
-            axios.post("http://localhost:8080/proteus/drat/go",{
+            axios.post(this.origin+"/proteus/drat/go",{
             dirPath:this.url
           })
             .then(response=>{
@@ -86,7 +88,11 @@
     computed: {
         currentRepo (){
           return store.state.currentRepo;
-        } 
+        },
+        origin(){
+          return store.state.origin;
+        }
+
     }
 }
 </script>

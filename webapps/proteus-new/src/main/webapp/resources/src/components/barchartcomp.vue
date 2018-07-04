@@ -16,6 +16,7 @@
 <script lang="js">
 import * as d3 from 'd3';
 import axios from 'axios';
+import store from './../store/store'
 // const props={
 //   width:500,
 //   hieght:270
@@ -26,6 +27,7 @@ import axios from 'axios';
   export default  {
     name: 'barchartcomp',
     props: [],
+    store,
     mounted() {
         this.loadData();
         setInterval(function () {
@@ -49,7 +51,7 @@ import axios from 'axios';
           // var config = {
           //   headers: {'Access-Control-Allow-Origin': '*'}
           // };
-          axios.get("http://localhost:8080/proteus/service/repo/breakdown/license")
+          axios.get(this.origin+"/proteus/service/repo/breakdown/license")
             .then(response=>{
               this.$log.info(response.data);
               this.licenseTypes=response.data;
@@ -137,6 +139,9 @@ import axios from 'axios';
           out.push({letter:this.licenseTypes[item].type,frequency:this.licenseTypes[item].weight});
         }
         return out;
+      },
+      origin(){
+        return store.state.origin;
       }
     }
 }
