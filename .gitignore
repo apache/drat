@@ -4,6 +4,7 @@
 .settings
 .cache
 target
+webapps/proteus-new/src/main/webapp/resources/node_modules
 */target
 */*/target
 /.DS_Store
