@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "clean": "rm -r ../css ../favicon.ico ../fonts ../index.html ../js ../logo.png",
-    "build": "vue-cli-service build &&  sed -i 's/src=\\//src=.\\//g' dist/index.html && sed -i 's/href=\\//href=.\\//g' dist/index.html  && mv dist/* ./.. && rm -r dist",
+    "build": "vue-cli-service build && mv dist/* ./.. && rm -r dist",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
