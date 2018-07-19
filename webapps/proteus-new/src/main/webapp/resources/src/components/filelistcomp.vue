@@ -48,95 +48,12 @@ import store from './../store/store';
     },
     methods: {
         loadData(){
-          // this.fileslist.splice(0);
-            // this.fileslist = [
-                  // var a =  [ {
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },{
-                  //       "title": Math.random(),
-                  //       "description": "RatAggregateLog",
-                  //       "link": "http://localhost:8080/opsui/data?productID=922ba582-7cc7-11e8-81ea-373255ec0c7a",
-                  //       "casSource": "RatAggregateLog",
-                  //       "source": "RatAggregateLog",
-                  //       "pubDate": "Sun, 01 Jul 2018 06:12:02 IST"
-                  //   },]
-            //     ];
-            // a.forEach((v, i) => {
-            //            const val = (typeof v === 'object') ? Object.assign({}, v) : v;
-                    
-            //           this.fileslist.push(val);
-            //       });
-            
             if(this.currentRepo!=''){
                 axios.get(this.origin+"/proteus/service/products?topn=10")
                 .then(response=>{
-                  // this.fileslist.splice(0,this.fileslist.length);
                   
                   response.data.forEach((v, i) => {
                        const val = (typeof v === 'object') ? Object.assign({}, v) : v;
-                      //  this.fileslist.push(val);
-                      // this.fileslist.push(val);
                       this.fileslist.splice(i,1,val)
                   });
                         
@@ -150,15 +67,6 @@ import store from './../store/store';
         }
     },
     computed: {
-      // fileslist(){
-      //   var temp = [];
-      //   this.data.forEach((v, i) => {
-      //       const val = (typeof v === 'object') ? Object.assign({}, v) : v;
-      //     temp.push(val);
-      //   });
-        
-      //   return temp;
-      // },
       currentRepo (){
         return store.state.currentRepo;
       },

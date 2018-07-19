@@ -245,16 +245,6 @@ import store from './../store/store';
         },
 
         docs:[]
-        // docs:[{"description":"Default DRAT repo.",
-        // "text":["Default DRAT repo.","DRAT"],
-        // "repo":"/home/xelvias/drat/src",
-        // "loc_url":"http://github.com/chrismattmann/drat.git",
-        // "type":"project","id":"http://github.com/chrismattmann/drat.git","name":"DRAT"},
-        // {"description":"Default DRAT repo2.",
-        // "text":["Default DRAT repo.","DRAT"],
-        // "repo":"/home/xelvias/drat/src",
-        // "loc_url":"http://github.com/chrismattmann/drat.git",
-        // "type":"project","id":"http://github.com/chrismattmann/drat.git","name":"DRAT"}]
       }
     },
     methods: {
@@ -285,42 +275,12 @@ import store from './../store/store';
             this.$log.info(response.data);
             this.licence.docs=response.data.response.docs[0];
           })
-        // http://localhost:8080/solr/statistics/select?q=id:%22/home/xelvias/drat/src%22&fl=license_*&wt=json
-          // this.licence.docs = {"license_Unknown":47,"license_Standards":115,"license_Apache":68,"license_Binaries":12,"license_Generated":0,"license_Archives":0,"license_Notes":0};
-      },
+       },
       loadFileDetails(){
-//         /this.sortedfiles=[{
-// 	"mimetype": "text/html",
-// 	"parent": "/home/xelvias/drat/src",
-// 	"license": "Unknown",
-// 	"type": "file",this.currentrepo
-// 	"id": "/home/xelvias/drat/src/drat/proteus/src/main/java/drat/proteus/bower_components/angularjs-nvd3-directives/examples/scatterChart.with.automatic.resize.html"
-// },{
-// 	"mimetype": "text/x-java-source",
-// 	"license": "Apache",
-// 	"type": "file",
-// 	"id": "/home/xelvias/drat/src/drat/proteus/src/main/java/drat/proteus/services/health/HealthMonitorItem.java",
-// 	"parent": "/home/xelvias/drat/src"
-// }, {
-// 	"mimetype": "text/x-java-source",
-// 	"license": "Standard",
-// 	"type": "file",
-// 	"id": "/home/xelvias/drat/src/drat/proteus/src/main/java/drat/proteus/services/health/HealthMonitorService.java",
-// 	"parent": "/home/xelvias/drat/src"
-// },{
-// 	"mimetype": "application/x-font-ttf",
-// 	"license": "Binaries",
-// 	"type": "file",
-// 	"id": "/home/xelvias/drat/src/drat/webapps/viz/src/main/webapp/dist/fonts/glyphicons-halflings-regular.ttf",
-// 	"parent": "/home/xelvias/drat/src"
-// }];
         axios.get(this.origin+"/solr/statistics/select?q=parent:\""+this.selectedItem.repo+"\"&rows=5000&wt=json")
         .then(response=>{
           this.sortedfiles  = response.data.response.docs;
         })
-        // http://localhost:8080/solr/statistics/select?q=parent:%22/home/xelvias/drat/src%22&rows=5000&wt=json
-        // console.log(this.sortedfiles);
-        
       }
 
     },

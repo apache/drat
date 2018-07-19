@@ -17,13 +17,7 @@
 import * as d3 from 'd3';
 import axios from 'axios';
 import store from './../store/store'
-// const props={
-//   width:500,
-//   hieght:270
-// };
-// const graphData = [10,20,40,30];
 
-  
   export default  {
     name: 'barchartcomp',
     props: [],
@@ -39,8 +33,7 @@ import store from './../store/store'
       return {
         licenseTypes : [], 
         emptynote : '',
-        // licenseTypes : [{"type":"Binaries","numberOfObjects":139,"weight":0.40406976744186046},{"type":"Apache Licensed","numberOfObjects":96,"weight":0.27906976744186046},{"type":"Generated Documents","numberOfObjects":0,"weight":0.0},{"type":"Archives","numberOfObjects":0,"weight":0.0},{"type":"Notes","numberOfObjects":1,"weight":0.0029069767441860465},{"type":"Standards","numberOfObjects":108,"weight":0.313953488372093}]
-        // dts : [{letter:'A',frequency:0.9167},{letter:'B',frequency:0.4503},{letter:'C',frequency:0.4503}],
+       
       }
     },
     watch:{
@@ -48,9 +41,7 @@ import store from './../store/store'
     },
     methods: {
         loadData(){
-          // var config = {
-          //   headers: {'Access-Control-Allow-Origin': '*'}
-          // };
+          
           axios.get(this.origin+"/proteus/service/repo/breakdown/license")
             .then(response=>{
               this.$log.info(response.data);
@@ -61,7 +52,6 @@ import store from './../store/store'
               this.emptynote = error.toString();
               throw error;
             })
-          // this.init();
             
         },
         init(){
@@ -85,7 +75,6 @@ import store from './../store/store'
           var dataval = this.dts;
           if(dataval.length!=0){
             this.emptynote='';
-            //x.domain(d3.extent(dataval,function(d) { return d.letter; }));
             x.domain(dataval.map(function(d) { return d.letter; }));
             y.domain([0, d3.max(dataval, function(d) { return d.frequency; })]);
 

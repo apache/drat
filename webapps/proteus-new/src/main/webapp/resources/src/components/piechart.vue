@@ -51,14 +51,7 @@ import store from './../store/store';
         var label = d3.arc()
             .outerRadius(radius - 40)
             .innerRadius(radius - 40);
-
-        // d3.csv("data.csv", function(d) {
-        //   d.population = +d.population;
-        //   return d;
-        // }, function(error, data) {
-        //   if (error) throw error;
-        //var data = [{age:"<5",population:2704659},{age:"5-13",population:4499890},{age:"14-16",population:100000}]
-          var arc = g.selectAll(".arc")
+        var arc = g.selectAll(".arc")
             .data(pie(this.data))
             .enter().append("g")
               .attr("class", "arc");
@@ -71,7 +64,7 @@ import store from './../store/store';
               .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
               .attr("dy", "0.35em")
               .text(function(d) { return d.data.type; });
-        // });
+     
       },
       loadData(){
         axios.get(this.origin+"/proteus/service/repo/breakdown/mime?limit=5")
