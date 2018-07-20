@@ -222,7 +222,7 @@ import store from './../store/store';
             { text: 'Location',sortable: false, value: 'loc' },
             { text: 'Mime Type',sortable: true, value: 'mtype' },
             { text: 'License',sortable: true, value: 'license' },
-            { text: 'Header',sortable:false,value:'header'}
+            { text: 'Header',sortable:false,value:'header',width:'20px'}
           ]
         },
         dialog:false,
@@ -374,8 +374,8 @@ import store from './../store/store';
   }
 
   #headercell{
-    min-width: 15%;
-    overflow-x: hidden;
+    max-width: 400px;
+    overflow: hidden;
     white-space: nowrap;
   }
 

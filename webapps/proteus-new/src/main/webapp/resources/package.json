@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "clean": "rm -r ../css ../favicon.ico ../fonts ../index.html ../js ../logo.png",
+    "clean": "test -e ../index.html && rm -r ../css ../favicon.ico ../fonts ../index.html ../js ../logo.png || echo 'Already Clean'",
     "build": "vue-cli-service build && mv dist/* ./.. && rm -r dist",
     "lint": "vue-cli-service lint"
   },

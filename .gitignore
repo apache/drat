@@ -4,6 +4,11 @@
 .settings
 .cache
 target
+webapps/proteus-new/src/main/webapp/index.html
+webapps/proteus-new/src/main/webapp/js
+webapps/proteus-new/src/main/webapp/logo.png
+webapps/proteus-new/src/main/webapp/favicon.png
+webapps/proteus-new/src/main/webapp/css
 webapps/proteus-new/src/main/webapp/resources/node_modules
 */target
 */*/target

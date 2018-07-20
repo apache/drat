@@ -36,7 +36,7 @@
 </template>
 <script>
 
-import HelloWorld from './components/HelloWorld.vue'
+
 import controllbar from './components/controll_bar.vue'
 import projectstable from './components/projectstable.vue'
 import Barchart from './components/Barchart'
@@ -51,7 +51,7 @@ export default {
   name: 'app',
   store,
   components: {
-    HelloWorld,
+   
     controllbar,
     projectstable,
     Barchart,
