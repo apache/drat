@@ -1,8 +1,26 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements.  See the NOTICE.txt file distributed with this work for
+additional information regarding copyright ownership.  The ASF licenses this
+file to you under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.  You may obtain a copy of
+the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
 <template lang="html">
 
 <v-card id="tablecard">
+  <v-toolbar dark color="primary">
+     <v-toolbar-title class="white--text">Projects</v-toolbar-title>
+  </v-toolbar>
   <section class="projectstable">
     <!-- <h1>Projects</h1> -->
+    
     <v-data-table id="ttx"
       :headers="headers"
       :items="docs"
@@ -161,9 +179,9 @@
                   append-icon="search"
                   label="Search"
                   single-line
-                  hide-details
-                ></v-text-field>
-                </v-card-title>
+                  hide-details>
+                </v-text-field>
+               
                 <v-data-table
                   :headers="licence.headers"
                   :items="sortedfiles"
