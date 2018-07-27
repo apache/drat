@@ -6,7 +6,7 @@ jdk:
   - openjdk11
 
 env:
-  - DRAT_HOME=$TRAVIS_BUILD_DIR/drat/deploy GANGLIA_URL=http://zipper.jpl.nasa.gov/ganglia/ FILEMGR_URL=http://localhost:9000 WORKFLOW_URL=http://localhost:9001 RESMGR_URL=http://localhost:9002 WORKFLOW_HOME=$DRAT_HOME/workflow FILEMGR_HOME=$DRAT_HOME/filemgr PGE_ROOT=$DRAT_HOME/pge PCS_HOME=$DRAT_HOME/pcs FMPROD_HOME=$DRAT_HOME/tomcat/webapps/fmprod/WEB-INF/classes/ PATH=$JAVA_HOME/bin:$PATH SOLR_DRAT_URL=http://localhost:8080/solr/drat
+  - FILEMGR_URL=http://localhost:9000 WORKFLOW_URL=http://localhost:9001 RESMGR_URL=http://localhost:9002 SOLR_DRAT_URL=http://localhost:8080/solr/drat
 
 before_install:
   - export M2_HOME=/usr/local/maven
