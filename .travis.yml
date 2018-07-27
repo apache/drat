@@ -2,6 +2,12 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
+  - openjdk10
+  - openjdk11
+
+before_install:
+  - export M2_HOME=/usr/local/maven
+  - export MAVEN_OPTS="-Dmaven.repo.local=$HOME/.m2/repository -Xms1024m -Xmx3072m -XX:PermSize=512m"
 
 #before_script:
 #  - pip install --user codecov
