@@ -19,5 +19,13 @@ package drat.proteus.rest;
 
 public class DratRequestWrapper {
     //needed for JSON Requests
-    public String dirPath;
+    public String id;
+    public String repo;
+    public String name;
+    public String loc_url;
+    public String description;
+    public String type="project";
+    
+    
+    
 }

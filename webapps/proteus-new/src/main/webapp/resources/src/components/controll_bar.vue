@@ -18,15 +18,50 @@ the License.
       <v-layout row wrap>
         <v-text-field
         solo
-          name="input"
-          label="Repository to search or add to DRAT"
+          name="url"
+          label="Repository to add to DRAT"
           single-line
           v-model="url"
-          prepend-icon="search"
         />
-        <v-btn v-on:click="search" color="info">Search</v-btn>
-        <v-btn v-on:click="go" color="primary" medium> Run </v-btn>
         
+        <v-btn v-on:click="search" color="info">Search</v-btn>
+        <v-btn v-on:click="dialog=true" color="primary" medium> Run </v-btn>
+        <v-dialog v-model="dialog" persistent max-width="500px">
+          <v-card id="repodetailscard">
+            <v-text-field
+              solo
+                name="url"
+                label="Repository to add to DRAT"
+                single-line
+                v-model="url"
+              />
+
+              <v-text-field
+              solo
+                name="name"
+                label="Name of the repository"
+                single-line
+                v-model="reponame"
+              />
+              
+              <v-spacer/>
+              <v-text-field
+              solo
+                name="location"
+                label="Location of the reoository"
+                single-line
+                v-model="repoloc"
+              /><v-text-field
+              solo
+                name="description"
+                label="Description about the reoository"
+                
+                v-model="repodesc"
+              />
+            <v-btn v-on:click="dialog=false">Close</v-btn>
+            <v-btn v-on:click="go" color="primary">Run</v-btn>
+          </v-card>  
+        </v-dialog>
       </v-layout>         
     </v-card>   
   </section>
@@ -46,8 +81,13 @@ the License.
     },
     data() {
       return {
+        dialog:false,
         msg: 'null for now',
-        url: ''
+        url: '',
+        repo:'',
+        repodesc:'',
+        repoloc:'',
+        reponame:'',
       }
     },
     methods: {
@@ -74,8 +114,8 @@ the License.
               backdropClose: false // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask 
           };
           
-          if(this.url.length==0){
-                    this.$dialog.alert({title:"Invalid input",body:'Please enter valid path continue'},options)
+          if(this.url.length==0 || this.repoloc==0){
+                    this.$dialog.alert({title:"Invalid input",body:'Please enter valid path and location, then continue'},options)
             .then(function () {
                 console.log('Clicked on proceed')
             })
@@ -85,9 +125,15 @@ the License.
           }else{
               store.commit("setprogress",true);
               store.commit("setCurrentRepo",this.url);
-            axios.post(this.origin+"/proteus/drat/go",{
-            dirPath:this.url
-          })
+              this.dialog = false;
+              var body = {
+                id:this.repoloc,
+                repo:this.url,
+                name:this.reponame,
+                loc_url:this.repoloc,
+                description:this.repodesc
+              };
+            axios.post(this.origin+"/proteus/drat/go",body)
             .then(response=>{
               this.$log.info(response.data);              
             })
@@ -118,6 +164,10 @@ the License.
     padding: 1%;
     padding-left: 10%;
     padding-right: 10%;
+  }
+
+  #repodetailscard{
+    padding: 2%;
   }
 </style>
 run
