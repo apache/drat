@@ -363,18 +363,6 @@ public class ProcessDratWrapper extends GenericProcess
     return false;
   }
   
-  @VisibleForTesting
-  @Deprecated
-  protected List<WorkflowInstance> filterPartitioners(List<WorkflowInstance> instances){
-    return filterInstances(instances, PARTITION_AND_MAP_TASK_ID); 
-  }
-
-  @VisibleForTesting
-  @Deprecated
-  protected List<WorkflowInstance> filterMappers(List<WorkflowInstance> instances){
-     return this.filterInstances(instances, MAPPER_TASK_ID);
-  }
-  
   @VisibleForTesting 
   protected List<WorkflowInstance> filterInstances(List<WorkflowInstance> instances, String taskId){
     List<WorkflowInstance> insts = new ArrayList<>();
