@@ -343,7 +343,17 @@ public class ProcessDratWrapper extends GenericProcess
 
   @VisibleForTesting
   protected boolean stillRunning(List<WorkflowInstance> instances) {
+    List<WorkflowInstance> partitionInstances = filterPartitioners(instances);
     List<WorkflowInstance> mapperInstances = filterMappers(instances);
+    LOG.info("Checking partitioners: inspecting ["+String.valueOf(partitionInstances
+        .size()) + "] partitioners.");
+    for (WorkflowInstance partitionInstance: partitionInstances) {
+      if (isRunning(partitionInstance.getState().getName())) {
+        LOG.info("Partitioner: [" + partitionInstance.getId() + "] still running.");
+        return true;
+      }
+    }   
+    
     LOG.info("Checking mappers: inspecting ["
             + String.valueOf(mapperInstances.size()) + "] mappers.");
     for (WorkflowInstance mapperInstance : mapperInstances) {
@@ -353,6 +363,22 @@ public class ProcessDratWrapper extends GenericProcess
       }
     }
     return false;
+  }
+  
+  @VisibleForTesting
+  protected List<WorkflowInstance> filterPartitioners(List<WorkflowInstance> instances){
+    List<WorkflowInstance> partitioners = new ArrayList<>();
+    if(instances!=null && instances.size()>0){
+        for(WorkflowInstance instance:instances){
+            if (instance.getCurrentTask().getTaskId().equals(PARTITION_AND_MAP_TASK_ID)) {
+                LOG.info("Adding partition/map: ["+instance.getCurrentTask().getTaskId()+"]");
+                partitioners.add(instance);
+            }else{
+                LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
+            }
+        }
+    }
+    return partitioners;    
   }
 
   @VisibleForTesting
