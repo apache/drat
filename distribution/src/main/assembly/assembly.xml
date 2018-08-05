@@ -94,6 +94,7 @@
         <exclude>${groupId}:${parent.artifactId}-solr-webapp</exclude>
         <exclude>${groupId}:${parent.artifactId}-proteus</exclude>
         <exclude>${groupId}:${parent.artifactId}-viz</exclude>
+	<exclude>${groupId}:${parent.artifactId}-proteus-new</exclude>
         <exclude>org.apache.tika:tika-app</exclude>
       </excludes>
     </dependencySet>
