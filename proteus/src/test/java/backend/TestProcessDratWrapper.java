@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
 import backend.ProcessDratWrapper;
+import static backend.ProcessDratWrapper.MAPPER_TASK_ID;
+import static backend.ProcessDratWrapper.PARTITION_AND_MAP_TASK_ID;
 import junit.framework.TestCase;
 
 public class TestProcessDratWrapper extends TestCase {
@@ -52,7 +54,7 @@ public class TestProcessDratWrapper extends TestCase {
     for(WorkflowItem wi: items) {
       insts.add(wi.toInstance());
     }
-    assertTrue(wrapper.stillRunning(insts)); 
+    assertTrue(wrapper.taskStillRunning(insts, PARTITION_AND_MAP_TASK_ID, MAPPER_TASK_ID)); 
   }
 
   public void testFilterPartitioners(){
@@ -70,7 +72,7 @@ public class TestProcessDratWrapper extends TestCase {
       insts.add(wi.toInstance());
     }    
     List<WorkflowInstance> partitioners = null;
-    partitioners = wrapper.filterPartitioners(insts);
+    partitioners = wrapper.filterInstances(insts, PARTITION_AND_MAP_TASK_ID);
     assertNotNull(partitioners);
     assertEquals(2, partitioners.size());    
   }
@@ -90,7 +92,7 @@ public class TestProcessDratWrapper extends TestCase {
       insts.add(wi.toInstance());
     }    
     List<WorkflowInstance> mappers = null;
-    mappers = wrapper.filterMappers(insts);
+    mappers = wrapper.filterInstances(insts, MAPPER_TASK_ID);
     assertNotNull(mappers);
     assertEquals(1, mappers.size());    
   }
