@@ -1,8 +1,11 @@
 .vagrant/
+venv/
 .project
 .classpath
 .settings
 .cache
+*.iml
+.idea
 target
 webapps/proteus-new/src/main/webapp/index.html
 webapps/proteus-new/src/main/webapp/js
@@ -15,3 +18,4 @@ webapps/proteus-new/src/main/webapp/resources/node_modules
 /.DS_Store
 /.pydevproject
 /*/.pydevproject
+**/overlays/

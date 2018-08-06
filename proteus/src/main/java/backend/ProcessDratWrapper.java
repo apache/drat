@@ -143,6 +143,7 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
+      reset();
       solrIndex();
   }
   
@@ -196,9 +197,10 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   @Override
-  public void reset() throws Exception {
-    LOG.info("DRAT: reset: wiping FM product catalog");
-
+  public void reset() {
+//    LOG.info("DRAT: reset: wiping FM product catalog");
+    DratLog resetLog = new DratLog("RESET");
+    resetLog.logInfo("Starting","");
     for (String type : WIPE_TYPES) {
       int numTries = 0;
       ProductType pType = fm.safeGetProductTypeByName(type);
@@ -212,40 +214,41 @@ public class ProcessDratWrapper extends GenericProcess
 
       if (numTries == MAX_RESET_TRIES
           && this.fm.safeGetNumProducts(pType) > 0) {
-        LOG.warning("Unable to fully wipe type: [" + type + "]. Tried ["
+        resetLog.logWarning("Unable to fully wipe type: [" + type + "]. Tried ["
             + String.valueOf(numTries) + "] times. Max attempts: ["
             + String.valueOf(MAX_RESET_TRIES)
             + "]. Is your File Manager corrupt?");
       }
     }
 
-    LOG.info("DRAT: reset: wiping WM instance repository.");
+    resetLog.logInfo("DRAT: reset: wiping WM instance repository.");
     String wmUrl = PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
     this.wipeInstanceRepo(wmUrl);
 
     String coreName = "drat";
-    LOG.info("DRAT: reset: wiping Solr core: [" + coreName + "]");
+    resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
     this.wipeSolrCore(coreName);
-
-    LOG.info("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
+  
+    resetLog.logInfo("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
         + "]");
     for (String dir : Utils.getResetDirectories()) {
       File file = new File(dir);
       if (file.exists()) {
         try {
-          LOG.info(
+          resetLog.logInfo(
               "DRAT: reset: removing dir: [" + file.getAbsolutePath() + "]");
           FileUtils.forceDelete(file);
         } catch (FileNotFoundException e) {
-          LOG.warning("Error removing: [" + file.getAbsolutePath()
+          resetLog.logInfo("Error removing: [" + file.getAbsolutePath()
               + "]: Message: " + e.getLocalizedMessage());
         } catch (IOException e) {
-          LOG.warning("Unable to remove file: [" + file.getAbsolutePath()
+          resetLog.logInfo("Unable to remove file: [" + file.getAbsolutePath()
               + "]: Message: " + e.getLocalizedMessage());
         }
       }
     }
-
+  
+    resetLog.logInfo("Finished","");
   }
 
   public void go() throws Exception {

@@ -30,7 +30,7 @@ the License.
         <v-list class="pa-0">
           <v-list-tile avatar>
             <v-list-tile-avatar>
-              <img src="./logo.png">
+              <img width=10px height=10px src="leaf-logo.png">
             </v-list-tile-avatar>
   
             <v-list-tile-content>

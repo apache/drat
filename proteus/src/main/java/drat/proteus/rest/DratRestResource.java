@@ -55,12 +55,14 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
 
   @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
   public void index(@RequestBody DratRequestWrapper body) throws Exception {
+    dumpToFile(body);
     dratWrapper.setIndexablePath(body.repo);
     dratWrapper.index();
   }
 
   @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
   public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
+    dumpToFile(body);
     dratWrapper.setIndexablePath(body.repo);
     dratWrapper.crawl();
   }

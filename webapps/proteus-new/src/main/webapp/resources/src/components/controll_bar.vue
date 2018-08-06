@@ -25,6 +25,7 @@ the License.
         />
         
         <v-btn v-on:click="search" color="info">Search</v-btn>
+        
         <v-btn v-on:click="dialog=true" color="primary" medium> Run </v-btn>
         <v-dialog v-model="dialog" persistent max-width="500px">
           <v-card id="repodetailscard">
@@ -35,7 +36,7 @@ the License.
                 single-line
                 v-model="url"
               />
-
+              <hr>
               <v-text-field
               solo
                 name="name"
@@ -45,19 +46,33 @@ the License.
               />
               
               <v-spacer/>
+              <hr/>
               <v-text-field
               solo
                 name="location"
-                label="Location of the reoository"
+                label="Location of the repository"
                 single-line
                 v-model="repoloc"
-              /><v-text-field
+              />
+              <hr/><v-text-field
               solo
                 name="description"
-                label="Description about the reoository"
+                label="Description about the repository"
                 
                 v-model="repodesc"
               />
+              <hr/>
+            
+            <v-select xs1
+              v-model="selectedAction"
+              :items="dratoptions"
+              label="Action"
+              required
+              dense
+              nudge-width
+              @change="$v.select.$touch()"
+              @blur="$v.select.$touch()"
+            />
             <v-btn v-on:click="dialog=false">Close</v-btn>
             <v-btn v-on:click="go" color="primary">Run</v-btn>
           </v-card>  
@@ -88,6 +103,8 @@ the License.
         repodesc:'',
         repoloc:'',
         reponame:'',
+        dratoptions:["Go","Crawl","Index","Map","Reduce","Reset"],
+        selectedAction:'Go'
       }
     },
     methods: {
@@ -113,6 +130,30 @@ the License.
               clicksCount: 3, // for soft confirm, user will be asked to click on "proceed" btn 3 times before actually proceeding
               backdropClose: false // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask 
           };
+          var action = "go";
+          switch(this.selectedAction){
+            case "Go":
+              action = "go";
+              break;
+            case "Index":
+              action = "index";
+              break;
+            case "Crawl":
+              action= "crawl";
+              break;
+
+            case "Map":
+              action = "map";
+              break;
+
+            case "Reduce":
+              action = "reduce";
+              break;
+            case "Reset":
+              action = "reset";
+              break;
+
+          }
           
           if(this.url.length==0 || this.repoloc==0){
                     this.$dialog.alert({title:"Invalid input",body:'Please enter valid path and location, then continue'},options)
@@ -123,6 +164,12 @@ the License.
                 console.log('Clicked on cancel')
             });
           }else{
+            if(action==="reset"){
+              axios.post(this.origin+"/proteus/drat/reset","")
+              .then(response=>{
+                this.$log.info(response.data);              
+              })
+            }else{ 
               store.commit("setprogress",true);
               store.commit("setCurrentRepo",this.url);
               this.dialog = false;
@@ -133,13 +180,14 @@ the License.
                 loc_url:this.repoloc,
                 description:this.repodesc
               };
-            axios.post(this.origin+"/proteus/drat/go",body)
-            .then(response=>{
-              this.$log.info(response.data);              
-            })
-            .catch(error=>{
-              throw error;
-            })
+              axios.post(this.origin+"/proteus/drat/"+action,body)
+              .then(response=>{
+                this.$log.info(response.data);              
+              })
+              .catch(error=>{
+                throw error;
+              })
+            }
           }
           
         }
