@@ -2,12 +2,15 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
+  - openjdk10
+  - openjdk11
 
-#before_script:
-#  - pip install --user codecov
+env:
+  - FILEMGR_URL=http://localhost:9000 WORKFLOW_URL=http://localhost:9001 RESMGR_URL=http://localhost:9002 SOLR_DRAT_URL=http://localhost:8080/solr/drat
 
-#after_success:
-#  - codecov
+before_install:
+  - export M2_HOME=/usr/local/maven
+  - export MAVEN_OPTS="-Dmaven.repo.local=$HOME/.m2/repository -Xms1024m -Xmx3072m -XX:PermSize=512m"
 
-#addons:
-#  srcclr: true 
+script:
+  - mvn clean install

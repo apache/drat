@@ -23,3 +23,6 @@ You can clone the wiki by running
 
 Visit our new website [drat.apache.org](https://drat.apache.org/) at the [Apache Software Foundation](https://www.apache.org/).
 
+---
+
+Current build status: [![Build Status](https://travis-ci.org/apache/drat.svg?branch=master)](https://travis-ci.org/apache/drat)

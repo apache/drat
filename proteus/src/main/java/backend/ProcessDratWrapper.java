@@ -70,9 +70,9 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String MAP_CMD = "map";
   private static final String REDUCE_CMD = "reduce";
   private static final String STATUS_IDLE = "idle";
-  private static final String PARTITION_AND_MAP_TASK_ID = "urn:drat:MimePartitioner";
-  private static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
-  private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
+  protected static final String PARTITION_AND_MAP_TASK_ID = "urn:drat:MimePartitioner";
+  protected static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
+  protected static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
@@ -180,18 +180,18 @@ public class ProcessDratWrapper extends GenericProcess
   @Override
   public void reduce() throws IOException {
     setStatus(REDUCE_CMD);
-    DratLog mapLog = new DratLog("REDUCING");
+    DratLog reduceLog = new DratLog("REDUCING");
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
     requestBody.taskIds.add(REDUCE_TASK_ID);
     LOG.info("STARTING REDUCING");
-    mapLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
+    reduceLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
     String resp = (String)restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
-        mapLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
+        reduceLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
     }else {
-        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+        reduceLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
     }
   }
@@ -260,15 +260,19 @@ public class ProcessDratWrapper extends GenericProcess
     this.map();
 
     // don't run reduce until all maps are done
-    while (mapsStillRunning()) {
+    while (stillRunning(PARTITION_AND_MAP_TASK_ID) || stillRunning(MAPPER_TASK_ID)) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
       LOG.info("MAP STILL RUNNING");
     }
     // you're not done until the final log is generated.
     while (!hasAggregateRatLog()) {
       try {
-        reduce();
-        LOG.info("REDUCE STILL RUNNING");
+        if (!stillRunning(REDUCE_TASK_ID)) {
+          reduce();
+        }
+        else {
+          LOG.info("REDUCE STILL RUNNING.");
+        }
       } catch (IOException e) {
         LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
             + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
@@ -290,15 +294,16 @@ public class ProcessDratWrapper extends GenericProcess
         + "]: " + breakStatus);
     return numLogs > 0;
   }
+  
+  private boolean stillRunning(String taskId) throws Exception {
+        WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
+        List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
+        for(WorkflowInstance instance : workflowInstances){
+          LOG.info("Running Instances : id: "+instance.getId()
+                  +" state name "+instance.getState().getName()+" current task name : "+instance.getCurrentTask().getTaskName());
+        }
+        return taskStillRunning(workflowInstances, taskId);            
 
-  private boolean mapsStillRunning() throws Exception {
-    WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
-    List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
-    for(WorkflowInstance instance : workflowInstances){
-      LOG.info("Running Instances : id: "+instance.getId()
-              +" state name "+instance.getState().getName()+" current task name : "+instance.getCurrentTask().getTaskName());
-    }
-    return stillRunning(workflowInstances);
   }
 
   @VisibleForTesting
@@ -343,36 +348,40 @@ public class ProcessDratWrapper extends GenericProcess
     }
     return items;
   }
-
-  @VisibleForTesting
-  protected boolean stillRunning(List<WorkflowInstance> instances) {
-    List<WorkflowInstance> mapperInstances = filterMappers(instances);
-    LOG.info("Checking mappers: inspecting ["
-            + String.valueOf(mapperInstances.size()) + "] mappers.");
-    for (WorkflowInstance mapperInstance : mapperInstances) {
-      if (isRunning(mapperInstance.getState().getName())) {
-        LOG.info("Mapper: [" + mapperInstance.getId() + "] still running.");
-        return true;
+  
+  protected boolean taskStillRunning(List<WorkflowInstance> instances, String ...taskIds) {
+    if (taskIds != null && taskIds.length > 0) {
+      for(String taskId: taskIds) {
+        List<WorkflowInstance> insts = filterInstances(instances, taskId);
+        LOG.info("Checking task: "+taskId+" : inspecting ["+String.valueOf(instances.size())+"] tasks.");
+        for(WorkflowInstance i: insts) {
+         if(isRunning(i.getState().getName())) {
+           LOG.info("Task: [" + i.getId() + "] still running.");     
+           return true;
+         }
+        }
       }
     }
+    
     return false;
   }
-
-  @VisibleForTesting
-  protected List<WorkflowInstance> filterMappers(List<WorkflowInstance> instances){
-      List<WorkflowInstance> mappers = new ArrayList<>();
-      if(instances!=null && instances.size()>0){
-          for(WorkflowInstance instance:instances){
-              if(instance.getCurrentTask().getTaskId().equals(MAPPER_TASK_ID)){
-                  LOG.info("Adding mapper: [" + instance.getCurrentTask().getTaskId() + "]");
-                  mappers.add(instance);
-              }else{
-                  LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
-              }
-          }
-      }
-      return mappers;
-  }
+  
+  @VisibleForTesting 
+  protected List<WorkflowInstance> filterInstances(List<WorkflowInstance> instances, String taskId){
+    List<WorkflowInstance> insts = new ArrayList<>();
+    if(instances!=null && instances.size()>0){
+        for(WorkflowInstance instance:instances){
+            if(instance.getCurrentTask().getTaskId().equals(taskId)){
+                LOG.info("Adding "+taskId+" instance: [" + instance.getCurrentTask().getTaskId() + "]");
+                insts.add(instance);
+            }else{
+                LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
+            }
+        }
+    }
+    return insts;
+  }  
+  
 
   @VisibleForTesting
   protected boolean isRunning(String status) {
