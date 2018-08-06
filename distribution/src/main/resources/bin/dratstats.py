@@ -344,6 +344,7 @@ def run(repos_list, output_dir):
 				# Extract data from Solr
 				neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
 				connection = urllib2.urlopen(os.getenv("SOLR_URL") + "/drat/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
+				
 				response = eval(connection.read())
 				mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
 
