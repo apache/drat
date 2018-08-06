@@ -111,6 +111,7 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void crawl() throws Exception {
+      this.reset();
       DratLog crawlLog = new DratLog("CRAWLING");
       try{
           setStatus(CRAWL_CMD);
@@ -134,16 +135,18 @@ public class ProcessDratWrapper extends GenericProcess
           crawlLog.logInfo("STARTING ",null);
           crawler.crawl();
           crawlLog.logInfo("COMPLETED",null);
+          setStatus(STATUS_IDLE);
       }catch (Exception ex) {
           crawlLog.logSevere("ERROR ",ex.getLocalizedMessage());
           ex.printStackTrace();
+          setStatus(STATUS_IDLE);
           throw ex;
       }
   }
 
   @Override
   public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
-      reset();
+      
       solrIndex();
   }
   
@@ -157,6 +160,7 @@ public class ProcessDratWrapper extends GenericProcess
       sIndexer.commit();
       sIndexer.optimize();
       idl.logInfo("Completed",null);
+      setStatus(STATUS_IDLE);
   }
 
   @Override
@@ -175,6 +179,7 @@ public class ProcessDratWrapper extends GenericProcess
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
     }
+    setStatus(STATUS_IDLE);
   }
 
   @Override
@@ -194,6 +199,7 @@ public class ProcessDratWrapper extends GenericProcess
         reduceLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
     }
+    setStatus(STATUS_IDLE);
   }
 
   @Override
@@ -254,9 +260,9 @@ public class ProcessDratWrapper extends GenericProcess
   public void go() throws Exception {
     // before go, always reset
     
-    this.reset();
+    //but crawl method calls reset, hence no need to call it separately
     this.crawl();
-    this.index();
+    this.solrIndex();
     this.map();
 
     // don't run reduce until all maps are done
