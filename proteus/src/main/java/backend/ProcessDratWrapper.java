@@ -77,6 +77,7 @@ public class ProcessDratWrapper extends GenericProcess
       "RatAggregateLog" };
 
   private String status;
+  public String urlLoc;
   private FileManagerUtils fm;
   private String path;
   private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
@@ -88,6 +89,7 @@ public class ProcessDratWrapper extends GenericProcess
   private ProcessDratWrapper() {
     super(DRAT);
     this.path = "";
+    this.urlLoc="";
     this.status = "IDLE";
     this.fm = new FileManagerUtils(
         PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
@@ -101,6 +103,14 @@ public class ProcessDratWrapper extends GenericProcess
     return this.path;
   }
 
+  public String getUrlLoc() {
+    return urlLoc;
+  }
+
+  public void setUrlLoc(String urlLoc) {
+    this.urlLoc = urlLoc;
+  }
+
   public String getStatus() {
     return this.status;
   }
@@ -112,6 +122,8 @@ public class ProcessDratWrapper extends GenericProcess
   @Override
   public void crawl() throws Exception {
       DratLog crawlLog = new DratLog("CRAWLING");
+
+      versionControlCheck();
       try{
           setStatus(CRAWL_CMD);
 
@@ -141,9 +153,24 @@ public class ProcessDratWrapper extends GenericProcess
       }
   }
 
+  private void versionControlCheck() throws Exception {
+    File dirPathFile = new File(this.path);
+    boolean clone=false;
+    if(dirPathFile.exists() ){
+      if(dirPathFile.isDirectory()&& dirPathFile.list().length==0){
+        clone=true;
+      }
+    }else{
+      dirPathFile.createNewFile();
+      clone =true;
+    }
+    if(clone){
+      parseAsVersionControlledRepo();
+    }
+  }
+
   @Override
   public void index() throws IOException, DratWrapperException, InstantiationException, SolrServerException {
-      
       solrIndex();
   }
   
@@ -253,7 +280,7 @@ public class ProcessDratWrapper extends GenericProcess
 
   public void go() throws Exception {
     // before go, always reset
-    
+    versionControlCheck();
     this.reset();
     this.crawl();
     this.solrIndex();
@@ -458,6 +485,38 @@ public class ProcessDratWrapper extends GenericProcess
         break;
       }
     }
+
+  }
+
+  private String parseAsVersionControlledRepo()
+          throws IOException {
+    String projectName = null;
+    boolean git = urlLoc.endsWith(".git");
+    String line = null;
+    if (git) {
+           line = "git clone --depth 1 --branch master " + urlLoc;
+    } else {
+      projectName = urlLoc.substring(urlLoc.lastIndexOf("/") + 1);
+      line = "svn export " + urlLoc;
+    }
+    String clonePath = this.path;
+    File cloneDir = new File(clonePath);
+    LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
+            + this.urlLoc + "] into " + this.path);
+
+    CommandLine cmdLine = CommandLine.parse(line);
+    DefaultExecutor executor = new DefaultExecutor();
+    executor.setWorkingDirectory(new File(this.path));
+    int exitValue = executor.execute(cmdLine);
+
+    if (git) {
+      String gitHiddenDirPath = clonePath + File.separator + ".git";
+      File gitHiddenDir = new File(gitHiddenDirPath);
+      LOG.info("Removing .git directory from " + gitHiddenDirPath);
+      org.apache.cxf.helpers.FileUtils.removeDir(gitHiddenDir);
+    }
+
+    return clonePath;
 
   }
 

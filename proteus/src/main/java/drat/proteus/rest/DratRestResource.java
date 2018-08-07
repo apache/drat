@@ -50,6 +50,7 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
   public void go(@RequestBody DratRequestWrapper body) throws Exception {
     dumpToFile(body);
     dratWrapper.setIndexablePath(body.repo);
+    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.go();
   }
 
@@ -64,6 +65,7 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
   public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
     dumpToFile(body);
     dratWrapper.setIndexablePath(body.repo);
+    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.crawl();
   }
 

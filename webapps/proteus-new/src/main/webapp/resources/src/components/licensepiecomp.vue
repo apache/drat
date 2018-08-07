@@ -15,13 +15,13 @@ the License.
 
 <template lang="html">
 
-  <section class="licencepiecomp">
+  <section class="licensepiecomp">
     <v-card id="licensecard">
       <v-toolbar dark color="primary">
          <v-toolbar-title class="white--text">License Types</v-toolbar-title>
       </v-toolbar>
       
-      <svg id="pielicencesvg" width="420" height="600"></svg>
+      <svg id="pielicensesvg" width="420" height="600"></svg>
     </v-card>
   </section>
 
@@ -32,7 +32,7 @@ the License.
   import axios from 'axios';
   import store from './../store/store'
   export default  {
-    name: 'licencepiecomp',
+    name: 'licensepiecomp',
     store,
     props: [],
     mounted() {
@@ -85,7 +85,7 @@ the License.
             result[i] = resultingData[i];
           }
 
-          var svg = d3.select("#pielicencesvg"),
+          var svg = d3.select("#pielicensesvg"),
             width = +svg.attr("width"),
             height = +svg.attr("height"),
             radius = Math.min(width, height) / 2,
@@ -118,7 +118,7 @@ the License.
               .attr("dy", "0.35em")
               .text(function(d) { return d.data.key; });
 
-         var legend = d3.select("#pielicencesvg").append("svg")
+         var legend = d3.select("#pielicensesvg").append("svg")
                   .attr("class", "legend")
                   .selectAll("g")
                   .data(pie(result))//setting the data as we know there are only two set of data[programmar/tester] as per the nest function you have written

@@ -131,41 +131,41 @@ the License.
           </v-layout>
           <v-layout row >
             <v-flex xs10  offset-xs1>
-              <v-card color="grey lighten-3" id="licencelist">
+              <v-card color="grey lighten-3" id="licenselist">
                
                  <br/>
-                <v-chip close v-model="licence.standard">
-                  <v-avatar class="teal">{{licence.docs.license_Standards}}</v-avatar>
+                <v-chip close v-model="license.standard">
+                  <v-avatar class="teal">{{license.docs.license_Standards}}</v-avatar>
                   Standard
                 </v-chip>
-                <v-chip close v-model="licence.unknown">
-                  <v-avatar class="teal">{{licence.docs.license_Unknown}}</v-avatar>
+                <v-chip close v-model="license.unknown">
+                  <v-avatar class="teal">{{license.docs.license_Unknown}}</v-avatar>
                   Unknown
                 </v-chip>
-                <v-chip close v-model="licence.apache">
-                  <v-avatar class="teal">{{licence.docs.license_Apache}}</v-avatar>
+                <v-chip close v-model="license.apache">
+                  <v-avatar class="teal">{{license.docs.license_Apache}}</v-avatar>
                   Apache
                 </v-chip>
-                 <v-chip close v-model="licence.binaries">
-                  <v-avatar class="teal">{{licence.docs.license_Binaries}}</v-avatar>
+                 <v-chip close v-model="license.binaries">
+                  <v-avatar class="teal">{{license.docs.license_Binaries}}</v-avatar>
                   Binaries
                 </v-chip>
-                 <v-chip close v-model="licence.generated">
-                  <v-avatar class="teal">{{licence.docs.license_Generated}}</v-avatar>
+                 <v-chip close v-model="license.generated">
+                  <v-avatar class="teal">{{license.docs.license_Generated}}</v-avatar>
                   Generated
                 </v-chip>
-                <v-chip close v-model="licence.notes">
-                  <v-avatar class="teal">{{licence.docs.license_Notes}}</v-avatar>
+                <v-chip close v-model="license.notes">
+                  <v-avatar class="teal">{{license.docs.license_Notes}}</v-avatar>
                   Notes
                 </v-chip>
-                 <v-chip close v-model="licence.archives">
-                  <v-avatar class="teal">{{licence.docs.license_Archives}}</v-avatar>
+                 <v-chip close v-model="license.archives">
+                  <v-avatar class="teal">{{license.docs.license_Archives}}</v-avatar>
                   Archives
                 </v-chip>
                 <br/>
                 <v-btn float color="primary"
-                    @click="licence.unknown =true,licence.standard=true,licence.apache=true
-                    ,licence.binaries=true,licence.generated=true,licence.notes=true,licence.archives=true"
+                    @click="license.unknown =true,license.standard=true,license.apache=true
+                    ,license.binaries=true,license.generated=true,license.notes=true,license.archives=true"
                   >Reset</v-btn>
                
               </v-card>
@@ -183,7 +183,7 @@ the License.
                 </v-text-field>
                
                 <v-data-table
-                  :headers="licence.headers"
+                  :headers="license.headers"
                   :items="sortedfiles"
                   :search="search"
                 >
@@ -225,7 +225,7 @@ import store from './../store/store';
     data() {
       return {
         search:'',
-        licence:{
+        license:{
           files:[],
           unknown:true,
           standard:true,
@@ -270,7 +270,7 @@ import store from './../store/store';
         this.$log.info("as");
         this.dialog =true;     
         this.selectedItem = this.docs[index];
-        this.loadLicenceData();
+        this.loadLicenseData();
         this.loadFileDetails();
       },
       loadData(){
@@ -287,11 +287,11 @@ import store from './../store/store';
               throw error;
             })
       },
-      loadLicenceData(){
+      loadLicenseData(){
         axios.get(this.origin+"/solr/statistics/select?q=id:\""+this.selectedItem.repo+"\"&fl=license_*&wt=json")
           .then(response=>{
             this.$log.info(response.data);
-            this.licence.docs=response.data.response.docs[0];
+            this.license.docs=response.data.response.docs[0];
           })
        },
       loadFileDetails(){
@@ -314,33 +314,33 @@ import store from './../store/store';
         get:function(){
             var listToReturn = [];
         
-            if(this.licence.files){
-              this.licence.files.forEach(file => {
+            if(this.license.files){
+              this.license.files.forEach(file => {
                 
                 switch(file.license){
                   case "Apache":
-                    if(this.licence.apache) listToReturn.push(file);
+                    if(this.license.apache) listToReturn.push(file);
                     break;
 
                   case "Unknown":
-                    if(this.licence.unknown) listToReturn.push(file);
+                    if(this.license.unknown) listToReturn.push(file);
                     break;
 
                   case "Standard":
-                      if(this.licence.standard) listToReturn.push(file);
+                      if(this.license.standard) listToReturn.push(file);
                       break;
                   case "Binaries":
-                      if(this.licence.binaries) listToReturn.push(file);
+                      if(this.license.binaries) listToReturn.push(file);
                       break;
 
                   case "Generated":
-                      if(this.licence.generated) listToReturn.push(file);
+                      if(this.license.generated) listToReturn.push(file);
                       break; 
                   case "Notes":
-                      if(this.licence.notes) listToReturn.push(file);
+                      if(this.license.notes) listToReturn.push(file);
                       break;   
                   case "Archives":
-                      if(this.licence.archives) listToReturn.push(file);
+                      if(this.license.archives) listToReturn.push(file);
                       break;
                 }
               });
@@ -351,7 +351,7 @@ import store from './../store/store';
         },
 
         set:function(docs){
-          this.licence.files = docs;
+          this.license.files = docs;
         }
         
       }
@@ -386,7 +386,7 @@ import store from './../store/store';
     padding-right:10%;
   }  
 
-  #licencelist{
+  #licenselist{
     padding: 2%;
     margin-top: 2%;
   }

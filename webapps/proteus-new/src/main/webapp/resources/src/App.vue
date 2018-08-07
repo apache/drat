@@ -97,7 +97,7 @@ the License.
       
       <v-layout row>
        
-          <licencepiecomp/>
+          <licensepiecomp/>
           <v-spacer/>
           <topmimepiecomp/>
         
@@ -166,7 +166,7 @@ import filelistcomp from './components/filelistcomp.vue'
 import statisticscomp from './components/statisticscomp.vue'
 import progresscomp from './components/progresscomp.vue'
 import bublechartcomp from './components/bublechartcomp.vue'
-import licencepiecomp from './components/licencepiecomp.vue'
+import licensepiecomp from './components/licensepiecomp.vue'
 import topmimepiecomp from './components/topmimepiecomp.vue'
 import auditsummarycomp from './components/auditsummarycomp.vue'
 import store from './store/store'
@@ -183,7 +183,7 @@ export default {
     piechart,
     progresscomp,
     bublechartcomp,
-    licencepiecomp,
+    licensepiecomp,
     topmimepiecomp,
     auditsummarycomp
   },
@@ -272,7 +272,7 @@ export default {
     },
     stateView(){
       return store.state.view;
-    } 
+    },
   },
   mounted(){
    this.setHost();

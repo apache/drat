@@ -38,4 +38,7 @@ public interface AbstractDratWrapper {
 
   public String getIndexablePath();
   
+  public String getUrlLoc();
+
+  public void setUrlLoc(String urlLoc);
 }
