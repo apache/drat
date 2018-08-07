@@ -22,7 +22,8 @@ const store = new Vuex.Store({
         progress:false,
         view:"summary",
         currentRepo:'',
-        origin:''
+        origin:'',
+        currentActionRequest:''
     },
     mutations:{
         invert(state){
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
         },
         setView(state,newVal){
             state.view = newVal;
+        },
+        setCurrentActionRequest(state,newVal){
+            state.currentActionRequest = newVal;
         }
     },
     getters:{

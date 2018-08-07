@@ -29,7 +29,7 @@ the License.
           <div  slot="header"><b>Repository</b></div>
           <v-card>
             <v-card-text>
-            <p style="text-align:left;">In-Memory Size  : <span style="float:right;">    <strong> {{stat.size}} MB</strong> <br></span></p>
+            <p style="text-align:left;">In-Memory Size  : <span style="float:right;">    <strong> {{stat.size}}</strong> <br></span></p>
             <p style="text-align:left;">Number of files :<span style="float:right;">  <strong>{{stat.numOfFiles}} </strong><br></span></p>
             </v-card-text>
           </v-card>
@@ -81,12 +81,28 @@ the License.
       loadSizeData(){
         axios.get(this.origin+"/proteus/service/repo/size?dir="+this.currentRepo)
         .then(response=>{
-          this.stat.size = (response.data.memorySize / (1024*1024)).toFixed(2);
-          this.stat.numOfFiles = response.data.numberOfFiles;
+          if (!(isNaN(parseFloat(response.data.memorySize)) || !isFinite(response.data.memorySize))){
+          var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+          number = Math.floor(Math.log(response.data.memorySize) / Math.log(1024)) | 0;
+            this.stat.size = (response.data.memorySize / Math.pow(1024, Math.floor(number))).toFixed(1) +  ' ' + units[number];
+            this.stat.numOfFiles = response.data.numberOfFiles;
+          }
         })
         .catch(error=>{
           throw error;
-        })
+        });
+        axios.get(this.origin+"/proteus/service/status/oodt/raw")
+        .then(response=> {
+            var temp = response.data.report.jobHealth;
+            this.stat.runningRatInstances=-1;
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i].state == "PGE EXEC") {
+                    this.stat.runningRatInstances = temp[i].numJobs;
+                } else if (temp[i].state == "FINISHED") {
+                    this.stat.finishedRatInstances = temp[i].numJobs;
+                }
+            }
+        });
       }
     },
     computed: {

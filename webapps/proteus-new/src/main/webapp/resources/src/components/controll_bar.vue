@@ -23,9 +23,6 @@ the License.
           single-line
           v-model="url"
         />
-        
-        <v-btn v-on:click="search" color="info">Search</v-btn>
-        
         <v-btn v-on:click="dialog=true" color="primary" medium> Run </v-btn>
         <v-dialog v-model="dialog" persistent max-width="500px">
           <v-card id="repodetailscard">
@@ -94,6 +91,13 @@ the License.
     mounted() {
 
     },
+    watch:{
+      progress:function(newVal){
+        if(newVal==false){
+          this.clearRepoDetails();
+        }
+      }
+    },
     data() {
       return {
         dialog:false,
@@ -108,6 +112,13 @@ the License.
       }
     },
     methods: {
+        clearRepoDetails:function(){
+          this.url="";
+          this.repo="";
+          this.repodesc="";
+          this.repoloc="";
+          this.reponame="";
+        },
         run: function(){
             console.log("test"+this.url);
             store.commit("invert");
@@ -169,7 +180,8 @@ the License.
               .then(response=>{
                 this.$log.info(response.data);              
               })
-            }else{ 
+            }else{
+              store.commit("setCurrentActionRequest",action.toUpperCase()); 
               store.commit("setprogress",true);
               store.commit("setCurrentRepo",this.url);
               this.dialog = false;
@@ -199,6 +211,9 @@ the License.
         },
         origin(){
           return store.state.origin;
+        },
+        progress(){
+          return store.state.progress;
         }
 
     }

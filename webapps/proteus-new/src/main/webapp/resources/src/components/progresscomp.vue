@@ -47,7 +47,12 @@ the License.
     data() {
       return {
           value:0,
-          status:"IDLE"
+          status:"IDLE",
+          crawled:false,
+          indexed:false,
+          maped:false,
+          reduced:false,
+          completed:false
       }
     },
     methods: {
@@ -56,30 +61,76 @@ the License.
         .then(response=>{
             if(response.data=="CRAWL"){
               this.status="Crawling...";
+              this.crawled=true;
               this.value=0;
             }else if(response.data=="INDEX"){
               this.status="Indexing...";
+              this.indexed
               this.value=25;
             }else if(response.data=="MAP"){
               this.status="Mapping...";
+              this.mapped;
               this.value=50;
             }else if(response.data=="REDUCE"){
               this.status="Reducing...";
+              this.reduced = true;
               this.value=75;
             }else if(response.data=="IDLE"){
-              this.status="Finished"
-              this.value=100;
+              if(this.currentActionRequest=="GO" &&this.reduced){
+                this.completed=true;
+              }else if(this.currentActionRequest=="INDEX" && this.indexed){
+                this.completed = true;
+
+              }else if(this.currentActionRequest=="CRAWL" && this.crawled){
+                this.completed = true;
+                
+              }else if(this.currentActionRequest=="MAP" && this.mapped){
+                this.completed = true;
+                
+              }else if(this.currentActionRequest=="REDUCE" && this.reduced){
+                this.completed = true;
+              }
+              if(this.status!="Completed" && this.completed ){
+                  this.status="Completed"
+                  this.completed=true;
+                  this.value=100;
+                  let options = {
+                    html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
+                    loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
+                    reverse: false, // switch the button positions (left to right, and vise versa)
+                    okText: 'Yes',
+                    cancelText: 'No',
+                    animation: 'zoom', // Available: "zoom", "bounce", "fade"
+                    type: 'basic', // coming soon: 'soft', 'hard'
+                    verification: 'continue', // for hard confirm, user will be prompted to type this to enable the proceed button
+                    verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
+                    clicksCount: 3, // for soft confirm, user will be asked to click on "proceed" btn 3 times before actually proceeding
+                    backdropClose: false // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask 
+                  };
+                  this.$dialog.confirm({title:"Done",body:'Progress Completed.Click yes to close'},options)
+                  .then(function () {
+                      store.commit("setprogress",false);
+                  })
+                  .catch(function () {
+                      
+                  });
+              }
+
             }
         })
         .catch(error=>{
           throw error;
         })
         
-      }
+      },
+
     },
     computed: {
       origin(){
         return store.state.origin;
+      },
+      currentActionRequest(){
+        return store.state.currentActionRequest;
       }
     }
 }

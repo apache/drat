@@ -196,7 +196,8 @@ export default {
       drawer: true,
       items: [
         { title: 'Summary', icon: 'dashboard' },
-        { title: 'Audit', icon: 'question_answer' }
+        { title: 'Audit', icon: 'question_answer' },
+        
       ],
       mini: true,
       right: null
@@ -208,11 +209,42 @@ export default {
       store.commit("setOrigin",location.origin);
     },
     selectmenu(menu){
+      let options = {
+                html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
+                loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
+                reverse: false, // switch the button positions (left to right, and vise versa)
+                okText: 'Yes',
+                cancelText: 'No',
+                animation: 'zoom', // Available: "zoom", "bounce", "fade"
+                type: 'basic', // coming soon: 'soft', 'hard'
+                verification: 'continue', // for hard confirm, user will be prompted to type this to enable the proceed button
+                verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
+                clicksCount: 3, // for soft confirm, user will be asked to click on "proceed" btn 3 times before actually proceeding
+                backdropClose: false // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask 
+              };
       if(menu.title=="Summary"){
+        if(this.progress){
+          
+              this.$dialog.confirm({title:"Confirm",body:'Currently on progress, do you want to close ?'},options)
+              .then(function () {
+                  store.commit("setprogress",false);
+              })
+              .catch(function () {
+                  
+              });
+          }
         store.commit("setView","summary");
-        this.addsnackbarmessage("Summary View Loaded");
       }else if(menu.title=="Audit"){
-        this.addsnackbarmessage("Audit View Loaded");
+       if(this.progress){
+          
+          this.$dialog.confirm({title:"Confirm",body:'Currently on progress, do you want to close ?'},options)
+          .then(function () {
+              store.commit("setprogress",false);
+          })
+          .catch(function () {
+              
+          });
+        }
         store.commit("setView","audit");
       }
       this.showsnackbar();
