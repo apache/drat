@@ -18,8 +18,12 @@ the License.
 
   <section class="piechart">
     <v-card id="piecard">
-    <h1>Mime Type Breakdown</h1>
+    <v-toolbar height="50" color="primary" dark>
+      <v-toolbar-title>Mime Type Breakdown</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
     <svg id="piesvg" width="400" height="300"></svg>
+    <svg id="pielegend"/>
     </v-card>
   </section>
 
@@ -47,9 +51,24 @@ import store from './../store/store';
       }
     },
     methods: {
+      translateLegend(d,i){
+          var x = 0;
+          var y = 0;
+          var legend = d3.select("#piesvg");
+          for(var j=0;j<i;j++){
+            x += ((this.data[j].type.length)*15)+20;
+            if((x + ((this.data[i].type.length)*15)+20)>(legend.attr("width"))){
+              x = 0;
+              y+=25;
+            }
+          }
+          return "translate("+x+"," + y + ")";
+      },
       init(){
-        var svg = d3.select("#piesvg"),
-            width = +svg.attr("width"),
+        
+        var svg = d3.select("#piesvg");
+          svg.selectAll("*").remove();
+        var width = +svg.attr("width"),
             height = +svg.attr("height"),
             radius = Math.min(width, height) / 2,
             g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -76,11 +95,26 @@ import store from './../store/store';
               .attr("d", path)
               .attr("style", function(d) { return "fill:"+color(d.data.type) });
 
-          arc.append("text")
-              .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
-              .attr("dy", "0.35em")
-              .text(function(d) { return d.data.type; });
-     
+        var legend = d3.select("#pielegend")
+                  .attr("class", "legend")
+                  .selectAll("g")
+                  .data(pie(this.data))//setting the data as we know there are only two set of data[programmar/tester] as per the nest function you have written
+                  .enter().append("g")
+                  .attr("transform", this.translateLegend);
+
+              legend.append("rect")
+                  .attr("width", 18)
+                  .attr("height", 18)
+                  .style("fill", function(d, i) {
+                      return color(d.data.type);
+                    });
+
+              legend.append("text")
+                  .attr("x", 24)
+                  .attr("y", 9)
+                  .attr("dy", ".35em")
+                  .text(function(d) { return d.data.type; });
+        
       },
       loadData(){
         axios.get(this.origin+"/proteus/service/repo/breakdown/mime?limit=5")
@@ -120,7 +154,6 @@ import store from './../store/store';
 #piecard {
     margin-top: 5%;
     margin-bottom :5%;
-    padding-top:5%;
     margin-left:5%
   }
 </style>

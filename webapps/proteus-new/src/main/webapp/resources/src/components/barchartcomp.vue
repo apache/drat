@@ -16,8 +16,11 @@ the License.
 
   <section class="barchartcomp">
     <v-card id = "barchart">
-    <h1>Liecense Breakdown</h1>
-     {{emptynote}}<br>
+    <v-toolbar height="50" color="primary" dark>
+      <v-toolbar-title>Liecense Breakdown</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+   
     <svg id="barsvg" width="400" height="270">
      
     </svg>
@@ -164,7 +167,6 @@ import store from './../store/store'
  #barchart {
     margin-top: 5%;
     margin-bottom :5%;
-    padding-top:5%;
     margin-left:5%
   }
 </style>

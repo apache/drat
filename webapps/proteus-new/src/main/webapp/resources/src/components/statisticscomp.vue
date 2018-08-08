@@ -94,7 +94,6 @@ the License.
         axios.get(this.origin+"/proteus/service/status/oodt/raw")
         .then(response=> {
             var temp = response.data.report.jobHealth;
-            this.stat.runningRatInstances=-1;
             for (var i = 0; i < temp.length; i++) {
                 if (temp[i].state == "PGE EXEC") {
                     this.stat.runningRatInstances = temp[i].numJobs;

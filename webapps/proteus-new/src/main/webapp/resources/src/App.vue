@@ -75,8 +75,8 @@ the License.
         </v-flex>
         
         <v-flex xs3>
-          <statisticscomp/>
           <progresscomp/>
+          <statisticscomp/>
         </v-flex>
         <v-flex xs6>
           <section >
@@ -148,8 +148,8 @@ the License.
     </div>
     
     <v-spacer/>
-    <v-card >
-      <img hieght="40px" width="150px" src="logo.png">
+    <v-card id="footercard">
+      <img height="60px"  src="logo.png">
     </v-card>
        
     </v-app>
@@ -293,10 +293,15 @@ export default {
 #contentpane{
   padding-left: 10%;
   padding-right: 10%;
+  margin-bottom: 50px;
 }
 #footercard{
   background-color: #2c3e50;
   width: 100%;
+  height: auto;
+  position: fixed;
+  bottom: 0%;
+  z-index: 1000;
 }
 
 #logospace{
