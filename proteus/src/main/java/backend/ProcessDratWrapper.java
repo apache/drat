@@ -225,9 +225,9 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void reset() {
-//    LOG.info("DRAT: reset: wiping FM product catalog");
     DratLog resetLog = new DratLog("RESET");
     resetLog.logInfo("Starting","");
+    resetLog.logInfo("DRAT: reset: wiping FM product catalog");
     for (String type : WIPE_TYPES) {
       int numTries = 0;
       ProductType pType = fm.safeGetProductTypeByName(type);
