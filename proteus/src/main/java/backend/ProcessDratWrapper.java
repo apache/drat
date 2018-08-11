@@ -252,9 +252,11 @@ public class ProcessDratWrapper extends GenericProcess
     String wmUrl = PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
     this.wipeInstanceRepo(wmUrl);
 
-    String coreName = "drat";
-    resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
-    this.wipeSolrCore(coreName);
+    String coreNames = {"drat", "statistics"};
+    for(String coreName: coreNames){
+	resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
+	this.wipeSolrCore(coreName);
+    }
   
     resetLog.logInfo("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
         + "]");
