@@ -61,12 +61,17 @@ the License.
     props: [],
     mounted() {
       this.loadSizeData();
-        setInterval(function () {
-          this.loadSizeData();
-        }.bind(this), 30000);
+        this.timerClearVar = setInterval(function () {
+          if(this.currentState!="IDLE") this.loadSizeData();
+          if(this.currentState=="MAP" || this.currentState=="REDUCE")this.loadInstanceCount()
+        }.bind(this), 1000);
+    },
+    beforeDestroy(){
+        clearInterval(this.timerClearVar);
     },
     data() {
       return {
+          timerClearVar:'',
           stat:{
             size:0,
             numOfFiles:0,
@@ -91,6 +96,9 @@ the License.
         .catch(error=>{
           throw error;
         });
+
+      },
+      loadInstanceCount(){
         axios.get(this.origin+"/proteus/service/status/oodt/raw")
         .then(response=> {
             var temp = response.data.report.jobHealth;
@@ -110,6 +118,9 @@ the License.
       },
       origin(){
         return store.state.origin;
+      },
+      currentState(){
+        return store.state.currentActionStep;
       }
     }
 }

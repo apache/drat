@@ -254,5 +254,6 @@ the License.
 <style scoped >
   .auditsummarycomp {
       margin-top: 5%;
+      margin-bottom: 10%;
   }
 </style>

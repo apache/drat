@@ -41,15 +41,19 @@ import store from './../store/store'
     store,
     mounted() {
         this.loadData();
-        setInterval(function () {
-          this.loadData();
+        this.timerClearvar = setInterval(function () {
+          if(this.currentState=="MAP" || this.currentState=="REDUCE")this.loadData();
         }.bind(this), 1000);
         
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearvar);
     },
     data() {
       return {
         licenseTypes : [], 
         emptynote : '',
+        timerClearvar:''
        
       }
     },
@@ -61,7 +65,6 @@ import store from './../store/store'
           
           axios.get(this.origin+"/proteus/service/repo/breakdown/license")
             .then(response=>{
-              this.$log.info(response.data);
               this.licenseTypes=response.data;
               this.init();
             })
@@ -72,8 +75,6 @@ import store from './../store/store'
             
         },
         init(){
-          
-           this.$log.info("c0");
           var  svg = d3.select("#barsvg"),
               margin = {top: 20, right: 20, bottom: 50, left: 40},
               width = +svg.attr("width") - margin.left - margin.right,
@@ -135,7 +136,7 @@ import store from './../store/store'
           
         },
         
-
+        
         
     },
     computed: {
@@ -148,6 +149,9 @@ import store from './../store/store'
       },
       origin(){
         return store.state.origin;
+      },
+      currentState(){
+        return store.state.currentActionStep;
       }
     }
 }

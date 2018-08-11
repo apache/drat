@@ -37,15 +37,18 @@ the License.
     props: [],
     mounted() {
       this.init();
-      setInterval(function(){
+      this.timerClearVar = setInterval(function(){
         this.init();
       }.bind(this),30000);
     },
     data() {
       return {
         data:[],
-        
+        timerClearVar:'',
       }
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearVar)
     },
     methods: {
       init(){
@@ -72,7 +75,6 @@ the License.
 
           var docs = response.data.response.docs;
           var resultingData = [];
-          var result = [];
           var mime = {};
 
           for(var i = 0; i < docs.length; i++) {
@@ -119,7 +121,6 @@ the License.
               return d.value;
               })
             
-          console.log(color);
 
           bubble(root);
 
@@ -137,8 +138,8 @@ the License.
 
           node.append("circle")
               .attr("r", function(d) { return d.r; })
-              .attr("style",function(d,i){
-                  console.log("color:" +d.data.className+" : " +color(d.data.className));
+              .attr("style",function(d){
+                  
                 return "fill:"+color(d.data.className);});
 
           node.append("text")

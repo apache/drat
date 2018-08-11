@@ -13,8 +13,8 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 
-import Vuex from 'vuex'
-import Vue from 'vue'
+import Vuex from 'vuex';
+import Vue from 'vue';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -23,7 +23,8 @@ const store = new Vuex.Store({
         view:"summary",
         currentRepo:'',
         origin:'',
-        currentActionRequest:''
+        currentActionRequest:'',
+        currentActionStep:'IDLE'
     },
     mutations:{
         invert(state){
@@ -43,7 +44,11 @@ const store = new Vuex.Store({
         },
         setCurrentActionRequest(state,newVal){
             state.currentActionRequest = newVal;
+        },
+        setCurrentActionStep(state,newVal){
+            state.currentActionStep = newVal;
         }
+        
     },
     getters:{
         getprog(state){

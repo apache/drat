@@ -39,11 +39,12 @@ import store from './../store/store';
     props: [],
     mounted() {
         this.loadData();
-        setInterval(function () {
-          this.loadData();
+        this.timerClearVar = setInterval(function () {
+          if(this.currentState=="INDEX")this.loadData();
         }.bind(this), 10000);
-    },watch:{
-     
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearVar);
     },
     data() {
       return {
@@ -56,8 +57,8 @@ import store from './../store/store';
           var y = 0;
           var legend = d3.select("#piesvg");
           for(var j=0;j<i;j++){
-            x += ((this.data[j].type.length)*15)+20;
-            if((x + ((this.data[i].type.length)*15)+20)>(legend.attr("width"))){
+            x += (this.data[j].type.length) * 5 + 50;
+            if(x>250){
               x = 0;
               y+=25;
             }
@@ -83,9 +84,7 @@ import store from './../store/store';
             .outerRadius(radius - 10)
             .innerRadius(0);
 
-        var label = d3.arc()
-            .outerRadius(radius - 40)
-            .innerRadius(radius - 40);
+        
         var arc = g.selectAll(".arc")
             .data(pie(this.data))
             .enter().append("g")
@@ -105,7 +104,7 @@ import store from './../store/store';
               legend.append("rect")
                   .attr("width", 18)
                   .attr("height", 18)
-                  .style("fill", function(d, i) {
+                  .style("fill", function(d) {
                       return color(d.data.type);
                     });
 
@@ -132,6 +131,9 @@ import store from './../store/store';
     computed: {
       origin(){
         return store.state.origin;
+      },
+      currentState(){
+        return store.state.currentActionStep;
       }
     }
 }

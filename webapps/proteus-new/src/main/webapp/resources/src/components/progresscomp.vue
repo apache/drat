@@ -40,9 +40,12 @@ the License.
     props: [],
     mounted() {
         this.loaddata();
-        setInterval(function () {
+        this.timerClearVar = setInterval(function () {
           this.loaddata();
         }.bind(this), 5000);
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearVar);
     },
     data() {
       return {
@@ -52,7 +55,8 @@ the License.
           indexed:false,
           maped:false,
           reduced:false,
-          completed:false
+          completed:false,
+          timerClearVar:''
       }
     },
     methods: {
@@ -62,21 +66,25 @@ the License.
             if(response.data=="CRAWL"){
               this.status="Crawling...";
               this.crawled=true;
+              store.commit("setCurrentActionStep","CRAWL");
               this.value=0;
             }else if(response.data=="INDEX"){
               this.status="Indexing...";
-              this.indexed
+              this.indexed=true
+              store.commit("setCurrentActionStep","INDEX");
               this.value=25;
             }else if(response.data=="MAP"){
               this.status="Mapping...";
-              this.mapped;
+              this.mapped=true;
+              store.commit("setCurrentActionStep","MAP");
               this.value=50;
-            }else if(response.data=="REDUCE"){
+            }else if(response.data=="REDUCE" ){
               this.status="Reducing...";
               this.reduced = true;
+              store.commit("setCurrentActionStep","REDUCE");
               this.value=75;
             }else if(response.data=="IDLE"){
-              if(this.currentActionRequest=="GO" &&this.reduced){
+              if(this.currentActionRequest=="GO" && this.reduced){
                 this.completed=true;
               }else if(this.currentActionRequest=="INDEX" && this.indexed){
                 this.completed = true;
@@ -92,6 +100,7 @@ the License.
               }
               if(this.status!="Completed" && this.completed ){
                   this.status="Completed"
+                  store.commit("setCurrentActionStep","DONE");
                   this.completed=true;
                   this.value=100;
                   let options = {
