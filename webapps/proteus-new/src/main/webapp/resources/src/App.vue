@@ -301,7 +301,7 @@ export default {
   height: auto;
   position: fixed;
   bottom: 0%;
-  z-index: 1000;
+  z-index: 900;
 }
 
 #logospace{

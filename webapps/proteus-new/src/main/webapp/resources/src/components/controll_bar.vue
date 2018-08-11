@@ -120,7 +120,7 @@ the License.
           this.reponame="";
         },
         run: function(){
-            console.log("test"+this.url);
+           
             store.commit("invert");
             store.commit("setCurrentRepo",this.url);
         },
@@ -169,10 +169,10 @@ the License.
           if(this.url.length==0 || this.repoloc==0){
                     this.$dialog.alert({title:"Invalid input",body:'Please enter valid path and location, then continue'},options)
             .then(function () {
-                console.log('Clicked on proceed')
+                
             })
             .catch(function () {
-                console.log('Clicked on cancel')
+                
             });
           }else{
             if(action==="reset"){

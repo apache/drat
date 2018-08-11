@@ -171,7 +171,7 @@ the License.
               </v-card>
             </v-flex>
           </v-layout>
-          <v-card>
+          <v-card id="licensefiletable">
             <v-layout>
               <v-flex xs10 offset-xs1>
                 <v-text-field
@@ -218,13 +218,17 @@ import store from './../store/store';
     props: [],
     mounted() {
       this.loadData();
-        setInterval(function () {
+        this.timerClearVar= setInterval(function () {
           this.loadData();
         }.bind(this), 30000);
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearVar);
     },
     data() {
       return {
         search:'',
+        timerClearVar:'',
         license:{
           files:[],
           unknown:true,
@@ -400,5 +404,10 @@ import store from './../store/store';
   #tablecard{
     margin-top: 20px;
     padding : 10px;
+  }
+
+  #licensefiletable{
+    margin-bottom: 50px;
+    z-index: 950;
   }
 </style>

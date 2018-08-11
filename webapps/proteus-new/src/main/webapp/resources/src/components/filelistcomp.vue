@@ -23,7 +23,7 @@ the License.
     </v-toolbar>
     <strong v-if="fileslist.length==0">Empty List of files</strong>
     <v-list >
-    <template v-for="(file,index) in fileslist">
+    <template v-for="(file) in fileslist">
       <v-list-tile id="tile"
         :key="file.link"
         avatar
@@ -50,15 +50,19 @@ import store from './../store/store';
     props: [],
     mounted() {
         this.loadData();
-        setInterval(function () {
-          this.loadData();
+        this.timerClearVar = setInterval(function () {
+          if(this.currentState=="CRAWL")this.loadData();
         }.bind(this), 1000);
       
+    },
+    beforeDestroy(){
+      clearInterval(this.timerClearVar);
     },
     data() {
       return {
         data:[],
-        fileslist:[]
+        fileslist:[],
+        timerClearVar:'',
       }
     },
     methods: {
@@ -87,6 +91,9 @@ import store from './../store/store';
       },
       origin(){
         return store.state.origin;
+      },
+      currentState(){
+        return store.state.currentActionStep;
       }
 
     }
