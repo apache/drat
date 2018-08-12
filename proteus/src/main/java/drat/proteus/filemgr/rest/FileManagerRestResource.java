@@ -39,25 +39,6 @@ public class FileManagerRestResource extends AbstractRestResource<GsonWebSerialD
     response.crawledFiles = fileManagerClient.getNumProducts(fileManagerClient.getProductTypeByName("GenericFile"));
     return response;
   }
-  
-  @MethodMapping(value = "/progress2",httpMethod = HttpMethod.GET)
-  public FileManagerProgressResponse getProgress2() throws CatalogException {
-    FileManagerProgressResponse response = new FileManagerProgressResponse();
-    response.crawledFiles = fileManagerClient.getNumProducts(ProductType.blankProductType());
-    return response;
-  }
-  
-  public static ProductType fileProductType() {
-    ProductType type = new ProductType();
-    type.setDescription("blank");
-    type.setExtractors(Collections.EMPTY_LIST);
-    type.setHandlers(Collections.EMPTY_LIST);
-    type.setName("");
-    type.setProductRepositoryPath("");
-    type.setProductTypeId("file");
-    type.setTypeMetadata(new Metadata());
-    type.setVersioner("");
-    return type;
-  }
+ 
   
 }
