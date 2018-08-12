@@ -40,7 +40,6 @@ import store from './../store/store'
     props: [],
     store,
     mounted() {
-        this.loadData();
         this.timerClearvar = setInterval(function () {
           if(this.currentState=="MAP" || this.currentState=="REDUCE")this.loadData();
         }.bind(this), 1000);

@@ -38,10 +38,9 @@ import store from './../store/store';
     store,
     props: [],
     mounted() {
-        this.loadData();
         this.timerClearVar = setInterval(function () {
           if(this.currentState=="INDEX")this.loadData();
-        }.bind(this), 10000);
+        }.bind(this), 1000);
     },
     beforeDestroy(){
       clearInterval(this.timerClearVar);

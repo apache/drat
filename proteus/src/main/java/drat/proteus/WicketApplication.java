@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import drat.proteus.filemgr.rest.FileManagerProgressResponse;
+import drat.proteus.filemgr.rest.FileManagerRestResource;
 import drat.proteus.rest.DratRestResource;
 import drat.proteus.rest.ServicesRestResource;
 import drat.proteus.workflow.rest.WorkflowRestResource;
@@ -81,6 +83,12 @@ public class WicketApplication extends WebApplication {
         public IResource getResource() {
           return resource;
         }
+    });
+    mountResource("/filemanager", new ResourceReference("restReference") {
+      @Override
+      public IResource getResource() {
+        return new FileManagerRestResource();
+      }
     });
     mountPage("/workflow", DratWorkflow.class);
 

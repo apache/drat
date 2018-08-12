@@ -17,7 +17,10 @@ the License.
   <section class="progresscomp">
     <v-card id="progresscard">
     <h1>Progress</h1>
+    <hr>
+
      <v-progress-circular
+      id="progresscircle"
         :rotate="-90"
         :size="100"
         :width="15"
@@ -148,6 +151,12 @@ the License.
 <style scoped >
   #progresscard {
     margin-left: 10%;
-    margin-top: 10%
+    margin-top: 10%;
+    padding:4%;
+    background: lightgray
+  }
+
+  #progresscircle{
+    margin-top: 4%;
   }
 </style>
