@@ -17,12 +17,12 @@
 
 package drat.proteus.rest;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
+import com.google.gson.Gson;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
 import org.wicketstuff.rest.contenthandling.json.webserialdeserial.GsonWebSerialDeserial;
@@ -48,19 +48,24 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
 
   @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
   public void go(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    dumpToFile(body);
+    dratWrapper.setIndexablePath(body.repo);
+    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.go();
   }
 
   @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
   public void index(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    dumpToFile(body);
+    dratWrapper.setIndexablePath(body.repo);
     dratWrapper.index();
   }
 
   @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
   public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    dumpToFile(body);
+    dratWrapper.setIndexablePath(body.repo);
+    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.crawl();
   }
 
@@ -92,5 +97,10 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
     } else {
       return "Log is empty!";
     }
+  }
+  
+  public void dumpToFile(DratRequestWrapper body) throws IOException {
+    File repo = new File(FileConstants.CURRENT_REPO_DETAILS_FILE);
+    Files.write(repo.toPath(),new Gson().toJson(body).getBytes());
   }
 }

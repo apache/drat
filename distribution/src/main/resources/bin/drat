@@ -59,7 +59,10 @@ function crawl {
 	PRODUCT_PATH=$1
     fi
     pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
-    
+   
+    python dump_repo_details.py $PRODUCT_PATH
+
+
    ./crawler_launcher --operation --metPC --metExtractorConfig \
    $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
    --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory \

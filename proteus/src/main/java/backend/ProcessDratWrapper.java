@@ -70,13 +70,14 @@ public class ProcessDratWrapper extends GenericProcess
   private static final String MAP_CMD = "map";
   private static final String REDUCE_CMD = "reduce";
   private static final String STATUS_IDLE = "idle";
-  private static final String PARTITION_AND_MAP_TASK_ID = "urn:drat:MimePartitioner";
-  private static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
-  private static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
+  protected static final String PARTITION_AND_MAP_TASK_ID = "urn:drat:MimePartitioner";
+  protected static final String MAPPER_TASK_ID = "urn:drat:RatCodeAudit";
+  protected static final String REDUCE_TASK_ID = "urn:drat:RatAggregator";
   private static final String[] WIPE_TYPES = { "RatLog", "GenericFile",
       "RatAggregateLog" };
 
   private String status;
+  public String urlLoc;
   private FileManagerUtils fm;
   private String path;
   private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
@@ -88,6 +89,7 @@ public class ProcessDratWrapper extends GenericProcess
   private ProcessDratWrapper() {
     super(DRAT);
     this.path = "";
+    this.urlLoc="";
     this.status = "IDLE";
     this.fm = new FileManagerUtils(
         PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
@@ -101,6 +103,14 @@ public class ProcessDratWrapper extends GenericProcess
     return this.path;
   }
 
+  public String getUrlLoc() {
+    return urlLoc;
+  }
+
+  public void setUrlLoc(String urlLoc) {
+    this.urlLoc = urlLoc;
+  }
+
   public String getStatus() {
     return this.status;
   }
@@ -112,6 +122,8 @@ public class ProcessDratWrapper extends GenericProcess
   @Override
   public void crawl() throws Exception {
       DratLog crawlLog = new DratLog("CRAWLING");
+
+      versionControlCheck();
       try{
           setStatus(CRAWL_CMD);
 
@@ -139,6 +151,22 @@ public class ProcessDratWrapper extends GenericProcess
           ex.printStackTrace();
           throw ex;
       }
+  }
+
+  private void versionControlCheck() throws Exception {
+    File dirPathFile = new File(this.path);
+    boolean clone=false;
+    if(dirPathFile.exists() ){
+      if(dirPathFile.isDirectory()&& dirPathFile.list().length==0){
+        clone=true;
+      }
+    }else{
+      dirPathFile.createNewFile();
+      clone =true;
+    }
+    if(clone){
+      parseAsVersionControlledRepo();
+    }
   }
 
   @Override
@@ -179,26 +207,27 @@ public class ProcessDratWrapper extends GenericProcess
   @Override
   public void reduce() throws IOException {
     setStatus(REDUCE_CMD);
-    DratLog mapLog = new DratLog("REDUCING");
+    DratLog reduceLog = new DratLog("REDUCING");
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
     requestBody.taskIds.add(REDUCE_TASK_ID);
     LOG.info("STARTING REDUCING");
-    mapLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
+    reduceLog.logInfo("STARTING", " (dynamic workflow with task "+REDUCE_TASK_ID);
     String resp = (String)restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
-        mapLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
+        reduceLog.logInfo("STARTED SUCCESSFULLY, "+REDUCE_TASK_ID+" dynamic workflow");
     }else {
-        mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
+        reduceLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
     }
   }
 
   @Override
-  public void reset() throws Exception {
-    LOG.info("DRAT: reset: wiping FM product catalog");
-
+  public void reset() {
+//    LOG.info("DRAT: reset: wiping FM product catalog");
+    DratLog resetLog = new DratLog("RESET");
+    resetLog.logInfo("Starting","");
     for (String type : WIPE_TYPES) {
       int numTries = 0;
       ProductType pType = fm.safeGetProductTypeByName(type);
@@ -212,60 +241,65 @@ public class ProcessDratWrapper extends GenericProcess
 
       if (numTries == MAX_RESET_TRIES
           && this.fm.safeGetNumProducts(pType) > 0) {
-        LOG.warning("Unable to fully wipe type: [" + type + "]. Tried ["
+        resetLog.logWarning("Unable to fully wipe type: [" + type + "]. Tried ["
             + String.valueOf(numTries) + "] times. Max attempts: ["
             + String.valueOf(MAX_RESET_TRIES)
             + "]. Is your File Manager corrupt?");
       }
     }
 
-    LOG.info("DRAT: reset: wiping WM instance repository.");
+    resetLog.logInfo("DRAT: reset: wiping WM instance repository.");
     String wmUrl = PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
     this.wipeInstanceRepo(wmUrl);
 
     String coreName = "drat";
-    LOG.info("DRAT: reset: wiping Solr core: [" + coreName + "]");
+    resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
     this.wipeSolrCore(coreName);
-
-    LOG.info("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
+  
+    resetLog.logInfo("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
         + "]");
     for (String dir : Utils.getResetDirectories()) {
       File file = new File(dir);
       if (file.exists()) {
         try {
-          LOG.info(
+          resetLog.logInfo(
               "DRAT: reset: removing dir: [" + file.getAbsolutePath() + "]");
           FileUtils.forceDelete(file);
         } catch (FileNotFoundException e) {
-          LOG.warning("Error removing: [" + file.getAbsolutePath()
+          resetLog.logInfo("Error removing: [" + file.getAbsolutePath()
               + "]: Message: " + e.getLocalizedMessage());
         } catch (IOException e) {
-          LOG.warning("Unable to remove file: [" + file.getAbsolutePath()
+          resetLog.logInfo("Unable to remove file: [" + file.getAbsolutePath()
               + "]: Message: " + e.getLocalizedMessage());
         }
       }
     }
-
+  
+    resetLog.logInfo("Finished","");
   }
 
   public void go() throws Exception {
     // before go, always reset
-    
+    versionControlCheck();
     this.reset();
     this.crawl();
-    this.index();
+    this.solrIndex();
     this.map();
 
     // don't run reduce until all maps are done
-    while (mapsStillRunning()) {
+    while (stillRunning(PARTITION_AND_MAP_TASK_ID) || stillRunning(MAPPER_TASK_ID)) {
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
       LOG.info("MAP STILL RUNNING");
     }
     // you're not done until the final log is generated.
     while (!hasAggregateRatLog()) {
       try {
-        reduce();
-        LOG.info("REDUCE STILL RUNNING");
+        if (!stillRunning(REDUCE_TASK_ID)) {
+          reduce();
+        }
+        else {
+          LOG.info("REDUCE STILL RUNNING.");
+        }
       } catch (IOException e) {
         LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
             + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
@@ -287,15 +321,16 @@ public class ProcessDratWrapper extends GenericProcess
         + "]: " + breakStatus);
     return numLogs > 0;
   }
+  
+  private boolean stillRunning(String taskId) throws Exception {
+        WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
+        List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
+        for(WorkflowInstance instance : workflowInstances){
+          LOG.info("Running Instances : id: "+instance.getId()
+                  +" state name "+instance.getState().getName()+" current task name : "+instance.getCurrentTask().getTaskName());
+        }
+        return taskStillRunning(workflowInstances, taskId);            
 
-  private boolean mapsStillRunning() throws Exception {
-    WorkflowManagerUtils workflowManagerUtils = new WorkflowManagerUtils(FileConstants.CLIENT_URL);
-    List<WorkflowInstance> workflowInstances = workflowManagerUtils.getClient().getWorkflowInstances();
-    for(WorkflowInstance instance : workflowInstances){
-      LOG.info("Running Instances : id: "+instance.getId()
-              +" state name "+instance.getState().getName()+" current task name : "+instance.getCurrentTask().getTaskName());
-    }
-    return stillRunning(workflowInstances);
   }
 
   @VisibleForTesting
@@ -340,62 +375,40 @@ public class ProcessDratWrapper extends GenericProcess
     }
     return items;
   }
-
-  @VisibleForTesting
-  protected boolean stillRunning(List<WorkflowInstance> instances) {
-    List<WorkflowInstance> partitionInstances = filterPartitioners(instances);
-    List<WorkflowInstance> mapperInstances = filterMappers(instances);
-    LOG.info("Checking partitioners: inspecting ["+String.valueOf(partitionInstances
-        .size()) + "] partitioners.");
-    for (WorkflowInstance partitionInstance: partitionInstances) {
-      if (isRunning(partitionInstance.getState().getName())) {
-        LOG.info("Partitioner: [" + partitionInstance.getId() + "] still running.");
-        return true;
-      }
-    }   
-    
-    LOG.info("Checking mappers: inspecting ["
-            + String.valueOf(mapperInstances.size()) + "] mappers.");
-    for (WorkflowInstance mapperInstance : mapperInstances) {
-      if (isRunning(mapperInstance.getState().getName())) {
-        LOG.info("Mapper: [" + mapperInstance.getId() + "] still running.");
-        return true;
+  
+  protected boolean taskStillRunning(List<WorkflowInstance> instances, String ...taskIds) {
+    if (taskIds != null && taskIds.length > 0) {
+      for(String taskId: taskIds) {
+        List<WorkflowInstance> insts = filterInstances(instances, taskId);
+        LOG.info("Checking task: "+taskId+" : inspecting ["+String.valueOf(instances.size())+"] tasks.");
+        for(WorkflowInstance i: insts) {
+         if(isRunning(i.getState().getName())) {
+           LOG.info("Task: [" + i.getId() + "] still running.");     
+           return true;
+         }
+        }
       }
     }
+    
     return false;
   }
   
-  @VisibleForTesting
-  protected List<WorkflowInstance> filterPartitioners(List<WorkflowInstance> instances){
-    List<WorkflowInstance> partitioners = new ArrayList<>();
+  @VisibleForTesting 
+  protected List<WorkflowInstance> filterInstances(List<WorkflowInstance> instances, String taskId){
+    List<WorkflowInstance> insts = new ArrayList<>();
     if(instances!=null && instances.size()>0){
         for(WorkflowInstance instance:instances){
-            if (instance.getCurrentTask().getTaskId().equals(PARTITION_AND_MAP_TASK_ID)) {
-                LOG.info("Adding partition/map: ["+instance.getCurrentTask().getTaskId()+"]");
-                partitioners.add(instance);
+            if(instance.getCurrentTask().getTaskId().equals(taskId)){
+                LOG.info("Adding "+taskId+" instance: [" + instance.getCurrentTask().getTaskId() + "]");
+                insts.add(instance);
             }else{
                 LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
             }
         }
     }
-    return partitioners;    
-  }
-
-  @VisibleForTesting
-  protected List<WorkflowInstance> filterMappers(List<WorkflowInstance> instances){
-      List<WorkflowInstance> mappers = new ArrayList<>();
-      if(instances!=null && instances.size()>0){
-          for(WorkflowInstance instance:instances){
-              if(instance.getCurrentTask().getTaskId().equals(MAPPER_TASK_ID)){
-                  LOG.info("Adding mapper: [" + instance.getCurrentTask().getTaskId() + "]");
-                  mappers.add(instance);
-              }else{
-                  LOG.info("Filtering task: [" + instance.getCurrentTask().getTaskId() + "]");
-              }
-          }
-      }
-      return mappers;
-  }
+    return insts;
+  }  
+  
 
   @VisibleForTesting
   protected boolean isRunning(String status) {
@@ -472,6 +485,38 @@ public class ProcessDratWrapper extends GenericProcess
         break;
       }
     }
+
+  }
+
+  private String parseAsVersionControlledRepo()
+          throws IOException {
+    String projectName = null;
+    boolean git = urlLoc.endsWith(".git");
+    String line = null;
+    if (git) {
+           line = "git clone --depth 1 --branch master " + urlLoc;
+    } else {
+      projectName = urlLoc.substring(urlLoc.lastIndexOf("/") + 1);
+      line = "svn export " + urlLoc;
+    }
+    String clonePath = this.path;
+    File cloneDir = new File(clonePath);
+    LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
+            + this.urlLoc + "] into " + this.path);
+
+    CommandLine cmdLine = CommandLine.parse(line);
+    DefaultExecutor executor = new DefaultExecutor();
+    executor.setWorkingDirectory(new File(this.path));
+    int exitValue = executor.execute(cmdLine);
+
+    if (git) {
+      String gitHiddenDirPath = clonePath + File.separator + ".git";
+      File gitHiddenDir = new File(gitHiddenDirPath);
+      LOG.info("Removing .git directory from " + gitHiddenDirPath);
+      org.apache.cxf.helpers.FileUtils.removeDir(gitHiddenDir);
+    }
+
+    return clonePath;
 
   }
 
