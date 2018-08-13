@@ -156,7 +156,7 @@ the License.
         return this.stat.crawledfiles/this.stat.numOfFiles *100;
       },
       indexingprogress(){
-        return this.stat.indexedfiles/this.stat.numberOfFiles * 100;
+        return this.stat.indexedfiles/this.stat.numOfFiles * 100;
       }
     }
 }
