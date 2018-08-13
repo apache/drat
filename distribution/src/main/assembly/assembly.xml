@@ -34,6 +34,13 @@
     </fileSet>
     <fileSet>
       <directory>target</directory>
+      <outputDirectory>data/clones</outputDirectory>
+      <excludes>
+	<exclude>**/*</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
       <outputDirectory>data/archive</outputDirectory>
       <excludes>
         <exclude>**/*</exclude>

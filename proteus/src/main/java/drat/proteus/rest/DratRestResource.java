@@ -48,24 +48,23 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
 
   @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
   public void go(@RequestBody DratRequestWrapper body) throws Exception {
-    dumpToFile(body);
+    
+    dratWrapper.setData(body);
     dratWrapper.setIndexablePath(body.repo);
-    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.go();
   }
 
   @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
   public void index(@RequestBody DratRequestWrapper body) throws Exception {
-    dumpToFile(body);
+    dratWrapper.setData(body);
     dratWrapper.setIndexablePath(body.repo);
     dratWrapper.index();
   }
 
   @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
   public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-    dumpToFile(body);
+    dratWrapper.setData(body);
     dratWrapper.setIndexablePath(body.repo);
-    dratWrapper.setUrlLoc(body.loc_url);
     dratWrapper.crawl();
   }
 
@@ -83,6 +82,11 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
   public void reset() throws Exception {
     dratWrapper.reset();
   }
+  
+  @MethodMapping(value = "/currentrepo",httpMethod = HttpMethod.GET)
+  public String currentRepo() throws Exception{
+    return dratWrapper.getIndexablePath();
+  }
 
   @MethodMapping(value = "/log", httpMethod = HttpMethod.GET)
   public String getProcessLog() {
@@ -98,9 +102,5 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
       return "Log is empty!";
     }
   }
-  
-  public void dumpToFile(DratRequestWrapper body) throws IOException {
-    File repo = new File(FileConstants.CURRENT_REPO_DETAILS_FILE);
-    Files.write(repo.toPath(),new Gson().toJson(body).getBytes());
-  }
+ 
 }

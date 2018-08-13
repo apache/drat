@@ -19,6 +19,7 @@ def main(argv=None):
 	rep = eval(data)
 
 	reponame = os.path.basename(os.path.normpath(argv[0]))
+	rep["id"] = "id:"+os.path.normpath(argv[0])
 	rep["repo"] = os.path.normpath(argv[0])
 	rep["name"] = reponame
 
