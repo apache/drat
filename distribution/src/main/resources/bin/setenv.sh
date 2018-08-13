@@ -21,6 +21,8 @@ export PCS_HOME=$DRAT_HOME/pcs
 export OPSUI_URL=http://localhost:8080/opsui
 export SOLR_URL=http://localhost:8080/solr
 export FMPROD_HOME=$DRAT_HOME/tomcat/webapps/fmprod/WEB-INF/classes/
+export SOLR_DRAT_URL=http://localhost:8080/solr/drat
+export DRAT_EXCLUDE=""
 
 #####  Copy and Paste this Block into the .bashrc of your deployment user account ##########
 #
