@@ -17,6 +17,8 @@
 
 package backend;
 
+import drat.proteus.rest.DratRequestWrapper;
+
 /**
  * This interface abstracts the main communication methods between Apache DRAT
  * and Proteus
@@ -38,7 +40,5 @@ public interface AbstractDratWrapper {
 
   public String getIndexablePath();
   
-  public String getUrlLoc();
-
-  public void setUrlLoc(String urlLoc);
+  void setData(DratRequestWrapper body);
 }

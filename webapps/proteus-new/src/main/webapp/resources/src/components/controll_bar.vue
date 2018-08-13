@@ -46,13 +46,6 @@ the License.
               <hr/>
               <v-text-field
               solo
-                name="location"
-                label="Location of the repository"
-                single-line
-                v-model="repoloc"
-              />
-              <hr/><v-text-field
-              solo
                 name="description"
                 label="Description about the repository"
                 
@@ -166,7 +159,7 @@ the License.
 
           }
           
-          if(this.url.length==0 || this.repoloc==0){
+          if(this.url.length==0 ){
                     this.$dialog.alert({title:"Invalid input",body:'Please enter valid path and location, then continue'},options)
             .then(function () {
                 

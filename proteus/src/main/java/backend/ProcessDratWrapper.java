@@ -17,6 +17,8 @@
 
 package backend;
 
+import com.google.gson.Gson;
+import drat.proteus.rest.DratRequestWrapper;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -48,6 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -77,10 +80,13 @@ public class ProcessDratWrapper extends GenericProcess
       "RatAggregateLog" };
 
   private String status;
-  public String urlLoc;
+
   private FileManagerUtils fm;
   private String path;
+  private DratRequestWrapper body;
+  
   private static ProcessDratWrapper singletonDratWrapper = new ProcessDratWrapper();
+  private boolean runnning = false;
 
   public static ProcessDratWrapper getInstance() {
     return singletonDratWrapper;
@@ -89,7 +95,7 @@ public class ProcessDratWrapper extends GenericProcess
   private ProcessDratWrapper() {
     super(DRAT);
     this.path = "";
-    this.urlLoc="";
+    body = new DratRequestWrapper();
     this.status = "IDLE";
     this.fm = new FileManagerUtils(
         PathUtils.replaceEnvVariables("[FILEMGR_URL]"));
@@ -102,15 +108,13 @@ public class ProcessDratWrapper extends GenericProcess
   public String getIndexablePath() {
     return this.path;
   }
-
-  public String getUrlLoc() {
-    return urlLoc;
+  
+  @Override
+  public void setData(DratRequestWrapper body) {
+    this.body = body;
   }
-
-  public void setUrlLoc(String urlLoc) {
-    this.urlLoc = urlLoc;
-  }
-
+  
+  
   public String getStatus() {
     return this.status;
   }
@@ -121,51 +125,44 @@ public class ProcessDratWrapper extends GenericProcess
 
   @Override
   public void crawl() throws Exception {
-      DratLog crawlLog = new DratLog("CRAWLING");
-
-      versionControlCheck();
-      try{
-          setStatus(CRAWL_CMD);
-
-          crawlLog.logInfo("Configuring");
-          String beanRepo = System.getProperty("org.apache.oodt.cas.crawl.bean.repo",
-                  FileConstants.CRAWLER_CONFIG);
-          String crawlerId = "MetExtractorProductCrawler";
-          System.setProperty("DRAT_EXCLUDE","");
-          FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext("file:"+beanRepo);
-
-          MetExtractorProductCrawler crawler = new MetExtractorProductCrawler();
-          crawler.setApplicationContext(appContext);
-          crawler.setId(crawlerId);
-          crawler.setMetExtractor("org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor");
-          crawler.setMetExtractorConfig(FileConstants.MET_EXT_CONFIG_PATH);
-          crawler.setFilemgrUrl(FileConstants.FILEMGR_URL);
-          crawler.setClientTransferer("org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory");
-          crawler.setPreCondIds(Arrays.asList("RegExExcludeComparator"));
-          crawler.setProductPath(this.path);
-          crawlLog.logInfo("STARTING ",null);
-          crawler.crawl();
-          crawlLog.logInfo("COMPLETED",null);
-      }catch (Exception ex) {
-          crawlLog.logSevere("ERROR ",ex.getLocalizedMessage());
-          ex.printStackTrace();
-          throw ex;
-      }
+    reset();
+    versionControlCheck();
+    
+    dumpToFile(this.body);
+    simpleCrawl();
+    
   }
-
-  private void versionControlCheck() throws Exception {
-    File dirPathFile = new File(this.path);
-    boolean clone=false;
-    if(dirPathFile.exists() ){
-      if(dirPathFile.isDirectory()&& dirPathFile.list().length==0){
-        clone=true;
-      }
-    }else{
-      dirPathFile.createNewFile();
-      clone =true;
-    }
-    if(clone){
-      parseAsVersionControlledRepo();
+  
+  private void simpleCrawl() throws Exception{
+    DratLog crawlLog = new DratLog("CRAWLING");
+  
+  
+    try{
+      setStatus(CRAWL_CMD);
+    
+      crawlLog.logInfo("Configuring");
+      String beanRepo = System.getProperty("org.apache.oodt.cas.crawl.bean.repo",
+              FileConstants.CRAWLER_CONFIG);
+      String crawlerId = "MetExtractorProductCrawler";
+      System.setProperty("DRAT_EXCLUDE","");
+      FileSystemXmlApplicationContext appContext = new FileSystemXmlApplicationContext("file:"+beanRepo);
+    
+      MetExtractorProductCrawler crawler = new MetExtractorProductCrawler();
+      crawler.setApplicationContext(appContext);
+      crawler.setId(crawlerId);
+      crawler.setMetExtractor("org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor");
+      crawler.setMetExtractorConfig(FileConstants.MET_EXT_CONFIG_PATH);
+      crawler.setFilemgrUrl(FileConstants.FILEMGR_URL);
+      crawler.setClientTransferer("org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory");
+      crawler.setPreCondIds(Arrays.asList("RegExExcludeComparator"));
+      crawler.setProductPath(this.path);
+      crawlLog.logInfo("STARTING ",null);
+      crawler.crawl();
+      crawlLog.logInfo("COMPLETED",null);
+    }catch (Exception ex) {
+      crawlLog.logSevere("ERROR ",ex.getLocalizedMessage());
+      ex.printStackTrace();
+      throw ex;
     }
   }
 
@@ -282,9 +279,10 @@ public class ProcessDratWrapper extends GenericProcess
 
   public void go() throws Exception {
     // before go, always reset
+    reset();
     versionControlCheck();
-    this.reset();
-    this.crawl();
+    dumpToFile(this.body);
+    this.simpleCrawl();
     this.solrIndex();
     this.map();
 
@@ -490,36 +488,52 @@ public class ProcessDratWrapper extends GenericProcess
 
   }
 
-  private String parseAsVersionControlledRepo()
-          throws IOException {
-    String projectName = null;
-    boolean git = urlLoc.endsWith(".git");
-    String line = null;
-    if (git) {
-           line = "git clone --depth 1 --branch master " + urlLoc;
-    } else {
-      projectName = urlLoc.substring(urlLoc.lastIndexOf("/") + 1);
-      line = "svn export " + urlLoc;
+  
+  private void versionControlCheck() throws Exception {
+    if (path.startsWith("http://") || path.startsWith("https://")) {
+      this.body.loc_url = this.path;
+      String projectName = null;
+      boolean git = path.endsWith(".git");
+      File tmpDir = new File(FileConstants.DRAT_CLONES);
+      String tmpDirPath = tmpDir.getCanonicalPath();
+      String line = null;
+      if (git) {
+        projectName = path.substring(path.lastIndexOf("/") + 1,
+                path.lastIndexOf("."));
+        line = "git clone --depth 1 --branch master " + path;
+      } else {
+        projectName = path.substring(path.lastIndexOf("/") + 1);
+        line = "svn export " + path;
+      }
+      String clonePath = tmpDirPath + File.separator + projectName;
+      File cloneDir = new File(clonePath);
+      if (cloneDir.isDirectory() && cloneDir.exists()) {
+        LOG.info(
+                "Git / SVN clone: [" + clonePath + "] already exists, removing it.");
+        org.apache.cxf.helpers.FileUtils.removeDir(cloneDir);
+      }
+      LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
+              + path + "] into " + tmpDirPath);
+      
+      CommandLine cmdLine = CommandLine.parse(line);
+      DefaultExecutor executor = new DefaultExecutor();
+      executor.setWorkingDirectory(tmpDir);
+      int exitValue = executor.execute(cmdLine);
+      
+      if (git) {
+        String gitHiddenDirPath = clonePath + File.separator + ".git";
+        File gitHiddenDir = new File(gitHiddenDirPath);
+        LOG.info("Removing .git directory from " + gitHiddenDirPath);
+        org.apache.cxf.helpers.FileUtils.removeDir(gitHiddenDir);
+      }
+      
+      this.path = clonePath;
+    }else{
+      this.body.loc_url = "http://drat.apache.org/#";
     }
-    String clonePath = this.path;
-    File cloneDir = new File(clonePath);
-    LOG.info("Cloning Git / SVN project: [" + projectName + "] remote repo: ["
-            + this.urlLoc + "] into " + this.path);
-
-    CommandLine cmdLine = CommandLine.parse(line);
-    DefaultExecutor executor = new DefaultExecutor();
-    executor.setWorkingDirectory(new File(this.path));
-    int exitValue = executor.execute(cmdLine);
-
-    if (git) {
-      String gitHiddenDirPath = clonePath + File.separator + ".git";
-      File gitHiddenDir = new File(gitHiddenDirPath);
-      LOG.info("Removing .git directory from " + gitHiddenDirPath);
-      org.apache.cxf.helpers.FileUtils.removeDir(gitHiddenDir);
-    }
-
-    return clonePath;
-
+      
+      this.body.id = "id:"+this.path;
+      this.body.repo = this.path;
   }
 
   private synchronized void wipeInstanceRepo(String wmUrl) {
@@ -547,6 +561,12 @@ public class ProcessDratWrapper extends GenericProcess
       LOG.warning("Error wiping Solr core: [" + coreName + "]: Message: "
           + e.getLocalizedMessage());
     }
+  }
+  
+  
+  public void dumpToFile(DratRequestWrapper body) throws IOException {
+    File repo = new File(FileConstants.CURRENT_REPO_DETAILS_FILE);
+    Files.write(repo.toPath(),new Gson().toJson(body).getBytes());
   }
   
   private class DratLog{

@@ -13,7 +13,6 @@ import org.wicketstuff.rest.resource.AbstractRestResource;
 import org.wicketstuff.rest.utils.http.HttpMethod;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public class FileManagerRestResource extends AbstractRestResource<GsonWebSerialDeserial> {

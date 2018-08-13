@@ -59,7 +59,7 @@ the License.
               
 
               var docs = response.data.response.docs;
-
+            // var docs = [{"license_Generated":0,"license_Archives":1,"license_Standards":108,"license_Unknown":12,"license_Binaries":139,"license_Apache":96,"id":"/media/Workings/GSOC-2018/drat/deploy/data/clones/android-UniversalMusicPlayer","license_Notes":1}];
               for(var i = 0; i < docs.length; i++) {
                   var doc = docs[i];
                   var repo = doc.id.split("/");
@@ -174,11 +174,18 @@ the License.
                 bar.append("rect")
                     .attr("style", function(d,i) { return "fill:"+color(i % data.series.length); })
                     .attr("class", "bar")
-                    .attr("width", x)
+                    .attr("width", function(x){return x>0?x:0})
                     .attr("height", barHeight - 1);
 
                 bar.append('rect')
-                    .attr("x", function(d) { if(x(d) < 10) return x(d) + 10; else if(x(d) < 75) return x(d) - 77; else return x(d) - 83; })
+                    .attr("x", function(d) { 
+                        var xtoreturn = x(d);
+                        if(x(d) < 10) xtoreturn = x(d) + 10;
+                        else if(x(d) < 75) xtoreturn = x(d) - 77; 
+                        else xtoreturn = x(d) - 83; 
+                        if(xtoreturn<0) return 0;
+                        else return xtoreturn;
+                        })
                     .attr("y", 7)
                     .attr('width', 80)
                     .attr('height', barHeight - 15)
@@ -186,8 +193,13 @@ the License.
 
                 // Add text label in bar
                 bar.append("text")
-                    .attr("x", function(d) { if(x(d) < 80) return 80; else return x(d) - 63; })
-                    .attr("y", (barHeight / 2)+1)
+                    .attr("x", function(d) {
+                        var xtoreturn = x(d)
+                        if(x(d) < 80) xtoreturn = 5; 
+                        else xtoreturn = x(d) - 63;
+                        if(xtoreturn<0) return 0;
+                        else return xtoreturn })
+                    .attr("y", (barHeight / 2)+1.5)
                     .attr("style", function(d,i) { return "fill:"+color(i % data.series.length); })
                     .attr("style", "font-size:.55em")
                     .text(function(d, i) { return d + " " + mylabels[i % data.series.length]; });
@@ -196,9 +208,15 @@ the License.
                 // Draw labels
                 bar.append("text")
                     .attr("class", "label")
-                    .attr("x", function(d) { return - 25; })
-                    .attr("y", groupHeight / 2)
+                    .attr("x", function(d,i) { 
+                        console.log(d);
+                        var x = -groupHeight/2;
+                        if (i % data.series.length === 0)
+                        x-= (data.labels[Math.floor(i/data.series.length)].length)*3;
+                        return x;  })
+                    .attr("y", -20)
                     .attr("dy", ".35em")
+                    .attr("transform","rotate(-90)")
                     .text(function(d,i) {
                         if (i % data.series.length === 0)
                         return data.labels[Math.floor(i/data.series.length)];

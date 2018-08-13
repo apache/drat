@@ -66,6 +66,12 @@ import store from './../store/store';
     },
     methods: {
         loadData(){
+            if(this.currentRepo.indexOf("http")>=0){
+              axios.get(this.origin+"/proteus/drat/currentrepo")
+              .then(response=>{
+                store.commit("setCurrentRepo",response.data);
+              });
+            }
             if(this.currentRepo!=''){
                 axios.get(this.origin+"/proteus/service/products?topn=10")
                 .then(response=>{

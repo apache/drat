@@ -16,15 +16,22 @@ the License.
 
   <section class="statisticscomp">
     <v-card id="statisticscard">
-    <v-toolbar height="50" color="primary" dark>
-      <v-toolbar-title>Statistics</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+    
     <v-card id="crawlingprogress">
        <v-progress-linear height="10" v-model="crawlingprogress"></v-progress-linear>
       <strong>{{stat.crawledfiles}}</strong> of <strong>{{stat.numOfFiles}}</strong> files Crawled
      
     </v-card>
+    <v-card id="indexingprogress">
+       <v-progress-linear height="10" v-model="indexingprogress"></v-progress-linear>
+      <strong>{{stat.indexedfiles}}</strong> of <strong>{{stat.numOfFiles}}</strong> files Indexed
+     
+    </v-card>
+  
+    <v-toolbar height="50" color="primary" dark>
+      <v-toolbar-title>Statistics</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
     <hr>
     <v-expansion-panel
         v-model="panel"
@@ -71,6 +78,7 @@ the License.
           if(this.currentState!="IDLE") this.loadSizeData();
           if(this.currentState=="MAP" || this.currentState=="REDUCE")this.loadInstanceCount()
           if(this.currentState=="CRAWL") this.loadCrawledFiles();
+          if(this.currentState=="INDEX" || this.currentState=="MAP")this.loadIndexedFiles();
         }.bind(this), 1000);
     },
     beforeDestroy(){
@@ -84,7 +92,8 @@ the License.
             numOfFiles:0,
             runningRatInstances:0,
             finishedRatInstances:0,
-            crawledfiles:0
+            crawledfiles:0,
+            indexedfiles:0,
           },
           panel:[false,true,true]
 
@@ -124,7 +133,14 @@ the License.
         .then(response=> {
             this.stat.crawledfiles = response.data.crawledFiles;
         });
+      },
+      loadIndexedFiles(){
+        axios.get(this.origin+"/solr/drat/select?q=producttype:GenericFile&fl=numFound&wt=json&indent=true")
+        .then(response=>{
+          this.stat.indexedfiles = response.data.response.numFound;
+        });
       }
+
     },
     computed: {
       currentRepo (){
@@ -138,6 +154,9 @@ the License.
       },
       crawlingprogress(){
         return this.stat.crawledfiles/this.stat.numOfFiles *100;
+      },
+      indexingprogress(){
+        return this.stat.indexedfiles/this.stat.numberOfFiles * 100;
       }
     }
 }
@@ -150,5 +169,8 @@ the License.
   }
   #header{
     background-color:lightgray
+  }
+  #indexingprogress{
+    margin-bottom: 5%;
   }
 </style>
