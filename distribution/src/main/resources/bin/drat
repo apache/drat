@@ -224,8 +224,6 @@ function reset {
                 rm -rf $DRAT_HOME/filemgr/catalog
                 echo "rm -rf $DRAT_HOME/solr/drat/data"
                 rm -rf $DRAT_HOME/solr/drat/data
-		echo "rm -rf $DRAT_HOME/solr/statistics/data"
-		rm -rf $DRAT_HOME/solr/statistics/data
                 echo "rm -rf $DRAT_HOME/data/archive/*"
                 rm -rf $DRAT_HOME/data/archive/*
                 echo "rm -rf $DRAT_HOME/data/jobs/*"
