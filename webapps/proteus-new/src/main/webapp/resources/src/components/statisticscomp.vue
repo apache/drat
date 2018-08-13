@@ -20,6 +20,12 @@ the License.
       <v-toolbar-title>Statistics</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
+    <v-card id="crawlingprogress">
+       <v-progress-linear height="10" v-model="crawlingprogress"></v-progress-linear>
+      <strong>{{stat.crawledfiles}}</strong> of <strong>{{stat.numOfFiles}}</strong> files Crawled
+     
+    </v-card>
+    <hr>
     <v-expansion-panel
         v-model="panel"
         expand
@@ -64,6 +70,7 @@ the License.
         this.timerClearVar = setInterval(function () {
           if(this.currentState!="IDLE") this.loadSizeData();
           if(this.currentState=="MAP" || this.currentState=="REDUCE")this.loadInstanceCount()
+          if(this.currentState=="CRAWL") this.loadCrawledFiles();
         }.bind(this), 1000);
     },
     beforeDestroy(){
@@ -77,6 +84,7 @@ the License.
             numOfFiles:0,
             runningRatInstances:0,
             finishedRatInstances:0,
+            crawledfiles:0
           },
           panel:[false,true,true]
 
@@ -110,6 +118,12 @@ the License.
                 }
             }
         });
+      },
+      loadCrawledFiles(){
+        axios.get(this.origin+"/proteus/filemanager/progress")
+        .then(response=> {
+            this.stat.crawledfiles = response.data.crawledFiles;
+        });
       }
     },
     computed: {
@@ -121,6 +135,9 @@ the License.
       },
       currentState(){
         return store.state.currentActionStep;
+      },
+      crawlingprogress(){
+        return this.stat.crawledfiles/this.stat.numOfFiles *100;
       }
     }
 }

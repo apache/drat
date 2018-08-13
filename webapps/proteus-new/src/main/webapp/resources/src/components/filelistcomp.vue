@@ -49,7 +49,6 @@ import store from './../store/store';
     store,
     props: [],
     mounted() {
-        this.loadData();
         this.timerClearVar = setInterval(function () {
           if(this.currentState=="CRAWL")this.loadData();
         }.bind(this), 1000);
