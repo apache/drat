@@ -64,44 +64,44 @@ the License.
     methods: {
         init(rows){
           axios.get(this.origin + '/solr/statistics/select?q=type:software&rows=220&fl=mime_*&wt=json')
-        .then(function(response) {
+          .then(function(response) {
+          
+          console.log(response.data);
+            var docs = response.data.response.docs;
+            var resultingData = [];
+            var result = [];
+            var mime = {};
 
-         console.log(response.data);
-                  var docs = response.data.response.docs;
-                  var resultingData = [];
-                  var result = [];
-                  var mime = {};
+            for(var i = 0; i < docs.length; i++) {
+              var doc = docs[i];
+              for(var x in doc) {
+                var key = x.split("mime_")[1];
+                var value = doc[x];
+                if(typeof mime[key] === 'undefined') {
+                  mime[key] = value;
+                }
+                else {
+                  mime[key] += value;
+                }
+              }
+            }
 
-                  for(var i = 0; i < docs.length; i++) {
-                    var doc = docs[i];
-                    for(var x in doc) {
-                      var key = x.split("mime_")[1];
-                      var value = doc[x];
-                      if(typeof mime[key] === 'undefined') {
-                        mime[key] = value;
-                      }
-                      else {
-                        mime[key] += value;
-                      }
-                    }
-                  }
+            for(x in mime) {
+              var jsonObject = {};
+              jsonObject["key"] = x;
+              jsonObject["y"] = mime[x];
+              resultingData.push(jsonObject);
+            }
 
-                  for(x in mime) {
-                    var jsonObject = {};
-                    jsonObject["key"] = x;
-                    jsonObject["y"] = mime[x];
-                    resultingData.push(jsonObject);
-                  }
+            resultingData.sort(function(a, b) {
+                return b.y - a.y;
+            });
+            if(rows > resultingData.length)rows=resultingData.length;
+            for( i = 1; i <= rows; i++) {
+              result[i-1] = resultingData[i-1];
+            }
 
-                  resultingData.sort(function(a, b) {
-                      return b.y - a.y;
-                  });
-
-                  for( i = 1; i <= rows; i++) {
-                    result[i-1] = resultingData[i-1];
-                  }
-
-                  console.log(result);
+            console.log(result);
 
           var svg = d3.select("#pietopmimesvg");
             svg.selectAll("*").remove();
