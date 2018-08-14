@@ -293,7 +293,7 @@ export default {
 #contentpane{
   padding-left: 10%;
   padding-right: 10%;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
 }
 #footercard{
   background-color: #2c3e50;

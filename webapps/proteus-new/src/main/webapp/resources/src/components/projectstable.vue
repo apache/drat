@@ -217,10 +217,11 @@ import store from './../store/store';
     store,
     props: [],
     mounted() {
-      this.loadData();
-        this.timerClearVar= setInterval(function () {
+      this.timerClearVar= setInterval(function () {
           this.loadData();
-        }.bind(this), 30000);
+        }.bind(this), 1000);
+      this.loadData();
+        
     },
     beforeDestroy(){
       clearInterval(this.timerClearVar);
@@ -238,7 +239,7 @@ import store from './../store/store';
           generated:true,
           notes:true,
           archives:true,
-          docs:[''],
+          docs:[],
           headers:[
             { text: '#',sortable: true, value: 'num' },
             { text: 'Location',sortable: false, value: 'loc' },
@@ -407,7 +408,7 @@ import store from './../store/store';
   }
 
   #licensefiletable{
-    margin-bottom: 50px;
+    margin-bottom: 80px;
     z-index: 950;
   }
 </style>
