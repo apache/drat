@@ -147,7 +147,7 @@ def drat_process(command, repository):
 		elif command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
-			retcode = subprocess.call("nohup ${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
+			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
 		if retcode < 0:
 			print >>sys.stderr, "DRAT " + command + " process was terminated by signal", -retcode, ". Aborting..."
 			retval = False
@@ -180,12 +180,19 @@ def drat_reset():
 def job_in_queue(job_name):
 	status = "PGE EXEC"
 	server = xmlrpclib.ServerProxy(os.getenv("WORKFLOW_URL"), verbose=False)
-	response = server.workflowmgr.getWorkflowInstancesByStatus(status)
+	
 
-	for i in range(0, len(response)):
+	for x in range(0,6):
+		response = server.workflowmgr.getWorkflowInstancesByStatus(status)
+
+		for i in range(0, len(response)):
 		#print response[i]["sharedContext"]["TaskId"]
-		if response[i]["sharedContext"]["TaskId"][0] == job_name:
-			return True
+			if response[i]["sharedContext"]["TaskId"][0] == job_name:
+				return True
+
+		time.sleep(10)		
+
+	
 
 	return False
 
@@ -281,6 +288,12 @@ def run(repos_list, output_dir):
 			retval = drat_process("crawl", rep["repo"])
 			stats['crawl_end'] = current_datetime()
 
+			rep["id"] = "id:"+os.path.normpath(rep["repo"])
+			outputfile = os.getenv("DRAT_HOME") + "/data/repo"
+			file = open(outputfile,"w")
+			file.write(json.dumps(rep))
+			file.close()
+
 			if retval:
 				time.sleep(5)
 				stats['index_start'] = current_datetime()
@@ -295,8 +308,14 @@ def run(repos_list, output_dir):
 					wait_for_job("urn:drat:MimePartitioner")
 					wait_for_job("urn:drat:RatCodeAudit")
 					stats['map_end'] = current_datetime()
-					print ("\nwaiting for Rat Aggregator...\n")
-					wait_for_job("urn:drat:RatAggregator")
+
+					if(retval):
+						wait_for_job("urn:drat:RatAggregator")
+						time.sleep(10)
+						retval = drat_process("reduce",None)
+						time.sleep(10)
+						print ("\nwaiting for Rat Aggregator...\n")
+						wait_for_job("urn:drat:RatAggregator")
 			
 
 			time.sleep(5)
