@@ -33,6 +33,7 @@ function print_help {
     echo "            reduce                					| fire off the MapReduce reducer"
     echo "            help                  					| print this message"
     echo "            reset                 					| prepare to analyze an entirely new repo"
+    echo "            delstats                                                  | clear collected DRAT stats index"
     echo "                                  					| CAUTION: will delete previous crawls!"
 }
 
@@ -241,6 +242,30 @@ function reset {
         esac
 }
 
+# Clears the Solr Statistics repo for aggregating crawl stats. Expects no arguments.
+function delstats{
+    check_services_running "running"
+    check_num_args "delstats" $# 0
+    echo "This will remove any previous or current Solr DRAT stats information."
+    read -p "Do you wish to continue? [yN] " yn
+        case $yn in
+            [Yy]*)
+                echo "rm -rf $DRAT_HOME/solr/statistics/data"
+                rm -rf $DRAT_HOME/solr/statistics/data
+                echo "Please restart OODT with '\$DRAT_HOME/bin/oodt start' if you wish to run another crawl."
+            ;;
+            [Nn]*)
+                echo "Reset cancelled. Exiting..."
+                exit 0
+            ;;
+            *)
+                echo "Aborting..."
+                exit 1
+            ;;
+        esac
+
+}
+
 # Start parsing the arguments.
 case $1 in
     crawl)
@@ -260,6 +285,9 @@ case $1 in
     ;;
     reset)
         reset
+    ;;
+    delstats)
+	delstats
     ;;
     help)
         print_help
