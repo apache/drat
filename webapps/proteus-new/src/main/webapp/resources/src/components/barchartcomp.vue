@@ -17,7 +17,7 @@ the License.
   <section class="barchartcomp">
     <v-card id = "barchart">
     <v-toolbar height="50" color="primary" dark>
-      <v-toolbar-title>Liecense Breakdown</v-toolbar-title>
+      <v-toolbar-title>License Breakdown</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
    
