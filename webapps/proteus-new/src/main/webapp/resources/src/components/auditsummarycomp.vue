@@ -59,7 +59,7 @@ the License.
               
 
               var docs = response.data.response.docs;
-            // var docs = [{"license_Generated":0,"license_Archives":1,"license_Standards":108,"license_Unknown":12,"license_Binaries":139,"license_Apache":96,"id":"/media/Workings/GSOC-2018/drat/deploy/data/clones/android-UniversalMusicPlayer","license_Notes":1}];
+        
               for(var i = 0; i < docs.length; i++) {
                   var doc = docs[i];
                   var repo = doc.id.split("/");
@@ -241,7 +241,7 @@ the License.
                         var offset = -gapBetweenGroups/2;
                         var horz = spaceForLabels + chartWidth + 40 - legendRectSize;
                         var vert = i * height - offset;
-                        return 'translate(' + horz + ',' + vert + ')';
+                        return 'translate(' + 0+ ',' + vert + ')';
                     });
 
                 legend.append('rect')
