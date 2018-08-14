@@ -27,6 +27,7 @@ import java.util.Map;
 public class Utils {
   private static Map<String, String> environment = new HashMap<String, String>();
   private static List<String> resetDratConstants = new ArrayList<String>();
+  private static String resetRepoFile = null;
   static {
     environment.put("JAVA_HOME", PathUtils.replaceEnvVariables("[JAVA_HOME]"));
     environment.put("DRAT_HOME", PathUtils.replaceEnvVariables("[DRAT_HOME]"));
@@ -38,10 +39,16 @@ public class Utils {
     String DRAT_HOME = environment.get("DRAT_HOME");
     resetDratConstants.add(DRAT_HOME + "/data/archive/");
     resetDratConstants.add(DRAT_HOME + "/data/jobs/");    
+    resetDratConstants.add(DRAT_HOME + "/data/clones/");
+    resetRepoFile = DRAT_HOME + "/data/repo";
   }
 
   public static Map<String, String> getEnvironment() {
     return environment;
+  }
+
+  public static String getResetRepoFile(){
+	return resetRepoFile;
   }
 
   public static List<String> getResetDirectories() {
