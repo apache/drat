@@ -255,20 +255,6 @@ public class ProcessDratWrapper extends GenericProcess
 	       this.wipeSolrCore(coreName);
     }
   
-    File repoFile = new File(Utils.getResetRepoFile());
-    try {
-      resetLog.logInfo("DRAT: reset: removing repo file: ["
-          + Utils.getResetRepoFile() + "]");
-      FileUtils.forceDelete(repoFile);
-    } catch (FileNotFoundException e) {
-      resetLog.logWarning("Error removing: [" + repoFile.getAbsolutePath()
-          + "]: Message: " + e.getLocalizedMessage());
-    } catch (IOException e) {
-      resetLog
-          .logWarning("Unable to remove file: [" + repoFile.getAbsolutePath()
-              + "]: Message: " + e.getLocalizedMessage());
-    }
-
     resetLog.logInfo("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
         + "]");
     for (String dir : Utils.getResetDirectories()) {

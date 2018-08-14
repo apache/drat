@@ -38,17 +38,11 @@ public class Utils {
 
     String DRAT_HOME = environment.get("DRAT_HOME");
     resetDratConstants.add(DRAT_HOME + "/data/archive/");
-    resetDratConstants.add(DRAT_HOME + "/data/jobs/");    
-    resetDratConstants.add(DRAT_HOME + "/data/clones/");
-    resetRepoFile = DRAT_HOME + "/data/repo";
+    resetDratConstants.add(DRAT_HOME + "/data/jobs/");
   }
 
   public static Map<String, String> getEnvironment() {
     return environment;
-  }
-
-  public static String getResetRepoFile(){
-	return resetRepoFile;
   }
 
   public static List<String> getResetDirectories() {
