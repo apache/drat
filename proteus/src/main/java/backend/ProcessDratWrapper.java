@@ -251,8 +251,8 @@ public class ProcessDratWrapper extends GenericProcess
 
     String[] coreNames = {"drat"}; // don't wipe stats or we can't aggregate data.
     for(String coreName: coreNames){
-	resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
-	this.wipeSolrCore(coreName);
+	       resetLog.logInfo("DRAT: reset: wiping Solr core: [" + coreName + "]");
+	       this.wipeSolrCore(coreName);
     }
   
     resetLog.logInfo("DRAT: reset: recursively removed: [" + Utils.getResetDirectories()
@@ -278,36 +278,47 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   public void go() throws Exception {
+    DratLog goLog = new DratLog("GO");
+    goLog.logInfo("Starting", "");
     // before go, always reset
+    goLog.logInfo("DRAT: go: resetting.");
     reset();
+    goLog.logInfo("DRAT: go: Version Control Check");
     versionControlCheck();
+    goLog.logInfo("DRAT: go: wrote repo to JSON");
     dumpToFile(this.body);
+    
     this.simpleCrawl();
     this.solrIndex();
     this.map();
 
+    goLog.logInfo("DRAT: go: checking still running partition and map and maps.");
     // don't run reduce until all maps are done
     while (stillRunning(PARTITION_AND_MAP_TASK_ID) || stillRunning(MAPPER_TASK_ID)) {
+      goLog.logInfo("MAPS STILL RUNNING: Sleeping: "+String.valueOf(DRAT_PROCESS_WAIT_DURATION));
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
-      LOG.info("MAP STILL RUNNING");
     }
+    
+    goLog.logInfo("DRAT: go: Waiting for rat aggregate log to be generated.");
     // you're not done until the final log is generated.
     while (!hasAggregateRatLog()) {
       try {
         if (!stillRunning(REDUCE_TASK_ID)) {
+          goLog.logInfo("DRAT: go: no reduces running, and no rat aggregate log, so firing reducer.");
           reduce();
         }
         else {
-          LOG.info("REDUCE STILL RUNNING.");
+          goLog.logInfo("DRAT: go: reduce running, and no rat aggregate log, so give it a chance to finish.");
         }
       } catch (IOException e) {
-        LOG.warning("Fired reduce off before mappers were done. Sleeping: ["
+        goLog.logWarning("DRAT: go: Fired reduce off before mappers were done. Sleeping: ["
             + String.valueOf(DRAT_PROCESS_WAIT_DURATION / 1000)
             + "] seconds and will try again.");
       }
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     }
 
+    goLog.logInfo("Finished.");
     setStatus(STATUS_IDLE);
   }
 
