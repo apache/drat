@@ -156,9 +156,9 @@ public class ProcessDratWrapper extends GenericProcess
       crawler.setClientTransferer("org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory");
       crawler.setPreCondIds(Arrays.asList("RegExExcludeComparator"));
       crawler.setProductPath(this.path);
-      crawlLog.logInfo("STARTING ",null);
+      crawlLog.logInfo("Starting. ",null);
       crawler.crawl();
-      crawlLog.logInfo("COMPLETED",null);
+      crawlLog.logInfo("Completed.",null);
     }catch (Exception ex) {
       crawlLog.logSevere("ERROR ",ex.getLocalizedMessage());
       ex.printStackTrace();
@@ -184,14 +184,14 @@ public class ProcessDratWrapper extends GenericProcess
   }
 
   @Override
-  public void map() {
+  public synchronized void map() {
     setStatus(MAP_CMD);
     DratLog mapLog = new DratLog("MAPPING");
     WorkflowRestResource restResource = new WorkflowRestResource();
     DynamicWorkflowRequestWrapper requestBody = new DynamicWorkflowRequestWrapper();
     requestBody.taskIds = new ArrayList<>();
     requestBody.taskIds.add(PARTITION_AND_MAP_TASK_ID);
-    LOG.info("STARTING MAPPING");
+    mapLog.logInfo("STARTING MAPPING");
     mapLog.logInfo("STARTING", " (dynamic workflow with task "+PARTITION_AND_MAP_TASK_ID);
     String resp = restResource.performDynamicWorkFlow(requestBody);
     if(resp.equals("OK")) {
@@ -199,10 +199,12 @@ public class ProcessDratWrapper extends GenericProcess
     }else {
         mapLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
     }
+    mapLog.logInfo("Completed.", null);
+    
   }
 
   @Override
-  public void reduce() throws IOException {
+  public synchronized void reduce() throws IOException {
     setStatus(REDUCE_CMD);
     DratLog reduceLog = new DratLog("REDUCING");
     WorkflowRestResource restResource = new WorkflowRestResource();
@@ -218,10 +220,11 @@ public class ProcessDratWrapper extends GenericProcess
         reduceLog.logSevere("FAILED", "Dynamic workflow starting failed "+resp);
         throw new IOException(resp);
     }
+    reduceLog.logInfo("Completed.", null);
   }
 
   @Override
-  public void reset() {
+  public synchronized void reset() {
     DratLog resetLog = new DratLog("RESET");
     resetLog.logInfo("Starting","");
     resetLog.logInfo("DRAT: reset: wiping FM product catalog");
@@ -274,10 +277,10 @@ public class ProcessDratWrapper extends GenericProcess
       }
     }
   
-    resetLog.logInfo("Finished","");
+    resetLog.logInfo("Completed",null);
   }
 
-  public void go() throws Exception {
+  public synchronized void go() throws Exception {
     DratLog goLog = new DratLog("GO");
     goLog.logInfo("Starting", "");
     // before go, always reset
@@ -318,7 +321,7 @@ public class ProcessDratWrapper extends GenericProcess
       Thread.sleep(DRAT_PROCESS_WAIT_DURATION);
     }
 
-    goLog.logInfo("Finished.");
+    goLog.logInfo("Completed.", null);
     setStatus(STATUS_IDLE);
   }
 
