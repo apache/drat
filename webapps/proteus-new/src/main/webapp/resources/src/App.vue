@@ -149,7 +149,7 @@ the License.
     
     <v-spacer/>
     <v-card id="footercard">
-      <img height="60px"  src="logo.png">
+      <img height="80px"  src="logo.png">
     </v-card>
        
     </v-app>
