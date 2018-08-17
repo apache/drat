@@ -319,6 +319,20 @@ def run(repos_list, output_dir):
 			
 
 			time.sleep(5)
+
+                        if retval:
+                                # Copy Data with datetime variables above, extract output from RatAggregate file, extract data from Solr Core
+                                printnow ("\nCopying data to Solr and Output Directory...\n")
+
+                                # Copying data to Output Directory
+                                repos_out = output_dir + "/" + normalize_path(rep["repo"])
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/archive", repos_out)
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/jobs", repos_out)
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/workflow", repos_out)
+                                print("\nData copied to Solr and Output Directory: OK\n")
+
+
+                        time.sleep(5)
 			print ("\nStopping OODT...\n")
 			oodt_process("stop")
 			time.sleep(20)
