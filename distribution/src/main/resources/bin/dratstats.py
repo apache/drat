@@ -42,11 +42,8 @@ def check_env_var():
 	if os.getenv("JAVA_HOME") == None:
 		print "Environment variable $JAVA_HOME is not set."
 		sys.exit(1)
-	if os.getenv("OPSUI_URL") == None:
-		print "Environment variable $OPSUI_URL is not set."
-		sys.exit(1)
-	if os.getenv("SOLR_URL") == None:
-		print "Environment variable $SOLR_URL is not set."
+	if os.getenv("SOLR_DRAT_URL") == None:
+		print "Environment variable $SOLR_DRAT_URL is not set."
 		sys.exit(1)
 	if os.getenv("WORKFLOW_URL") == None:
 		print "Environment variable $WORKFLOW_URL is not set."
@@ -190,7 +187,7 @@ def job_in_queue(job_name):
 			if response[i]["sharedContext"]["TaskId"][0] == job_name:
 				return True
 
-		time.sleep(10)		
+		time.sleep(3)		
 
 	
 
@@ -313,22 +310,21 @@ def run(repos_list, output_dir):
 						wait_for_job("urn:drat:RatAggregator")
 						time.sleep(10)
 						retval = drat_process("reduce",None)
-						time.sleep(10)
-						print ("\nwaiting for Rat Aggregator...\n")
-						wait_for_job("urn:drat:RatAggregator")
+                                                print ("\nwaiting for Rat Aggregator...\n")
+                                                wait_for_job("urn:drat:RatAggregator")
 			
 
 			time.sleep(5)
 
-                        if retval:
+                        if(retval):
                                 # Copy Data with datetime variables above, extract output from RatAggregate file, extract data from Solr Core
                                 printnow ("\nCopying data to Solr and Output Directory...\n")
 
                                 # Copying data to Output Directory
                                 repos_out = output_dir + "/" + normalize_path(rep["repo"])
-                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/archive", repos_out)
-                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/jobs", repos_out)
-                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/workflow", repos_out)
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/archive", repos_out + "/data/archive")
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/jobs", repos_out + "/data/jobs")
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/workflow", repos_out + "/data/workflow")
                                 print("\nData copied to Solr and Output Directory: OK\n")
 
 
