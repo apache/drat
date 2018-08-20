@@ -54,7 +54,7 @@ the License.
           var Notes = [];
 
 
-          axios.get(this.origin + '/solr/statistics/select?q=type:software&rows=220&fl=license_*,id&sort=id+asc&wt=json')
+          axios.get(this.origin + '/solr/statistics/select?q=type:software&fl=license_*,id&sort=id+asc&wt=json')
           .then(response=>{
               
 

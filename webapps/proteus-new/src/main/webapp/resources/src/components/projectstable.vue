@@ -280,7 +280,7 @@ import store from './../store/store';
       },
       loadData(){
         
-        axios.get(this.origin+"/solr/statistics/select?q=type:project&rows=220&wt=json")
+        axios.get(this.origin+"/solr/statistics/select?q=type:project&wt=json")
             .then(response=>{
               this.$log.info(response.data);
               this.docs=response.data.response.docs;
