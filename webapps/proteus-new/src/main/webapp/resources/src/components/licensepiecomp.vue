@@ -45,7 +45,7 @@ the License.
     },
     methods: {
       init(){
-         axios.get(this.origin + '/solr/statistics/select?q=type:software&rows=220&fl=license_*&wt=json')
+         axios.get(this.origin + '/solr/statistics/select?q=type:software&fl=license_*&wt=json')
         .then(function(response) {
 
           console.log(response.data);
