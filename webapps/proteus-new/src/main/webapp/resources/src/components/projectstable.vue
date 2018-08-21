@@ -217,10 +217,11 @@ import store from './../store/store';
     store,
     props: [],
     mounted() {
+      this.loadData();
       this.timerClearVar= setInterval(function () {
           this.loadData();
-        }.bind(this), 1000);
-      this.loadData();
+        }.bind(this), 10000);
+      
         
     },
     beforeDestroy(){
@@ -286,6 +287,18 @@ import store from './../store/store';
               this.docs=response.data.response.docs;
               this.count.numFound = response.data.response.numFound;
               this.count.start = response.data.response.start;
+              if(response.data.response.numFound>10){
+                axios.get(this.origin+"/solr/statistics/select?q=type:project&&rows="+this.count.numFound+"&wt=json")
+                  .then(response=>{
+                    this.docs=response.data.response.docs;
+                    this.count.numFound = response.data.response.numFound;
+                    this.count.start = response.data.response.start;
+                  })
+                  .catch(error=>{
+
+                  })
+              }
+              
             })
             .catch(error=>{
               
