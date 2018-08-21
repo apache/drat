@@ -45,101 +45,108 @@ the License.
     },
     methods: {
       init(){
-         axios.get(this.origin + '/solr/statistics/select?q=type:software&fl=license_*&wt=json')
-        .then(function(response) {
+        axios.get(this.origin + '/solr/statistics/select?q=type:software&fl=license_*&wt=json')
+        .then(response2=>{
+          if(response2.data.response.numFound!=null){
+              axios.get(this.origin + '/solr/statistics/select?q=type:software&rows='+response2.data.response.numFound+'&fl=license_*&wt=json')
+              .then(function(response) {
 
-          console.log(response.data);
-          var docs = response.data.response.docs;
-          var resultingData = [];
-          var result = [];
-          var license = {};
+                console.log(response.data);
+                var docs = response.data.response.docs;
+                var resultingData = [];
+                var result = [];
+                var license = {};
 
-          for(var i = 0; i < docs.length; i++) {
-            var doc = docs[i];
-            for(var x in doc) {
-              var key = x.split("license_")[1];
-              var value = doc[x];
-              if(typeof license[key] === 'undefined') {
-                license[key] = value;
-              }
-              else {
-                license[key] += value;
-              }
-            }
+                for(var i = 0; i < docs.length; i++) {
+                  var doc = docs[i];
+                  for(var x in doc) {
+                    var key = x.split("license_")[1];
+                    var value = doc[x];
+                    if(typeof license[key] === 'undefined') {
+                      license[key] = value;
+                    }
+                    else {
+                      license[key] += value;
+                    }
+                  }
+                }
+
+                for(x in license) {
+                  var jsonObject = {};
+                  jsonObject["key"] = x;
+                  jsonObject["y"] = license[x];
+                  resultingData.push(jsonObject);
+                }
+
+                resultingData.sort(function(a, b) {
+                    return b.y - a.y;
+                });
+
+                for( i = 0; i < resultingData.length; i++) {
+                  if(resultingData[i]["y"] == 0)
+                    break;
+                  result[i] = resultingData[i];
+                }
+
+                var svg = d3.select("#pielicensesvg"),
+                  width = +svg.attr("width"),
+                  height = +svg.attr("height"),
+                  radius = Math.min(width, height) / 2,
+                  g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                var color = d3.scaleOrdinal(d3.schemeSet3);
+
+                var pie = d3.pie()
+                    .sort(null)
+                    .value(function(d) { return d.y; });
+
+                var path = d3.arc()
+                    .outerRadius(radius - 10)
+                    .innerRadius(0);
+
+                var label = d3.arc()
+                    .outerRadius(radius - 40)
+                    .innerRadius(radius - 40);
+                var arc = g.selectAll(".arc")
+                    .data(pie(result))
+                    .enter().append("g")
+                      .attr("class", "arc");
+
+                  arc.append("path")
+                      .attr("d", path)
+                      .attr("style", function(d) { return "fill:"+color(d.data.key) });
+
+                  arc.append("text")
+                      .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+                      .attr("dy", "0.35em")
+                      .text(function(d) { return d.data.key; });
+
+                var legend = d3.select("#pielicensesvg").append("svg")
+                          .attr("class", "legend")
+                          .selectAll("g")
+                          .data(pie(result))//setting the data as we know there are only two set of data[programmar/tester] as per the nest function you have written
+                          .enter().append("g")
+                          .attr("transform", function(d, i) { return "translate(0," + ((i + 1)* 20) + ")"; });
+
+                      legend.append("rect")
+                          .attr("width", 18)
+                          .attr("height", 18)
+                          .style("fill", function(d, i) {
+                              return color(d.data.key);
+                            });
+
+                      legend.append("text")
+                          .attr("x", 24)
+                          .attr("y", 9)
+                          .attr("dy", ".35em")
+                          .text(function(d) { return d.data.key; });
+
+                  console.log(result);
+                });
           }
-
-          for(x in license) {
-            var jsonObject = {};
-            jsonObject["key"] = x;
-            jsonObject["y"] = license[x];
-            resultingData.push(jsonObject);
-          }
-
-          resultingData.sort(function(a, b) {
-              return b.y - a.y;
-          });
-
-          for( i = 0; i < resultingData.length; i++) {
-            if(resultingData[i]["y"] == 0)
-              break;
-            result[i] = resultingData[i];
-          }
-
-          var svg = d3.select("#pielicensesvg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height"),
-            radius = Math.min(width, height) / 2,
-            g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var color = d3.scaleOrdinal(d3.schemeSet3);
-
-        var pie = d3.pie()
-            .sort(null)
-            .value(function(d) { return d.y; });
-
-        var path = d3.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(0);
-
-        var label = d3.arc()
-            .outerRadius(radius - 40)
-            .innerRadius(radius - 40);
-        var arc = g.selectAll(".arc")
-            .data(pie(result))
-            .enter().append("g")
-              .attr("class", "arc");
-
-          arc.append("path")
-              .attr("d", path)
-              .attr("style", function(d) { return "fill:"+color(d.data.key) });
-
-          arc.append("text")
-              .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
-              .attr("dy", "0.35em")
-              .text(function(d) { return d.data.key; });
-
-         var legend = d3.select("#pielicensesvg").append("svg")
-                  .attr("class", "legend")
-                  .selectAll("g")
-                  .data(pie(result))//setting the data as we know there are only two set of data[programmar/tester] as per the nest function you have written
-                  .enter().append("g")
-                  .attr("transform", function(d, i) { return "translate(0," + ((i + 1)* 20) + ")"; });
-
-              legend.append("rect")
-                  .attr("width", 18)
-                  .attr("height", 18)
-                  .style("fill", function(d, i) {
-                      return color(d.data.key);
-                    });
-
-              legend.append("text")
-                  .attr("x", 24)
-                  .attr("y", 9)
-                  .attr("dy", ".35em")
-                  .text(function(d) { return d.data.key; });
-
-          console.log(result);
+            
         });
+         
       }
     },
     computed: {

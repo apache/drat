@@ -69,84 +69,93 @@ the License.
             .attr("height", diameter)
             .attr("class", "bubble");
 
+
         axios.get(this.origin + '/solr/statistics/select?q=type:software&fl=mime_*&wt=json')
-        .then(response=>{
-        
-
-          var docs = response.data.response.docs;
-          var resultingData = [];
-          var mime = {};
-
-          for(var i = 0; i < docs.length; i++) {
-            var doc = docs[i];
-            for(var x in doc) {
-              var key = x.split("mime_")[1];
-              var value = doc[x];
-              if(typeof mime[key] === 'undefined') {
-                mime[key] = value;
-              }
-              else {
-                mime[key] += value;
-              }
-            }
-          }
-
-          
-          for(x in mime) {
-            var obj = {};
-            var jsonObject = {};
-            var child = [];
-            obj["name"] = x;
-            jsonObject["name"] = x;
-           
-            jsonObject["size"] = mime[x];
-            child.push(jsonObject);
-            obj["children"] = child;
-            resultingData.push(obj);
-          }
-
-          
-
-          var test = {}
-          test["name"] = "flare"
-          test["children"] = resultingData
-         
-          var range = d3.schemeBrBG[11];
-          range = range.concat(d3.schemePRGn[11]);
-
-          color = d3.scaleOrdinal(range);
-                  
-          var root = d3.hierarchy(classes(test))
-            .sum(function(d){
-              return d.value;
-              })
+        .then(response2=>{  
+          if(response2.data.response.numFound!=null){
+              axios.get(this.origin + '/solr/statistics/select?q=type:software&rows='+response2.data.response.numFound+'&fl=mime_*&wt=json')
+            .then(response=>{
             
 
-          bubble(root);
+              var docs = response.data.response.docs;
+              var resultingData = [];
+              var mime = {};
 
-          var node = svg.selectAll(".node")
-              .data(root.children)
+              for(var i = 0; i < docs.length; i++) {
+                var doc = docs[i];
+                for(var x in doc) {
+                  var key = x.split("mime_")[1];
+                  var value = doc[x];
+                  if(typeof mime[key] === 'undefined') {
+                    mime[key] = value;
+                  }
+                  else {
+                    mime[key] += value;
+                  }
+                }
+              }
+
               
-            .enter().append("g")
-              .attr("class", "node")
-              .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+              for(x in mime) {
+                var obj = {};
+                var jsonObject = {};
+                var child = [];
+                obj["name"] = x;
+                jsonObject["name"] = x;
+              
+                jsonObject["size"] = mime[x];
+                child.push(jsonObject);
+                obj["children"] = child;
+                resultingData.push(obj);
+              }
 
-          node.append("title")
-              .text(function(d) { 
-                return d.data.className + ": " + format(d.value); 
-                });
+              
 
-          node.append("circle")
-              .attr("r", function(d) { return d.r; })
-              .attr("style",function(d){
+              var test = {}
+              test["name"] = "flare"
+              test["children"] = resultingData
+            
+              var range = d3.schemeBrBG[11];
+              range = range.concat(d3.schemePRGn[11]);
+
+              color = d3.scaleOrdinal(range);
+                      
+              var root = d3.hierarchy(classes(test))
+                .sum(function(d){
+                  return d.value;
+                  })
+                
+
+              bubble(root);
+
+              var node = svg.selectAll(".node")
+                  .data(root.children)
                   
-                return "fill:"+color(d.data.className);});
+                .enter().append("g")
+                  .attr("class", "node")
+                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-          node.append("text")
-              .attr("dy", ".3em")
-              .style("text-anchor", "middle")
-              .text(function(d) { return d.data.className.substring(0, d.r / 3); });
-        });
+              node.append("title")
+                  .text(function(d) { 
+                    return d.data.className + ": " + format(d.value); 
+                    });
+
+              node.append("circle")
+                  .attr("r", function(d) { return d.r; })
+                  .attr("style",function(d){
+                      
+                    return "fill:"+color(d.data.className);});
+
+              node.append("text")
+                  .attr("dy", ".3em")
+                  .style("text-anchor", "middle")
+                  .text(function(d) { return d.data.className.substring(0, d.r / 3); });
+            });
+          }
+          
+        });  
+
+        
 
         // Returns a flattened hierarchy containing all leaf nodes under the root.
         function classes(root) {
