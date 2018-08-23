@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
   - oraclejdk9
   - openjdk10
-  - openjdk11
+#  - openjdk11
 
 env:
   - FILEMGR_URL=http://localhost:9000 WORKFLOW_URL=http://localhost:9001 RESMGR_URL=http://localhost:9002 SOLR_DRAT_URL=http://localhost:8080/solr/drat
