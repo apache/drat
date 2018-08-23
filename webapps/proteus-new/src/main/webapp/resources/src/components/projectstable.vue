@@ -24,7 +24,7 @@ the License.
     <v-data-table id="ttx"
       :headers="headers"
       :items="docs"
-      hide-actions
+      :rows-per-page-items="rowsPerPageItemsforProjects"
       class="elevation-1"
     >
     <template slot="items" slot-scope="props">
@@ -261,15 +261,17 @@ import store from './../store/store';
         { text: 'Repository',sortable: false, value: 'repository' },
         { text: 'Name',sortable: false, value: 'name' },
         { text: 'Description',sortable: false, value: 'description' },
-        { text: 'Audit',sortable: false, value: 'audit' }
-      ],
-      count:{
+        { text: 'Audit',sortable: false, value: 'audit' },
+        ],
+        count:{
           numFound :0,
           start:0
         },
 
-        docs:[]
+        docs:[],
+        rowsPerPageItemsforProjects: [50,100,200,500,1000,3000,5000,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]
       }
+      
     },
     methods: {
       moreClicked :function(index){
