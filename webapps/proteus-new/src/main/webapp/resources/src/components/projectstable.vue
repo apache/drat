@@ -308,7 +308,7 @@ import store from './../store/store';
       loadLicenseData(){
         axios.get(this.origin+"/solr/statistics/select?q=id:\""+this.selectedItem.repo+"\"&fl=license_*&wt=json")
           .then(response2=>{
-            if(response2.response.data.numFound!=null){
+            if(response2.data.response.numFound!=null){
                 axios.get(this.origin+"/solr/statistics/select?q=id:\""+this.selectedItem.repo+"\"&fl=license_*&rows="+response2.data.response.numFound+"&wt=json")
                 .then(response=>{
                     this.$log.info(response.data);
