@@ -15,15 +15,26 @@ the License.
 <template lang="html">
 
 <v-card id="tablecard">
+  
   <v-toolbar dark color="primary">
      <v-toolbar-title class="white--text">Projects</v-toolbar-title>
   </v-toolbar>
   <section class="projectstable">
-    <!-- <h1>Projects</h1> -->
-    
+    <v-text-field
+      id="projectsearch"
+      v-model="projectsearch"
+      append-icon="search"
+      solo
+      label="Search"
+      single-line
+      hide-details>
+    </v-text-field>
     <v-data-table id="ttx"
       :headers="headers"
       :items="docs"
+      :search="projectsearch"
+      :filter="filterProjects"
+      :custom-filter="customfilterprojects"
       :rows-per-page-items="rowsPerPageItemsforProjects"
       class="elevation-1"
     >
@@ -229,6 +240,7 @@ import store from './../store/store';
     },
     data() {
       return {
+        projectsearch:'',
         search:'',
         timerClearVar:'',
         license:{
@@ -274,6 +286,27 @@ import store from './../store/store';
       
     },
     methods: {
+      customfilterprojects(items,search,filter){
+        if(search!=undefined){
+          search = search.toString().toLowerCase()
+          return items.filter(row=>filter(row,search))
+        }else{
+          return items;
+        }
+        
+      },
+      filterProjects(inputObject,search){
+        if(inputObject.repo.includes(search)){
+          return true;
+        }
+        if(inputObject.name.includes(search)){
+          return true;
+        }
+        if(inputObject.description.includes(search)){
+          return true;
+        }
+        return false;
+      },
       moreClicked :function(index){
         this.$log.info("as");
         this.dialog =true;     
@@ -334,6 +367,8 @@ import store from './../store/store';
 
     },
     computed: {
+      
+      
       origin(){
         return store.state.origin;
       },
@@ -387,6 +422,7 @@ import store from './../store/store';
         
       }
     },
+
     filters:{
       
     }
@@ -436,5 +472,8 @@ import store from './../store/store';
   #licensefiletable{
     margin-bottom: 80px;
     z-index: 950;
+  }
+  #projectsearch{
+    
   }
 </style>
