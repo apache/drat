@@ -296,13 +296,13 @@ import store from './../store/store';
         
       },
       filterProjects(inputObject,search){
-        if(inputObject.repo.includes(search)){
+        if(inputObject.repo.toLowerCase().includes(search)){
           return true;
         }
-        if(inputObject.name.includes(search)){
+        if(inputObject.name.toLowerCase().includes(search)){
           return true;
         }
-        if(inputObject.description.includes(search)){
+        if(inputObject.description.toLowerCase().includes(search)){
           return true;
         }
         return false;
