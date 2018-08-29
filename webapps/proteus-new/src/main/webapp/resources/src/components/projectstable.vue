@@ -367,8 +367,6 @@ import store from './../store/store';
 
     },
     computed: {
-      
-      
       origin(){
         return store.state.origin;
       },
@@ -422,7 +420,6 @@ import store from './../store/store';
         
       }
     },
-
     filters:{
       
     }
