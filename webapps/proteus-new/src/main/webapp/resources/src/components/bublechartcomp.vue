@@ -30,8 +30,8 @@ the License.
 <script lang="js">
   import * as d3 from 'd3';
   import axios from 'axios';
-  import store from './../store/store';
   import tinycolor from 'tinycolor2';
+  import store from './../store/store';
 
   export default  {
     name: 'bublechartcomp',
