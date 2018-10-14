@@ -119,6 +119,12 @@
       <type>war</type>
     </dependency>
     <dependency>
+      <groupId>org.apache.drat</groupId>
+      <artifactId>dms-proteus-new</artifactId>
+      <version>${project.parent.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-app</artifactId>
       <version>1.5</version>
@@ -189,6 +195,13 @@
                   <type>war</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/viz</outputDirectory>
+                </artifactItem>
+		<artifactItem>
+                  <groupId>org.apache.drat</groupId>
+                  <artifactId>${project.parent.artifactId}-proteus-new</artifactId>
+                  <type>war</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/apache-tomcat-${tomcat.version}/webapps/proteus-new</outputDirectory>
                 </artifactItem>                
               </artifactItems>
             </configuration>

@@ -17,11 +17,12 @@
 
 package drat.proteus.rest;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
+import com.google.gson.Gson;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
 import org.wicketstuff.rest.contenthandling.json.webserialdeserial.GsonWebSerialDeserial;
@@ -34,7 +35,7 @@ import backend.ProcessDratWrapper;
 import backend.ProcessOodtWrapper;
 
 public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial> {
-
+  private static final Logger LOG = Logger.getLogger(DratRestResource.class.getName());
   private static final long serialVersionUID = -5885535059043262485L;
   public AbstractOodtWrapper oodtWrapper;
   public AbstractDratWrapper dratWrapper;
@@ -47,19 +48,23 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
 
   @MethodMapping(value = "/go", httpMethod = HttpMethod.POST)
   public void go(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    
+    dratWrapper.setData(body);
+    dratWrapper.setIndexablePath(body.repo);
     dratWrapper.go();
   }
 
   @MethodMapping(value = "/index", httpMethod = HttpMethod.POST)
   public void index(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    dratWrapper.setData(body);
+    dratWrapper.setIndexablePath(body.repo);
     dratWrapper.index();
   }
 
   @MethodMapping(value = "/crawl", httpMethod = HttpMethod.POST)
   public void crawl(@RequestBody DratRequestWrapper body) throws Exception {
-    dratWrapper.setIndexablePath(body.dirPath);
+    dratWrapper.setData(body);
+    dratWrapper.setIndexablePath(body.repo);
     dratWrapper.crawl();
   }
 
@@ -77,6 +82,11 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
   public void reset() throws Exception {
     dratWrapper.reset();
   }
+  
+  @MethodMapping(value = "/currentrepo",httpMethod = HttpMethod.GET)
+  public String currentRepo() throws Exception{
+    return dratWrapper.getIndexablePath();
+  }
 
   @MethodMapping(value = "/log", httpMethod = HttpMethod.GET)
   public String getProcessLog() {
@@ -92,4 +102,5 @@ public class DratRestResource extends AbstractRestResource<GsonWebSerialDeserial
       return "Log is empty!";
     }
   }
+ 
 }

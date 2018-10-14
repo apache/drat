@@ -17,6 +17,10 @@
 
 package backend;
 
+import org.apache.oodt.cas.workflow.structs.Workflow;
+import org.apache.oodt.cas.workflow.structs.WorkflowInstance;
+import org.apache.oodt.cas.workflow.structs.WorkflowTask;
+
 public class WorkflowItem {
 
   private String id;
@@ -166,6 +170,20 @@ public class WorkflowItem {
         + currentTask + ", workflowName=" + workflowName + ", wallClockTime="
         + wallClockTime + ", currentTaskWallClock=" + currentTaskWallClock
         + "]";
+  }
+  
+  public WorkflowInstance toInstance() {
+    WorkflowInstance i = new WorkflowInstance();
+    i.setId(this.id);
+    i.setStatus(this.status);
+    i.setCurrentTaskId(this.currentTask);
+    WorkflowTask task = new WorkflowTask();
+    task.setTaskId(this.currentTask);
+    Workflow w = new Workflow();
+    w.getTasks().add(task);
+    w.setName(this.workflowName);
+    i.setWorkflow(w);;
+    return i;
   }
 
 }

@@ -42,11 +42,8 @@ def check_env_var():
 	if os.getenv("JAVA_HOME") == None:
 		print "Environment variable $JAVA_HOME is not set."
 		sys.exit(1)
-	if os.getenv("OPSUI_URL") == None:
-		print "Environment variable $OPSUI_URL is not set."
-		sys.exit(1)
-	if os.getenv("SOLR_URL") == None:
-		print "Environment variable $SOLR_URL is not set."
+	if os.getenv("SOLR_DRAT_URL") == None:
+		print "Environment variable $SOLR_DRAT_URL is not set."
 		sys.exit(1)
 	if os.getenv("WORKFLOW_URL") == None:
 		print "Environment variable $WORKFLOW_URL is not set."
@@ -147,7 +144,7 @@ def drat_process(command, repository):
 		elif command == "index":
 			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " " + repository, shell=True)
 		elif command == "map" or command == "reduce":
-			retcode = subprocess.call("nohup ${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
+			retcode = subprocess.call("${DRAT_HOME}/bin/drat" + " " + command + " &", shell=True)
 		if retcode < 0:
 			print >>sys.stderr, "DRAT " + command + " process was terminated by signal", -retcode, ". Aborting..."
 			retval = False
@@ -180,12 +177,19 @@ def drat_reset():
 def job_in_queue(job_name):
 	status = "PGE EXEC"
 	server = xmlrpclib.ServerProxy(os.getenv("WORKFLOW_URL"), verbose=False)
-	response = server.workflowmgr.getWorkflowInstancesByStatus(status)
+	
 
-	for i in range(0, len(response)):
+	for x in range(0,6):
+		response = server.workflowmgr.getWorkflowInstancesByStatus(status)
+
+		for i in range(0, len(response)):
 		#print response[i]["sharedContext"]["TaskId"]
-		if response[i]["sharedContext"]["TaskId"][0] == job_name:
-			return True
+			if response[i]["sharedContext"]["TaskId"][0] == job_name:
+				return True
+
+		time.sleep(3)		
+
+	
 
 	return False
 
@@ -268,7 +272,7 @@ def run(repos_list, output_dir):
 			print("\nOODT Started: OK\n")
 
 			print('Adding repository: '+str(rep)+' to Solr')
-			index_solr(json.dumps([rep]))
+			# index_solr(json.dumps([rep]))
 
 
 			print("\nRunning DRAT on " + rep["repo"] + " ...\n")
@@ -280,6 +284,12 @@ def run(repos_list, output_dir):
 			stats['crawl_start'] = current_datetime()
 			retval = drat_process("crawl", rep["repo"])
 			stats['crawl_end'] = current_datetime()
+
+			rep["id"] = "id:"+os.path.normpath(rep["repo"])
+			outputfile = os.getenv("DRAT_HOME") + "/data/repo"
+			file = open(outputfile,"w")
+			file.write(json.dumps(rep))
+			file.close()
 
 			if retval:
 				time.sleep(5)
@@ -296,178 +306,29 @@ def run(repos_list, output_dir):
 					wait_for_job("urn:drat:RatCodeAudit")
 					stats['map_end'] = current_datetime()
 
-					if retval:
-						time.sleep(5)
-						stats['reduce_start'] = current_datetime()
-						
-						# Extract data from RatAggregate File
-						totalNotes = 0
-						totalBinaries = 0
-						totalArchives = 0
-						totalStandards = 0
-						totalApache = 0
-						totalGenerated = 0
-						totalUnknown = 0
-
-						rat_dir = os.getenv("DRAT_HOME") + "/data/archive/rat"
-
-						# Iterate over all RAT log files 
-						for root, dirs, files in os.walk(rat_dir):
-							for filename in files:
-								if filename.endswith(".log"):
-									(notes, binaries, archives,standards,apachelicensed,generated,unknown) = parseFile(os.path.join(root, filename))
-									totalNotes = totalNotes + notes
-									totalBinaries = totalBinaries + binaries
-									totalArchives = totalArchives + archives
-									totalStandards = totalStandards + standards
-									totalApache = totalApache + apachelicensed
-									totalGenerated = totalGenerated + generated
-									totalUnknown = totalUnknown + unknown
-
-						stats["license_Notes"] = totalNotes
-						stats["license_Binaries"] = totalBinaries
-						stats["license_Archives"] = totalArchives
-						stats["license_Standards"] = totalStandards
-						stats["license_Apache"] = totalApache
-						stats["license_Generated"] = totalGenerated
-						stats["license_Unknown"] = totalUnknown
-
-						stats['reduce_end'] = current_datetime()
-						print "\nDRAT Scan Completed: OK\n"
+					if(retval):
+						wait_for_job("urn:drat:RatAggregator")
+						time.sleep(10)
+						retval = drat_process("reduce",None)
+                                                print ("\nwaiting for Rat Aggregator...\n")
+                                                wait_for_job("urn:drat:RatAggregator")
+			
 
 			time.sleep(5)
 
-			if retval:
-				# Copy Data with datetime variables above, extract output from RatAggregate file, extract data from Solr Core
-				printnow ("\nCopying data to Solr and Output Directory...\n")
+                        if(retval):
+                                # Copy Data with datetime variables above, extract output from RatAggregate file, extract data from Solr Core
+                                printnow ("\nCopying data to Solr and Output Directory...\n")
 
-				# Extract data from Solr
-				neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
-				connection = urllib2.urlopen(os.getenv("SOLR_URL") + "/drat/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
-				response = eval(connection.read())
-				mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
-
-				for i in range(0, len(mime_count), 2):
-					if mime_count[i].split("/")[0] not in neg_mimetype:
-						stats["mime_" + mime_count[i]] = mime_count[i + 1]
+                                # Copying data to Output Directory
+                                repos_out = output_dir + "/" + normalize_path(rep["repo"])
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/archive", repos_out + "/data/archive")
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/jobs", repos_out + "/data/jobs")
+                                shutil.copytree(os.getenv("DRAT_HOME") + "/data/workflow", repos_out + "/data/workflow")
+                                print("\nData copied to Solr and Output Directory: OK\n")
 
 
-				# Count the number of files
-				stats["files"] = count_num_files(rep["repo"], ".git")
-
-				# Write data into Solr
-				stats["type"] = 'software'
-				stats_data = []
-				stats_data.append(stats)
-				json_data = json.dumps(stats_data)
-				index_solr(json_data)
-
-				# Parse RAT logs
-				rat_logs_dir = os.getenv("DRAT_HOME") + "/data/archive/rat/*/*.log"
-				rat_license = {}
-				rat_header = {}
-				for filename in glob.glob(rat_logs_dir):
-					#print('=' * 20)
-					l = 0
-					h = 0
-					cur_file = ''
-					cur_header = ''
-					cur_section = ''
-					parsedHeaders = False
-					parsedLicenses = False
-					
-					with open(filename, 'rb') as f:
-						printnow('Parsing rat log: ['+filename+']')
-						for line in f:
-							if '*****************************************************' in line:
-								l = 0
-								h = 0
-								if cur_section == 'licenses':
-									parsedLicenses = True
-								if cur_section == 'headers':
-									parsedHeaders = True
-									
-								cur_file = ''
-								cur_header = ''
-								cur_section = ''
-							if line.startswith('  Files with Apache') and not parsedLicenses:
-								cur_section = 'licenses'
-							if line.startswith(' Printing headers for ') and not parsedHeaders:
-								cur_section = 'headers'
-							if cur_section == 'licenses':
-								l += 1
-								if l > 4:
-									line = line.strip()
-									if line:
-										print("File: %s with License Line: %s" % (filename, line))
-										li = parse_license(line)
-										rat_license[li[0]] = li[1]
-									 	print(li)
-							if cur_section == 'headers':
-								if '=====================================================' in line or '== File:' in line:
-									h += 1
-								if h == 2:
-									cur_file = line.split("/")[-1].strip()
-								if h == 3:
-									cur_header += line
-								if h == 4:
-									rat_header[cur_file] = cur_header.split("\n", 1)[1]
-									cur_file = ''
-									cur_header = ''
-									h = 1
-					if h == 3:
-						rat_header[cur_file] = cur_header.split("\n", 1)[1]
-					parsedHeaders = True
-					parsedLicenses = True
-
-				# Index RAT logs into Solr
-				connection = urllib2.urlopen(os.getenv("SOLR_URL") +
-											 "/drat/select?q=*%3A*&fl=filename%2Cfilelocation%2Cmimetype&wt=python&rows="
-											 + str(stats["files"]) +"&indent=true")
-				response = eval(connection.read())
-				docs = response['response']['docs']
-				file_data = []
-				batch = 100
-				dc = 0
-				
-				for doc in docs:
-					fdata = {}
-					fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
-					m = md5.new()
-					m.update(fdata['id'])
-					hashId = m.hexdigest()
-					fileId = hashId+"-"+doc['filename'][0]
-
-					if fileId not in rat_license:
-						print "File: "+str(fdata['id'])+": ID: ["+fileId+"] not present in parsed licenses => Likely file copying issue. Skipping."
-						continue #handle issue with DRAT #93
-					
-					fdata["type"] = 'file'
-					fdata['parent'] = rep["repo"]
-					fdata['mimetype'] = doc['mimetype'][0]
-					fdata['license'] = rat_license[fileId]
-					if fileId in rat_header:
-						fdata['header'] = rat_header[fileId]
-					file_data.append(fdata)
-					dc += 1
-					if dc % batch == 0:
-						json_data = json.dumps(file_data)
-						index_solr(json_data)
-						file_data = []
-				if dc % batch != 0:
-					json_data = json.dumps(file_data)
-					index_solr(json_data)
-
-				# Copying data to Output Directory
-				repos_out = output_dir + "/" + normalize_path(rep["repo"])
-				shutil.copytree(os.getenv("DRAT_HOME") + "/data", repos_out)
-				print("\nData copied to Solr and Output Directory: OK\n")
-
-			else:
-				print ("\nDRAT Scan Completed: Resulted in Error\n")
-
-
-			time.sleep(5)
+                        time.sleep(5)
 			print ("\nStopping OODT...\n")
 			oodt_process("stop")
 			time.sleep(20)

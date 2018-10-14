@@ -19,8 +19,6 @@ package backend;
 
 import org.apache.oodt.cas.metadata.util.PathUtils;
 
-import java.io.File;
-
 /**
  * Created by stevenfrancus on 10/13/15.
  */
@@ -30,9 +28,21 @@ public class FileConstants {
   public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
   public static final String WORKFLOW_PATH = buildDratSubdirectoryPath("/deploy/workflow/bin/wmgr-client");
   public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
+  public static final String DRAT_CLONES = buildDratSubdirectoryPath("/deploy/data/clones");
   public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/deploy/data/staging");
+  public static final String CURRENT_REPO_DETAILS_FILE = buildDratSubdirectoryPath("/deploy/data/repo");
   public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
+  public static final String SOLR_INDEXER_CONFIG_PATH = buildDratSubdirectoryPath("/deploy/filemgr/etc/indexer.properties");
 
+  public static final String FILEMGR_URL=PathUtils.replaceEnvVariables("[FILEMGR_URL]");
+  public static final String SOLR_DRAT_URL=PathUtils.replaceEnvVariables("[SOLR_DRAT_URL]");
+  public static final String CLIENT_URL=PathUtils.replaceEnvVariables("[WORKFLOW_URL]");
+  public static final String OPSUI_URL=PathUtils.replaceEnvVariables("[OPSUI_URL]");
+  
+  public static final String MET_EXT_CONFIG_PATH =buildDratSubdirectoryPath("/deploy/extractors/code/default.cpr.conf");
+  public static final String CRAWLER_CONFIG = buildDratSubdirectoryPath("/deploy/crawler/policy/crawler-config.xml");
+  public static final String SOLR_INDEXER_CONFIG = "SOLR_INDEXER_CONFIG";
+  
   private static String getDratDirectory() {
     final String DRAT_HOME = PathUtils.replaceEnvVariables("[DRAT_HOME]");
     return DRAT_HOME.substring(0, DRAT_HOME.lastIndexOf(DRAT) + DRAT.length());
@@ -41,4 +51,6 @@ public class FileConstants {
   public static String buildDratSubdirectoryPath(String additionalPath) {
     return DRAT_SUPER_DIR + additionalPath;
   }
+  
+  
 }

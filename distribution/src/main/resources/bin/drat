@@ -34,6 +34,7 @@ function print_help {
     echo "            help                  					| print this message"
     echo "            reset                 					| prepare to analyze an entirely new repo"
     echo "                                  					| CAUTION: will delete previous crawls!"
+    echo "            delstats                                                    | clear collected DRAT stats index"
 }
 
 function print_ui_info {
@@ -59,7 +60,10 @@ function crawl {
 	PRODUCT_PATH=$1
     fi
     pushd $DRAT_HOME/crawler/bin >> $DRAT_HOME/logs/drat.log 2>&1
-    
+   
+    python dump_repo_details.py $PRODUCT_PATH
+
+
    ./crawler_launcher --operation --metPC --metExtractorConfig \
    $DRAT_HOME/extractors/code/default.cpr.conf --metExtractor org.apache.oodt.cas.metadata.extractors.CopyAndRewriteExtractor \
    --filemgrUrl $FILEMGR_URL --clientTransferer org.apache.oodt.cas.filemgr.datatransfer.InPlaceDataTransferFactory \
@@ -238,6 +242,30 @@ function reset {
         esac
 }
 
+# Clears the Solr Statistics repo for aggregating crawl stats. Expects no arguments.
+function delstats {
+    check_services_running "running"
+    check_num_args "delstats" $# 0
+    echo "This will remove any previous or current Solr DRAT stats information."
+    read -p "Do you wish to continue? [yN] " yn
+        case $yn in
+            [Yy]*)
+                echo "rm -rf $DRAT_HOME/solr/statistics/data"
+                rm -rf $DRAT_HOME/solr/statistics/data
+                echo "Please restart OODT with '\$DRAT_HOME/bin/oodt start' if you wish to run another crawl."
+            ;;
+            [Nn]*)
+                echo "Reset cancelled. Exiting..."
+                exit 0
+            ;;
+            *)
+                echo "Aborting..."
+                exit 1
+            ;;
+        esac
+
+}
+
 # Start parsing the arguments.
 case $1 in
     crawl)
@@ -257,6 +285,9 @@ case $1 in
     ;;
     reset)
         reset
+    ;;
+    delstats)
+	delstats
     ;;
     help)
         print_help
