@@ -20,7 +20,7 @@ the License.
       <v-toolbar dark color="primary">
          <v-toolbar-title class="white--text">License Types</v-toolbar-title>
       </v-toolbar>
-      
+
       <svg id="pielicensesvg" width="420" height="600"></svg>
     </v-card>
   </section>
@@ -30,7 +30,9 @@ the License.
 <script lang="js">
   import * as d3 from 'd3';
   import axios from 'axios';
-  import store from './../store/store'
+  import tinycolor from 'tinycolor2';
+  import store from './../store/store';
+
   export default  {
     name: 'licensepiecomp',
     store,
@@ -119,6 +121,13 @@ the License.
                   arc.append("text")
                       .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
                       .attr("dy", "0.35em")
+                      .attr('style', d => {
+                        return `fill: ${
+                          tinycolor(color(d.data.key)).isLight()
+                            ? '#000000'
+                            : '#ffffff'
+                        }`;
+                      })
                       .text(function(d) { return d.data.key; });
 
                 var legend = d3.select("#pielicensesvg").append("svg")
@@ -144,9 +153,9 @@ the License.
                   console.log(result);
                 });
           }
-            
+
         });
-         
+
       }
     },
     computed: {
@@ -166,7 +175,7 @@ the License.
 
 .arc path {
   stroke: transparent
-  
+
 }
 
 #licensecard {

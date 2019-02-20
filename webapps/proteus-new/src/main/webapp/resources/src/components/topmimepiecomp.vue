@@ -25,7 +25,7 @@ the License.
           <v-btn @click="count--;if(count<0)count=0">-</v-btn>
         </v-flex>
         <v-flex xs3 >
-          
+
           <v-text-field label="Count" :value="count"></v-text-field>
         </v-flex>
         <v-flex xs3>
@@ -43,7 +43,9 @@ the License.
 <script lang="js">
   import * as d3 from 'd3';
   import axios from 'axios';
-  import store from './../store/store'
+  import tinycolor from 'tinycolor2';
+  import store from './../store/store';
+
   export default  {
     name: 'topmimepiecomp',
     store,
@@ -68,7 +70,7 @@ the License.
             if(response2.data.response.numFound!=null){
                 axios.get(this.origin + '/solr/statistics/select?q=type:software&rows='+response2.data.response.numFound+'&fl=mime_*&wt=json')
                 .then(function(response) {
-                
+
                 console.log(response.data);
                   var docs = response.data.response.docs;
                   var resultingData = [];
@@ -140,6 +142,13 @@ the License.
                     arc.append("text")
                         .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
                         .attr("dy", "0.35em")
+                        .attr('style', d => {
+                          return `fill: ${
+                            tinycolor(color(d.data.key)).isLight()
+                              ? '#000000'
+                              : '#ffffff'
+                          }`;
+                        })
                         .text(function(d) { return d.data.key; });
 
                   var legend = d3.select("#pietopmimesvg").append("svg")
@@ -165,9 +174,9 @@ the License.
                     console.log(result);
                   });
             }
-              
+
           });
-          
+
         }
     },
     computed: {
