@@ -27,7 +27,7 @@ import json
 import getopt
 import urllib
 from urllib.request import urlopen, Request
-import xmlrpc
+from xmlrpc import client
 
 #urllib.request.build_opener(urllib.HTTPHandler(debuglevel=1))
 solrPostfix = "/select/?q=mimetype:$type&version=2.2&start=0&rows=10&indent=on&facet=on&facet.field=mimetype&wt=json&fl=filelocation,filename"
@@ -47,21 +47,21 @@ def executeRatJobs(url, num, type, workflowUrl, taskIds):
     req = Request(solrUrl)
     try:
         f = urlopen(req)
-        jsonResp = json.loads(f.read())
+        jsonResp = json.loads(f.read().decode('utf-8'))
         numFound = int(jsonResp["response"]["numFound"])
     except urllib.error.HTTPError as err:
         print("HTTP error(%s)" % (err))
         print("Aborting RAT execution")
         return
 
-    wm = xmlrpc.client.Server(workflowUrl)
+    wm = client.Server(workflowUrl)
 
 
     for i in range(0, numFound, num):
         ratSolrUrl = url + solrPostfixByPage.replace("$type", type).replace("$i", str(i)).replace("$num",str(num))
         req = Request(ratSolrUrl)
         f = urlopen(req)
-        jsonResp = json.loads(f.read())
+        jsonResp = json.loads(f.read().decode('utf-8'))
         docs = jsonResp["response"]["docs"]
         metadata = {}
         metadata["MimeType"] = type
