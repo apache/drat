@@ -10,7 +10,8 @@
   <!-- How to run the PGE -->
   <exe dir="[JobDir]" shell="/bin/bash">
      <cmd>export PATH=$HOME/bin/:${PATH}</cmd>
-     <cmd>rat() { java -jar [DRAT_HOME]/rat/lib/apache-rat-0.13.jar; }</cmd>
+     <cmd>shopt -s expand_aliases</cmd>
+     <cmd>alias rat="java -jar [DRAT_HOME]/rat/lib/apache-rat-0.13.jar"</cmd>
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir -p [JobInputDir] ; mkdir -p [JobOutputDir]; mkdir -p [JobLogDir]</cmd>
      <!-- <cmd>echo "Staging input to [JobInputDir]"</cmd>
