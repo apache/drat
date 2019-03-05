@@ -26,27 +26,23 @@ import subprocess
 import time
 import shutil
 import datetime
-import csv
-import urllib2
+from urllib.request import urlopen, Request
 import json
-import xmlrpclib
-import getopt
-import glob
-import md5
+import xmlrpc
 
 # Check for environment variables
 def check_env_var():
 	if os.getenv("DRAT_HOME") == None:
-		print "Environment variable $DRAT_HOME is not set."
+		print("Environment variable $DRAT_HOME is not set.")
 		sys.exit(1)
 	if os.getenv("JAVA_HOME") == None:
-		print "Environment variable $JAVA_HOME is not set."
+		print("Environment variable $JAVA_HOME is not set.")
 		sys.exit(1)
 	if os.getenv("SOLR_DRAT_URL") == None:
-		print "Environment variable $SOLR_DRAT_URL is not set."
+		print("Environment variable $SOLR_DRAT_URL is not set.")
 		sys.exit(1)
 	if os.getenv("WORKFLOW_URL") == None:
-		print "Environment variable $WORKFLOW_URL is not set."
+		print("Environment variable $WORKFLOW_URL is not set.")
 		sys.exit(1)
 
 
@@ -83,7 +79,7 @@ def help():
 
 # Printing out on Console
 def printnow(string):
-	print string
+	print(string)
 	sys.stdout.flush()
 
 
@@ -176,7 +172,7 @@ def drat_reset():
 # Check if there are any pending PGE jobs in the queue
 def job_in_queue(job_name):
 	status = "PGE EXEC"
-	server = xmlrpclib.ServerProxy(os.getenv("WORKFLOW_URL"), verbose=False)
+	server = xmlrpc.client.ServerProxy(os.getenv("WORKFLOW_URL"), verbose=False)
 	
 
 	for x in range(0,6):
@@ -225,9 +221,9 @@ def parse_license(s):
 # Index into Solr
 def index_solr(json_data):
 	printnow(json_data)
-	request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
+	request = Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
 	request.add_header('Content-type', 'application/json')
-	urllib2.urlopen(request, json_data)
+	urlopen(request, json_data)
 
 
 # Run DRAT and collect statistics
