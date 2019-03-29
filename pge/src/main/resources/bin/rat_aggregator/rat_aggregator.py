@@ -25,31 +25,24 @@
 
 import sys
 import os
-import getopt
-import subprocess
-import time
-import shutil
-import datetime
-import csv
-import urllib2
+
+from urllib.request import urlopen, Request
 import json
-import xmlrpclib
-import getopt
 import glob
-import md5
+import hashlib
 import requests
 
 
 def parse_license(s):
    li_dict = {'N': 'Notes', 'B': 'Binaries', 'A': 'Archives', 'AL': 'Apache', '!?????': 'Unknown'}
    if s and not s.isspace():
-      arr = s.split("/", 1)
+      arr = s.split(b"/", 1)
       li = arr[0].strip()
       if li in li_dict:
          li = li_dict[li]
 
-      if len(arr) > 1 and len(arr[1].split("/")) > 0:
-         return [arr[1].split("/")[-1], li]
+      if len(arr) > 1 and len(arr[1].split(b"/")) > 0:
+         return [arr[1].split(b"/")[-1], li]
       else:
          #print('split not correct during license parsing '+str(arr))
          return ["/dev/null", li_dict['!?????']]
@@ -98,9 +91,9 @@ def count_num_files(path, exclude):
 
 def index_solr(json_data):
    #print(json_data)
-   request = urllib2.Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
+   request = Request(os.getenv("SOLR_URL") + "/statistics/update/json?commit=true")
    request.add_header('Content-type', 'application/json')
-   urllib2.urlopen(request, json_data)
+   urlopen(request, json_data.encode('utf-8'))
 
 def main(argv=None):
    usage = 'rat_aggregator.py logfile1 logfile2 ... logfileN'
@@ -110,13 +103,13 @@ def main(argv=None):
    with open(repo_file_url,'rb')as repoFile:
       data = ''
       for line in repoFile:
-          data+=line
+          data+=line.decode('utf-8')
    rep = eval(data)
    
    index_solr(json.dumps([rep]))
 
    if len(argv) == 0:
-      print usage
+      print(usage)
       sys.exit()
 
    totalNotes = 0
@@ -193,7 +186,7 @@ def main(argv=None):
 
          with open(filename, 'rb') as f:
             for line in f:
-               if '*****************************************************' in line:
+               if b'*****************************************************' in line:
                   l = 0
                   h = 0
                   if cur_section == 'licenses':
@@ -204,9 +197,9 @@ def main(argv=None):
                   cur_file = ''
                   cur_header = ''
                   cur_section = ''
-               if line.startswith('  Files with Apache') and not parsedLicenses:
+               if line.startswith(b'  Files with Apache') and not parsedLicenses:
                   cur_section = 'licenses'
-               if line.startswith(' Printing headers for ') and not parsedHeaders:
+               if line.startswith(b' Printing headers for ') and not parsedHeaders:
                   cur_section = 'headers'
                if cur_section == 'licenses':
                   l += 1
@@ -218,12 +211,12 @@ def main(argv=None):
                         rat_license[li[0]] = li[1]
                         #print(li)
                if cur_section == 'headers':
-                  if '=====================================================' in line or '== File:' in line:
+                  if b'=====================================================' in line or b'== File:' in line:
                      h += 1
                   if h == 2:
-                     cur_file = line.split("/")[-1].strip()
+                     cur_file = line.split(b"/")[-1].strip()
                   if h == 3:
-                     cur_header += line
+                     cur_header += line.decode('utf-8')
                   if h == 4:
                      rat_header[cur_file] = cur_header.split("\n", 1)[1]
                      cur_file = ''
@@ -248,8 +241,7 @@ def main(argv=None):
       for doc in docs:
          fdata = {}
          fdata['id'] = os.path.join(doc['filelocation'][0], doc['filename'][0])
-         m = md5.new()
-         m.update(fdata['id'])
+         m = hashlib.md5(fdata['id'].encode('utf-8'))
          hashId = m.hexdigest()
          fileId = hashId+"-"+doc['filename'][0]
 
@@ -275,7 +267,7 @@ def main(argv=None):
 
       # Copying data to Output Directory
       print ("Notes,Binaries,Archives,Standards,Apache,Generated,Unknown")
-      print str(totalNotes)+","+str(totalBinaries)+","+str(totalArchives)+","+str(totalStandards)+","+str(totalApache)+"    ,"+str(totalGenerated)+","+str(totalUnknown)
+      print(str(totalNotes)+","+str(totalBinaries)+","+str(totalArchives)+","+str(totalStandards)+","+str(totalApache)+"    ,"+str(totalGenerated)+","+str(totalUnknown))
       
       #print("\nData copied to Solr and Output Directory: OK\n")
 

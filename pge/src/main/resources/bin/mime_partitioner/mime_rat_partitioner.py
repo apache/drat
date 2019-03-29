@@ -24,11 +24,12 @@
 
 import sys
 import json
-import os
 import getopt
-import urllib2
-import xmlrpclib
-urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
+import urllib
+from urllib.request import urlopen, Request
+from xmlrpc import client
+
+#urllib.request.build_opener(urllib.HTTPHandler(debuglevel=1))
 solrPostfix = "/select/?q=mimetype:$type&version=2.2&start=0&rows=10&indent=on&facet=on&facet.field=mimetype&wt=json&fl=filelocation,filename"
 solrPostfixByPage = "/select/?q=mimetype:$type&version=2.2&start=$i&rows=$num&indent=on&facet=on&facet.field=mimetype&wt=json&fl=filelocation,filename"
 
@@ -41,26 +42,26 @@ def executeRatJobs(url, num, type, workflowUrl, taskIds):
     if not url.endswith("/"):
         url = url + "/"
     solrUrl = url+solrPostfix.replace("$type", type)
-    print "GET "+solrUrl
+    print("GET "+solrUrl)
     numFound = 0
-    req = urllib2.Request(solrUrl)
+    req = Request(solrUrl)
     try:
-        f = urllib2.urlopen(req)
-        jsonResp = json.loads(f.read())
+        f = urlopen(req)
+        jsonResp = json.loads(f.read().decode('utf-8'))
         numFound = int(jsonResp["response"]["numFound"])
-    except urllib2.HTTPError, (err):
-        print "HTTP error(%s)" % (err)
-        print "Aborting RAT execution"
+    except urllib.error.HTTPError as err:
+        print("HTTP error(%s)" % (err))
+        print("Aborting RAT execution")
         return
 
-    wm = xmlrpclib.Server(workflowUrl)
+    wm = client.Server(workflowUrl)
 
 
     for i in range(0, numFound, num):
         ratSolrUrl = url + solrPostfixByPage.replace("$type", type).replace("$i", str(i)).replace("$num",str(num))
-        req = urllib2.Request(ratSolrUrl)
-        f = urllib2.urlopen(req)
-        jsonResp = json.loads(f.read())
+        req = Request(ratSolrUrl)
+        f = urlopen(req)
+        jsonResp = json.loads(f.read().decode('utf-8'))
         docs = jsonResp["response"]["docs"]
         metadata = {}
         metadata["MimeType"] = type
@@ -75,13 +76,13 @@ def executeRatJobs(url, num, type, workflowUrl, taskIds):
                 metadata["InputFiles"] = []
             metadata["InputFiles"].append(fullpath)
 
-        print "Metadata is "+str(metadata)
+        print("Metadata is "+str(metadata))
         wm.workflowmgr.executeDynamicWorkflow([taskIds], metadata)
         
 
 def get_mime_types(solrUrl):
     neg_mimetype = ["image", "application", "text", "video", "audio", "message", "multipart"]
-    connection = urllib2.urlopen(solrUrl + "/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
+    connection = urlopen(solrUrl + "/select?q=*%3A*&rows=0&facet=true&facet.field=mimetype&wt=python&indent=true")
     response = eval(connection.read())
     mime_count = response["facet_counts"]["facet_fields"]["mimetype"]
     stats = {}
@@ -101,11 +102,11 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"hu:c:w:t:",["solrUrl=", "numFilesPerJob=", "workflowUrl=", "ratTaskId="])
    except getopt.GetoptError:
-      print usage
+      print(usage)
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-         print usage
+         print(usage)
          sys.exit()
       elif opt in ("-u", "--solrUrl"):
          solrUrl = arg
@@ -117,15 +118,15 @@ def main(argv):
           ratTaskId = arg
 
    if solrUrl == "" or numFilesPerJob == 0 or workflowUrl == "" or ratTaskId == "":
-       print usage
+       print(usage)
        sys.exit()
 
 
-   print "Configured SOLR url: ["+solrUrl+"]"
+   print("Configured SOLR url: ["+solrUrl+"]")
    mimeTypes = get_mime_types(solrUrl)
 
    for type in mimeTypes:
-       print "Executing RAT for MIME: ["+type+"]: num files per job: ["+str(numFilesPerJob)+"]"
+       print("Executing RAT for MIME: ["+type+"]: num files per job: ["+str(numFilesPerJob)+"]")
        executeRatJobs(solrUrl, numFilesPerJob, type, workflowUrl, ratTaskId)
 
 if __name__ == "__main__":
