@@ -12,10 +12,22 @@ cache:
 before_script:
   - apt-get update && curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt install nodejs npm
 
-build:
+build_artifact:
   stage: build
   script:
      - mvn clean install -DskipTests
   artifacts:
     paths:
     - "distribution/target/dms-distribution-0.1-bin.tar.gz"
+
+publish_docker:
+  stage: publish
+  image: docker:1.11
+  dependencies: 
+    - build_artifact
+  services:
+    - docker:dind
+  script:
+    - docker build -t $CI_REPO:${CI_COMMIT_REF_NAME/\//_} .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker push $CI_REPO:${CI_COMMIT_REF_NAME/\//_}
