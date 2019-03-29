@@ -1,4 +1,4 @@
-image: maven:3.3.9-jdk-8
+image: maven:3.6.0-jdk-8
 
 stages:
   - build
@@ -8,6 +8,9 @@ cache:
   paths:
     - .m2/repository
     - target/
+
+before_script:
+  - apt-get update && curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt install nodejs npm
 
 build:
   stage: build
