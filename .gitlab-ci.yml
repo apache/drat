@@ -1,0 +1,18 @@
+image: maven:3.3.9-jdk-8
+
+stages:
+  - build
+  - publish
+
+cache:
+  paths:
+    - .m2/repository
+    - target/
+
+build:
+  stage: build
+  script:
+     - mvn clean install -DskipTests
+  artifacts:
+    paths:
+    - "distribution/target/dms-distribution-0.1-bin.tar.gz"
