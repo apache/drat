@@ -228,12 +228,7 @@ import store from './../store/store';
     store,
     props: [],
     mounted() {
-      this.loadData();
-      this.timerClearVar= setInterval(function () {
-          this.loadData();
-        }.bind(this), 10000);
-      
-        
+        this.loadData();
     },
     beforeDestroy(){
       clearInterval(this.timerClearVar);

@@ -130,35 +130,39 @@ the License.
 
               bubble(root);
 
-              var node = svg.selectAll(".node")
-                  .data(root.children)
+              if(resultingData.length >0){
+                  var node = svg.selectAll(".node")
+                      .data(root.children)
 
-                .enter().append("g")
-                  .attr("class", "node")
-                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                      .enter().append("g")
+                      .attr("class", "node")
+                      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-              node.append("title")
-                  .text(function(d) {
-                    return d.data.className + ": " + format(d.value);
-                    });
+                  node.append("title")
+                      .text(function(d) {
+                          return d.data.className + ": " + format(d.value);
+                      });
 
-              node.append("circle")
-                  .attr("r", function(d) { return d.r; })
-                  .attr("style",function(d){
+                  node.append("circle")
+                      .attr("r", function(d) { return d.r; })
+                      .attr("style",function(d){
 
-                    return "fill:"+color(d.data.className);});
+                          return "fill:"+color(d.data.className);});
 
-              node.append("text")
-                  .attr("dy", ".3em")
-                  .attr('style', d => {
-                    return `fill: ${
-                      tinycolor(color(d.data.className)).isLight()
-                        ? '#000000'
-                        : '#ffffff'
-                    }`;
-                  })
-                  .style("text-anchor", "middle")
-                  .text(function(d) { return d.data.className.substring(0, d.r / 3); });
+                  node.append("text")
+                      .attr("dy", ".3em")
+                      .attr('style', d => {
+                      return `fill: ${
+                          tinycolor(color(d.data.className)).isLight()
+                              ? '#000000'
+                              : '#ffffff'
+                          }`;
+              })
+              .style("text-anchor", "middle")
+                      .text(function(d) { return d.data.className.substring(0, d.r / 3); });
+              }
+
+
             });
           }
 
