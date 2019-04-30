@@ -44,7 +44,7 @@ the License.
         <td class="text-xs-left">{{ props.item.name }}</td>
         <td class="text-xs-left">{{ props.item.description }}</td>
         <td >
-          <v-btn @click="moreClicked(props.index)">
+          <v-btn @click="moreClicked(props.item)">
           <v-icon medium 
           
           >description</v-icon>
@@ -307,16 +307,16 @@ import store from './../store/store';
         }
         return false;
       },
-      moreClicked :function(index){
+      moreClicked :function(item){
         this.$log.info("as");
         this.dialog =true;     
-        this.selectedItem = this.docs[index];
+        //this.selectedItem = this.docs[index];
+        this.selectedItem = item;
         this.loadLicenseData();
         this.loadFileDetails();
       },
       loadData(){
-        
-        axios.get(this.origin+"/solr/statistics/select?q=type:project&wt=json")
+          axios.get(this.origin+"/solr/statistics/select?q=type:project&wt=json")
             .then(response=>{
               this.$log.info(response.data);
               this.docs=response.data.response.docs;
@@ -325,7 +325,7 @@ import store from './../store/store';
               if(response.data.response.numFound != null && response.data.response.numFound>10){
                 axios.get(this.origin+"/solr/statistics/select?q=type:project&rows="+this.count.numFound+"&wt=json")
                   .then(response=>{
-                    this.docs=response.data.response.docs;
+                    this.docs= response.data.response.docs;
                     this.count.numFound = response.data.response.numFound;
                     this.count.start = response.data.response.start;
                   })
@@ -333,10 +333,10 @@ import store from './../store/store';
 
                   })
               }
-              
+
             })
             .catch(error=>{
-              
+
               throw error;
             })
       },
