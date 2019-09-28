@@ -13,7 +13,7 @@
   <name>Apache DRAT</name>
   <packaging>pom</packaging>
   <description>The Apache Distributed Release Auditing Tool (DRAT).</description>
-  <version>0.1</version>
+  <version>1.0-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
