@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>21</version>
+    <relativePath />
+  </parent>
 
   <groupId>org.apache.drat</groupId>
   <artifactId>dms</artifactId>
-  <name>Data Management System</name>
+  <name>Apache DRAT</name>
   <packaging>pom</packaging>
-  <description>Data Management System Powered by Apache OODT delivered via RADiX</description>
+  <description>The Apache Distributed Release Auditing Tool (DRAT).</description>
   <version>0.1</version>
 
   <properties>
@@ -33,20 +39,6 @@
     </repository>
   </repositories>
 
-  <distributionManagement>
-  <!-- use the following if you're not using a snapshot version. -->
-    <repository>
-      <id>repo</id>
-      <name>Repository Name</name>
-      <url>scp://host/path/to/repo</url>
-    </repository>
-    <!-- use the following if you ARE using a snapshot version. -->
-    <snapshotRepository>
-      <id>repo</id>
-      <name>Repository Name</name>
-      <url>scp://host/path/to/repo</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <build>
     <defaultGoal>clean install</defaultGoal>
@@ -122,4 +114,13 @@
     <module>proteus</module>
     <module>distribution</module>
   </modules>
+
+
+  <scm>
+    <connection>scm:git:https://github.com/apache/drat.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/drat.git</developerConnection>
+    <url>http://github.com/apache/drat</url>
+    <tag>HEAD</tag>
+  </scm>
+
 </project>
