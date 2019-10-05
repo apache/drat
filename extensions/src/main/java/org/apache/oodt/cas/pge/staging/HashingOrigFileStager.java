@@ -20,7 +20,8 @@ package org.apache.oodt.cas.pge.staging;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.oodt.cas.filemgr.structs.exceptions.DataTransferException;
 import org.apache.oodt.cas.pge.metadata.PgeMetadata;
@@ -29,8 +30,8 @@ import com.google.common.io.Files;
 
 public class HashingOrigFileStager extends FileManagerFileStager {
 
-  private static final Logger LOG = Logger
-      .getLogger(HashingOrigFileStager.class.getName());
+    private static final Logger LOG = 
+	LoggerFactory.getLogger(HashingOrigFileStager.class);
 
   /*
    * (non-Javadoc)
@@ -40,7 +41,7 @@ public class HashingOrigFileStager extends FileManagerFileStager {
    * URI, java.io.File, org.apache.oodt.cas.pge.metadata.PgeMetadata,
    * java.util.logging.Logger)
    */
-  @Override
+
   public void stageFile(URI stageFile, File destDir, PgeMetadata pgeMetadata,
       Logger logger)
       throws IOException, DataTransferException, InstantiationException {

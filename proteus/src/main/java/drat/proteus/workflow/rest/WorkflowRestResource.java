@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import org.apache.oodt.cas.metadata.Metadata;
 import org.apache.oodt.cas.metadata.util.PathUtils;
-import org.apache.oodt.cas.workflow.system.XmlRpcWorkflowManagerClient;
+import org.apache.oodt.cas.workflow.system.WorkflowManagerClient;
 import org.apache.oodt.pcs.util.WorkflowManagerUtils;
 import org.wicketstuff.rest.annotations.MethodMapping;
 import org.wicketstuff.rest.annotations.parameters.RequestBody;
@@ -41,7 +41,7 @@ public class WorkflowRestResource extends AbstractRestResource<GsonWebSerialDese
     
     
     private static final long serialVersionUID = -5885885059043262485L;
-    XmlRpcWorkflowManagerClient wm;
+    WorkflowManagerClient wm;
     
     
     
