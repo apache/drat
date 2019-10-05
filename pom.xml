@@ -13,7 +13,7 @@
   <name>Apache DRAT</name>
   <packaging>pom</packaging>
   <description>The Apache Distributed Release Auditing Tool (DRAT).</description>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,7 +121,7 @@
     <connection>scm:git:git@github.com:apache/drat.git</connection>
     <developerConnection>scm:git:git@github.com:apache/drat.git</developerConnection>
     <url>http://github.com/apache/drat</url>
-    <tag>release-1.0-rc2</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>
