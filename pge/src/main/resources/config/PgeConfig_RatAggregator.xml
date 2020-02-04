@@ -8,7 +8,7 @@
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Running RAT aggregator"</cmd>
-     <cmd>[RatAggregatorScript] `python -c "print(' '.join('[InputFiles]'.split(',')))"` > [JobOutputDir]/rat_aggregate_stats_[DateMilis].csv</cmd>
+     <cmd>[PythonExecutable] [RatAggregatorScript] `python -c "print(' '.join('[InputFiles]'.split(',')))"` > [JobOutputDir]/rat_aggregate_stats_[DateMilis].csv</cmd>
   </exe>
 
   <!-- Files to ingest -->

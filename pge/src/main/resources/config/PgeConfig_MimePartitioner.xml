@@ -8,7 +8,7 @@
      <cmd>echo "Creating working dirs"</cmd>
      <cmd>mkdir [JobInputDir] ; mkdir [JobOutputDir]; mkdir [JobLogDir]</cmd>
      <cmd>echo "Running MIME partitioner"</cmd>
-     <cmd>[MimePartitionerPyScript] -u [SolrUrl] -c [NumFilesPerJob] -w [PCS_WorkflowManagerUrl] -t [RatTaskId] > [JobLogDir]/mime-partitioner-[DateMilis].log</cmd>
+     <cmd>[PythonExecutable] [MimePartitionerPyScript] -u [SolrUrl] -c [NumFilesPerJob] -w [PCS_WorkflowManagerUrl] -t [RatTaskId] > [JobLogDir]/mime-partitioner-[DateMilis].log</cmd>
   </exe>
 
   <!-- Files to ingest -->

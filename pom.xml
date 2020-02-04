@@ -18,7 +18,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <oodt.version>1.9</oodt.version>
+    <oodt.version>1.10-SNAPSHOT</oodt.version>
     <junit.version>4.12</junit.version>
   </properties>
 
